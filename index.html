@@ -3947,7 +3947,8 @@ function buildHeroConverterSection(config, data, idEngine) {
     borderRadius: primaryBtn.border_radius || '7px',
     fontSize: '15px',
     fontWeight: '600',
-    padding: { top: '15px', right: '32px', bottom: '15px', left: '32px' }
+    padding: { top: '15px', right: '32px', bottom: '15px', left: '32px' },
+    target: '_self'
   });
 
   // --- Outline button ---
@@ -3961,7 +3962,8 @@ function buildHeroConverterSection(config, data, idEngine) {
     borderRadius: '7px',
     fontSize: '15px',
     fontWeight: '600',
-    padding: { top: '15px', right: '32px', bottom: '15px', left: '32px' }
+    padding: { top: '15px', right: '32px', bottom: '15px', left: '32px' },
+    target: '_self'
   });
 
   var buttonsBlock = buildButtons([btn1, btn2], {
