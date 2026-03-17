@@ -4149,7 +4149,25 @@ function buildHeroConverterSection(config, data, idEngine) {
     var boxCss = buildCSSString(introBoxId, boxStyles);
     var boxBlock = buildGBElement(introBoxId, 'div', boxStyles, boxCss, 'intro-callout', boxContent);
 
-    result += '\n\n' + buildSectionWrapper(introSectionId, introContainerId, '#ffffff', '800px', boxBlock);
+    // Custom section with tighter padding — no double-stacking with adjacent sections
+    var introSecStyles = {
+      backgroundColor: '#ffffff',
+      paddingTop: 'clamp(32px, 5vw, 56px)',
+      paddingBottom: '0',
+      paddingLeft: 'clamp(20px, 5vw, 60px)',
+      paddingRight: 'clamp(20px, 5vw, 60px)'
+    };
+    var introSecCss = buildCSSString(introSectionId, introSecStyles);
+    var introContStyles = { maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto' };
+    var introContCss = buildCSSString(introContainerId, introContStyles);
+    var introContBlock = buildGBElement(introContainerId, 'div', introContStyles, introContCss, '', boxBlock);
+
+    result += '\n\n<!-- wp:generateblocks/element ' + JSON.stringify({
+      uniqueId: introSectionId, tagName: 'section', styles: introSecStyles, css: introSecCss, className: 'intro-callout-section'
+    }) + ' -->\n';
+    result += '<section class="gb-element-' + introSectionId + ' intro-callout-section">';
+    result += introContBlock;
+    result += '</section>\n<!-- /wp:generateblocks/element -->';
   }
 
   return result;
