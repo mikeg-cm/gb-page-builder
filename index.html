@@ -4062,9 +4062,71 @@ function buildHeroConverterSection(config, data, idEngine) {
   result += outerBlock;
   result += '</div></div>\n<!-- /wp:cover -->';
 
-  // --- Block 2: "What You Get" section (only if checklist items exist) ---
+  // --- Block 2: WYG + optional body paragraphs ---
   var checklistItems = (data.checklistItems || []).filter(function(item) { return item.text && item.text.trim(); });
-  if (checklistItems.length > 0) {
+  var bodyParas = data.bodyParas || [];
+
+  if (checklistItems.length > 0 && bodyParas.length > 0) {
+    // Two-column layout: body text on left, WYG checklist on right
+    var wygSectionId = idEngine.customId('WygSec');
+    var wygContainerId = idEngine.customId('WygCont');
+    var wygGridId = idEngine.customId('WygGrid');
+    var wygLeftId = idEngine.customId('WygLeft');
+    var wygRightId = idEngine.customId('WygRight');
+
+    // Left column: body paragraphs
+    var leftContent = '';
+    for (var bp = 0; bp < bodyParas.length; bp++) {
+      leftContent += buildParagraph(bodyParas[bp], {
+        color: bodyText,
+        fontSize: 'clamp(15px, 1.2vw, 17px)',
+        lineHeight: '1.7',
+        marginBottom: bp < bodyParas.length - 1 ? '20px' : '0px'
+      }) + '\n';
+    }
+    var leftStyles = {};
+    var leftCss = buildCSSString(wygLeftId, leftStyles);
+    var leftCol = buildGBElement(wygLeftId, 'div', leftStyles, leftCss, '', leftContent);
+
+    // Right column: WYG heading + separator + checklist
+    var checkParagraphs = '';
+    for (var ci = 0; ci < checklistItems.length; ci++) {
+      checkParagraphs += buildParagraph('\u2714 ' + checklistItems[ci].text, {
+        fontSize: '16px',
+        color: bodyText,
+        lineHeight: '1.6',
+        marginBottom: '12px'
+      }) + '\n';
+    }
+    var wygHeading = buildHeading(3, 'WHAT YOU GET', {
+      color: '#8B2020',
+      fontSize: '22px',
+      fontWeight: '700',
+      marginBottom: '16px'
+    });
+    var separator = '<!-- wp:separator -->\n';
+    separator += '<hr class="wp-block-separator has-alpha-channel-opacity"/>\n';
+    separator += '<!-- /wp:separator -->';
+
+    var rightContent = wygHeading + '\n' + separator + '\n' + checkParagraphs;
+    var rightStyles = {};
+    var rightCss = buildCSSString(wygRightId, rightStyles);
+    var rightCol = buildGBElement(wygRightId, 'div', rightStyles, rightCss, '', rightContent);
+
+    // Grid wrapper: 1fr 1fr with mobile stacking
+    var gridStyles = {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '48px',
+      alignItems: 'start'
+    };
+    var gridCss = buildCSSString(wygGridId, gridStyles) + ' @media(max-width:1024px){.gb-element-' + wygGridId + '{grid-template-columns:1fr;gap:32px}}';
+    var gridBlock = buildGBElement(wygGridId, 'div', gridStyles, gridCss, 'wyg-body-grid', leftCol + '\n' + rightCol);
+
+    result += '\n\n' + buildSectionWrapper(wygSectionId, wygContainerId, '#F5F3F0', '1120px', gridBlock);
+
+  } else if (checklistItems.length > 0) {
+    // Original single-column WYG (no body paragraphs)
     var checkParagraphs = '';
     for (var ci = 0; ci < checklistItems.length; ci++) {
       checkParagraphs += buildParagraph('\u2714 ' + checklistItems[ci].text, {
@@ -4106,11 +4168,9 @@ function buildHeroConverterSection(config, data, idEngine) {
     result += '<div class="wp-block-group wyg-section has-background" style="background-color:#F5F3F0;padding-top:0;padding-right:clamp(20px, 5vw, 60px);padding-bottom:0;padding-left:clamp(20px, 5vw, 60px)">';
     result += wygHeading + '\n' + separator + '\n' + checkParagraphs;
     result += '</div>\n<!-- /wp:group -->';
-  }
 
-  // --- Block 3: Extra body paragraphs section (if hero had too much text) ---
-  var bodyParas = data.bodyParas || [];
-  if (bodyParas.length > 0) {
+  } else if (bodyParas.length > 0) {
+    // Body paragraphs only, no checklist — centered single column
     var introSectionId = idEngine.customId('IntroSec');
     var introContainerId = idEngine.customId('IntroCont');
 
@@ -4125,7 +4185,7 @@ function buildHeroConverterSection(config, data, idEngine) {
       }) + '\n';
     }
 
-    result += '\n\n' + buildSectionWrapper(introSectionId, introContainerId, '#ffffff', '800px', introContent);
+    result += '\n\n' + buildSectionWrapper(introSectionId, introContainerId, '#F5F3F0', '800px', introContent);
   }
 
   return result;
