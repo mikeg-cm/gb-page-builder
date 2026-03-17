@@ -1517,19 +1517,21 @@ function buildButton(text, url, options) {
 
   var jsonStr = JSON.stringify(json);
 
-  // --- Build link classes ---
-  var linkClasses = ['wp-block-button__link', 'has-text-color', 'has-background', 'has-custom-font-size', 'wp-element-button'];
+  // --- Build link classes (order must match WP's serializer) ---
+  var linkClasses = ['wp-block-button__link', 'has-text-color', 'has-background'];
   if (opts.borderColor) {
     linkClasses.push('has-border-color');
   }
+  linkClasses.push('has-custom-font-size');
+  linkClasses.push('wp-element-button');
 
-  // --- Build inline styles for the <a> ---
+  // --- Build inline styles for the <a> (border-color/width before radius to match WP) ---
   var inlineStyles = [];
-  inlineStyles.push('border-radius:' + borderRadius);
   if (opts.borderColor) {
     inlineStyles.push('border-color:' + opts.borderColor);
     inlineStyles.push('border-width:' + (opts.borderWidth || '2px'));
   }
+  inlineStyles.push('border-radius:' + borderRadius);
   inlineStyles.push('color:' + textColor);
   inlineStyles.push('background-color:' + bgColor);
   inlineStyles.push('padding-top:' + padding.top);
