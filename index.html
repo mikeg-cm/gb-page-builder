@@ -7723,7 +7723,14 @@ class HeroConverterView {
     const calloutEl = document.getElementById('converterFixesCallout');
     if (calloutEl) {
       if (!this._heroOnly && fixes && fixes.length > 0) {
-        calloutEl.innerHTML = '<strong>\u{1F527} Auto-fixed ' + fixes.length + ' broken paragraph block' + (fixes.length > 1 ? 's' : '') + '</strong> in retained content (converted to Classic blocks)';
+        const pFixes = fixes.filter(f => f.type === 'nested-p-to-freeform').length;
+        const stepFixes = fixes.filter(f => f.type === 'timeline-step-mobile').length;
+        const gridFixes = fixes.filter(f => f.type === 'grid-mobile-breakpoint').length;
+        const parts = [];
+        if (pFixes) parts.push(pFixes + ' broken paragraph' + (pFixes > 1 ? 's' : '') + ' → Classic blocks');
+        if (stepFixes) parts.push(stepFixes + ' timeline step' + (stepFixes > 1 ? 's' : '') + ' → mobile layout');
+        if (gridFixes) parts.push(gridFixes + ' column grid' + (gridFixes > 1 ? 's' : '') + ' → mobile breakpoint');
+        calloutEl.innerHTML = '<strong>\u{1F527} Auto-fixed ' + fixes.length + ' issue' + (fixes.length > 1 ? 's' : '') + '</strong> in retained content: ' + parts.join(', ');
         calloutEl.style.display = '';
       } else {
         calloutEl.style.display = 'none';
@@ -7808,6 +7815,73 @@ class HeroConverterView {
           fixes.push({ type: 'nested-p-to-freeform', line: i + 1 });
           i = j + 1; // Skip past original closing tag
           continue;
+        }
+      }
+
+      // Fix timeline-step elements missing mobile responsive CSS
+      // Pattern: gb-element with timeline-step class but no @media rule for mobile row layout
+      const stepMatch = line.match(/(<!-- wp:generateblocks\/element \{[^}]*"uniqueId":"([^"]+)"[^}]*"className":"timeline-step"[^}]*\})/);
+      if (stepMatch) {
+        const fullComment = stepMatch[1];
+        const uid = stepMatch[2];
+        const cssClass = '.gb-element-' + uid;
+        // Check if the css attribute already has a @media rule
+        if (fullComment.indexOf('@media') === -1) {
+          // Add the mobile breakpoint to the css attribute
+          const cssMatch = fullComment.match(/"css":"([^"]*)"/);
+          if (cssMatch) {
+            const existingCss = cssMatch[1];
+            const mobileRule = ' @media(max-width:768px){' + cssClass + '{align-items:flex-start;flex-direction:row;gap:16px;text-align:left}}';
+            const newCss = existingCss + mobileRule;
+            const fixedComment = fullComment.replace('"css":"' + existingCss + '"', '"css":"' + newCss + '"');
+            result.push(line.replace(fullComment, fixedComment));
+            fixes.push({ type: 'timeline-step-mobile', line: i + 1, detail: uid });
+            i++;
+            continue;
+          }
+        }
+      }
+
+      // Fix timeline-grid containers missing mobile breakpoint (4-col → 1-col)
+      const timelineGridMatch = line.match(/(<!-- wp:generateblocks\/element \{[^}]*"uniqueId":"([^"]+)"[^}]*"className":"timeline-grid"[^}]*\})/);
+      if (timelineGridMatch) {
+        const fullComment = timelineGridMatch[1];
+        const uid = timelineGridMatch[2];
+        const cssClass = '.gb-element-' + uid;
+        if (fullComment.indexOf('@media') === -1) {
+          const cssMatch = fullComment.match(/"css":"([^"]*)"/);
+          if (cssMatch) {
+            const existingCss = cssMatch[1];
+            const mobileRule = ' @media(max-width:768px){' + cssClass + '{gap:24px;grid-template-columns:1fr}}';
+            const newCss = existingCss + mobileRule;
+            const fixedComment = fullComment.replace('"css":"' + existingCss + '"', '"css":"' + newCss + '"');
+            result.push(line.replace(fullComment, fixedComment));
+            fixes.push({ type: 'timeline-step-mobile', line: i + 1, detail: uid + ' (grid)' });
+            i++;
+            continue;
+          }
+        }
+      }
+
+      // Fix 2-column grids missing mobile breakpoint
+      // Pattern: gb-element with grid-template-columns: 1fr 1fr (or similar 2-col) but no @media rule
+      const gridMatch = line.match(/(<!-- wp:generateblocks\/element \{[^}]*"uniqueId":"([^"]+)"[^}]*"gridTemplateColumns":"(1fr 1fr|repeat\(2)[^}]*\})/)
+      if (gridMatch) {
+        const fullComment = gridMatch[1];
+        const uid = gridMatch[2];
+        const cssClass = '.gb-element-' + uid;
+        if (fullComment.indexOf('@media') === -1) {
+          const cssMatch = fullComment.match(/"css":"([^"]*)"/);
+          if (cssMatch) {
+            const existingCss = cssMatch[1];
+            const mobileRule = ' @media(max-width:1024px){' + cssClass + '{grid-template-columns:1fr;gap:32px}}';
+            const newCss = existingCss + mobileRule;
+            const fixedComment = fullComment.replace('"css":"' + existingCss + '"', '"css":"' + newCss + '"');
+            result.push(line.replace(fullComment, fixedComment));
+            fixes.push({ type: 'grid-mobile-breakpoint', line: i + 1, detail: uid });
+            i++;
+            continue;
+          }
         }
       }
 
