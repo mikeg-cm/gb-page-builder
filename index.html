@@ -1608,8 +1608,8 @@ function buildButtons(buttons, options) {
   if (opts.margin && opts.margin.bottom) inlineStyles.push('margin-bottom:' + opts.margin.bottom);
   var styleAttr = inlineStyles.length > 0 ? ' style="' + inlineStyles.join(';') + '"' : '';
 
-  var result = '<!-- wp:buttons ' + jsonStr + ' -->\n<div class="wp-block-buttons"' + styleAttr + '>\n';
-  result += buttons.join('\n') + '\n';
+  var result = '<!-- wp:buttons ' + jsonStr + ' -->\n<div class="wp-block-buttons"' + styleAttr + '>';
+  result += buttons.join('\n');
   result += '</div>\n<!-- /wp:buttons -->';
 
   return result;
@@ -7807,6 +7807,25 @@ class HeroConverterView {
       const before = this._fullLines.slice(0, this._heroStartIdx);
       let afterIdx = this._replaceEndIdx + 1;
 
+      // Check if the hero start line has HTML prefix before the block comment
+      // (e.g., "<div><!-- wp:cover" where <div> belongs to a parent wrapper)
+      let heroLinePrefix = '';
+      const heroStartLine = this._fullLines[this._heroStartIdx] || '';
+      const coverCommentIdx = heroStartLine.indexOf('<!-- wp:cover');
+      const gbCommentIdx = heroStartLine.indexOf('<!-- wp:generateblocks');
+      const blockStart = coverCommentIdx >= 0 ? coverCommentIdx : gbCommentIdx;
+      if (blockStart > 0) {
+        heroLinePrefix = heroStartLine.substring(0, blockStart);
+      }
+
+      // Check if the hero end line has HTML suffix after the closing block comment
+      let heroLineSuffix = '';
+      const heroEndLine = this._fullLines[this._heroEndIdx] || '';
+      const lastCloseComment = heroEndLine.lastIndexOf('-->');
+      if (lastCloseComment >= 0 && lastCloseComment + 3 < heroEndLine.length) {
+        heroLineSuffix = heroEndLine.substring(lastCloseComment + 3);
+      }
+
       // Skip blank lines between replacement end and next block
       while (afterIdx < this._fullLines.length && this._fullLines[afterIdx].trim() === '') {
         afterIdx++;
@@ -7819,7 +7838,7 @@ class HeroConverterView {
       const sanitizedAfter = sanitizeResult.lines;
       fixes = sanitizeResult.fixes;
 
-      output = before.join('\n') + '\n' + newHeroMarkup + '\n\n' + sanitizedAfter.join('\n');
+      output = before.join('\n') + '\n' + heroLinePrefix + newHeroMarkup + heroLineSuffix + '\n\n' + sanitizedAfter.join('\n');
     }
 
     // Show callout if retained content had fixes
