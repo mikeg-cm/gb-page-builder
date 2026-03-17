@@ -368,6 +368,7 @@ textarea{resize:vertical;min-height:64px}
 .converter-actions .btn{padding:9px 22px;font-size:13px}
 .converter-status{font-size:12px;color:var(--text-muted);margin-left:auto}
 .converter-status.success{color:#34c759;font-weight:600}
+.converter-fixes-callout{background:#fef9e7;border:1px solid #f0c929;border-radius:6px;padding:8px 12px;font-size:12px;color:#7a6100;margin-top:8px}
 
 /* Converter preview panel (right side) */
 .converter-preview-toolbar{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(28,28,30,0.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
@@ -695,6 +696,7 @@ textarea{resize:vertical;min-height:64px}
           <button class="btn btn-primary" id="btnConverterGenerate">Convert &rarr;</button>
           <span class="converter-status success" id="converterOutputStatus"></span>
         </div>
+        <div class="converter-fixes-callout" id="converterFixesCallout" style="display:none"></div>
         <div class="converter-next-steps" id="converterNextSteps" style="display:none">
           <div class="next-step-card">
             <span class="next-step-num">4</span>
@@ -7694,6 +7696,7 @@ class HeroConverterView {
 
     // Build output — either replace within full page or output hero-only
     let output;
+    let fixes = [];
     if (this._heroOnly) {
       output = newHeroMarkup;
     } else {
@@ -7707,7 +7710,25 @@ class HeroConverterView {
       }
 
       const after = this._fullLines.slice(afterIdx);
-      output = before.join('\n') + '\n' + newHeroMarkup + '\n\n' + after.join('\n');
+
+      // Sanitize retained content — fix common WP block corruption
+      const sanitizeResult = this._sanitizeRetainedContent(after);
+      const sanitizedAfter = sanitizeResult.lines;
+      fixes = sanitizeResult.fixes;
+
+      output = before.join('\n') + '\n' + newHeroMarkup + '\n\n' + sanitizedAfter.join('\n');
+    }
+
+    // Show callout if retained content had fixes
+    const calloutEl = document.getElementById('converterFixesCallout');
+    if (calloutEl) {
+      if (!this._heroOnly && fixes && fixes.length > 0) {
+        calloutEl.innerHTML = '<strong>\u{1F527} Auto-fixed ' + fixes.length + ' broken paragraph block' + (fixes.length > 1 ? 's' : '') + '</strong> in retained content (converted to Classic blocks)';
+        calloutEl.style.display = '';
+      } else {
+        calloutEl.style.display = 'none';
+        calloutEl.innerHTML = '';
+      }
     }
 
     // Update preview panel with output
@@ -7752,6 +7773,49 @@ class HeroConverterView {
     const isDefault = !val || val === '/contact/';
     inp.style.background = isDefault ? '' : 'rgba(196,40,45,0.08)';
     inp.style.borderColor = isDefault ? '' : '#C4282D';
+  }
+
+  _sanitizeRetainedContent(lines) {
+    const fixes = [];
+    const result = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      // Check for wp:paragraph opening with JSON attributes (may appear mid-line)
+      const paraMatch = line.match(/(<!-- wp:paragraph \{.*\} -->)/);
+      if (paraMatch) {
+        // Collect lines until closing tag
+        const innerLines = [];
+        let j = i + 1;
+        while (j < lines.length && !lines[j].includes('<!-- /wp:paragraph -->')) {
+          innerLines.push(lines[j]);
+          j++;
+        }
+        const innerHtml = innerLines.join('\n');
+
+        // Check for nested <p> tags (multiple <p> openings)
+        const pCount = (innerHtml.match(/<p[\s>]/g) || []).length;
+        if (pCount > 1) {
+          // Convert to wp:freeform (Classic block) — keeps HTML as-is
+          // Replace the wp:paragraph comment in the opening line, preserving surrounding HTML
+          result.push(line.replace(paraMatch[1], '<!-- wp:freeform -->'));
+          innerLines.forEach(l => result.push(l));
+          // Replace the closing comment, preserving surrounding HTML on that line
+          const closingLine = j < lines.length ? lines[j] : '';
+          result.push(closingLine.replace('<!-- /wp:paragraph -->', '<!-- /wp:freeform -->'));
+          fixes.push({ type: 'nested-p-to-freeform', line: i + 1 });
+          i = j + 1; // Skip past original closing tag
+          continue;
+        }
+      }
+
+      result.push(line);
+      i++;
+    }
+
+    return { lines: result, fixes };
   }
 
   _renderVisualPreview() {
@@ -7863,6 +7927,8 @@ class HeroConverterView {
     document.getElementById('converterInput').value = '';
     document.getElementById('converterStep2').style.display = 'none';
     document.getElementById('converterNextSteps').style.display = 'none';
+    const fixesEl = document.getElementById('converterFixesCallout');
+    if (fixesEl) { fixesEl.style.display = 'none'; fixesEl.innerHTML = ''; }
     document.getElementById('stepNum1').classList.remove('done');
     document.getElementById('stepNum1').textContent = '1';
     document.getElementById('stepNum2').classList.remove('done');
