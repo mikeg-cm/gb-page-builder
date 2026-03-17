@@ -664,6 +664,10 @@ textarea{resize:vertical;min-height:64px}
             <textarea id="convSubtitle" rows="3"></textarea>
           </div>
           <div>
+            <label>Extra Body Paragraphs <span style="font-weight:400;color:#888">(moved below hero if present)</span></label>
+            <textarea id="convBodyParas" rows="3" placeholder="Additional paragraphs auto-detected from hero. These become a separate section below the hero card."></textarea>
+          </div>
+          <div>
             <label>Gold Tagline (Serving...)</label>
             <input type="text" id="convServiceArea">
           </div>
@@ -4104,6 +4108,26 @@ function buildHeroConverterSection(config, data, idEngine) {
     result += '</div>\n<!-- /wp:group -->';
   }
 
+  // --- Block 3: Extra body paragraphs section (if hero had too much text) ---
+  var bodyParas = data.bodyParas || [];
+  if (bodyParas.length > 0) {
+    var introSectionId = idEngine.customId('IntroSec');
+    var introContainerId = idEngine.customId('IntroCont');
+
+    var introContent = '';
+    for (var bp = 0; bp < bodyParas.length; bp++) {
+      introContent += buildParagraph(bodyParas[bp], {
+        align: 'center',
+        color: bodyText,
+        fontSize: 'clamp(15px, 1.2vw, 17px)',
+        lineHeight: '1.7',
+        marginBottom: bp < bodyParas.length - 1 ? '20px' : '0px'
+      }) + '\n';
+    }
+
+    result += '\n\n' + buildSectionWrapper(introSectionId, introContainerId, '#ffffff', '800px', introContent);
+  }
+
   return result;
 }
 
@@ -7387,10 +7411,31 @@ class HeroConverterView {
     document.getElementById('convH1').value = h1Text;
 
     // Extract subtitle — try H2 first, then first substantial <p> after H1
+    // Also collect extra body paragraphs beyond the subtitle
     const h2El = doc.querySelector('h2');
     let subtitleText = h2El ? h2El.textContent.trim() : '';
+    const extraBodyParas = [];
     if (!subtitleText) {
       // Find first substantial paragraph that isn't a checklist item, tagline, or label
+      const allP = doc.querySelectorAll('p');
+      let foundSubtitle = false;
+      for (const p of allP) {
+        const text = p.textContent.trim();
+        if (!text || text.length < 30) continue;
+        if (text.match(/^[\u2713\u2714\u2022]/)) continue;
+        if (text.toLowerCase().startsWith('serving ')) continue;
+        if (text.toLowerCase().includes('what you get')) continue;
+        // Skip trust/proof items (stars, ratings, reviews, veteran, etc.)
+        if (text.length <= 40 && text.match(/★|rating|review|veteran|guarantee|family|licensed|insured|owned|operated/i)) continue;
+        if (!foundSubtitle) {
+          subtitleText = text;
+          foundSubtitle = true;
+        } else {
+          extraBodyParas.push(text);
+        }
+      }
+    } else {
+      // H2 was used as subtitle — still collect extra body paragraphs
       const allP = doc.querySelectorAll('p');
       for (const p of allP) {
         const text = p.textContent.trim();
@@ -7398,11 +7443,12 @@ class HeroConverterView {
         if (text.match(/^[\u2713\u2714\u2022]/)) continue;
         if (text.toLowerCase().startsWith('serving ')) continue;
         if (text.toLowerCase().includes('what you get')) continue;
-        subtitleText = text;
-        break;
+        if (text.length <= 40 && text.match(/★|rating|review|veteran|guarantee|family|licensed|insured|owned|operated/i)) continue;
+        extraBodyParas.push(text);
       }
     }
     document.getElementById('convSubtitle').value = subtitleText;
+    document.getElementById('convBodyParas').value = extraBodyParas.join('\n\n');
 
     // Extract "Serving..." tagline
     let serviceArea = '';
@@ -7682,8 +7728,12 @@ class HeroConverterView {
     config.phone = phone;
     config.phone_href = phoneHref;
 
+    // Gather extra body paragraphs (shown as separate section below hero)
+    const bodyParasRaw = document.getElementById('convBodyParas').value.trim();
+    const bodyParas = bodyParasRaw ? bodyParasRaw.split(/\n\n+/).filter(p => p.trim()) : [];
+
     // Build the data object
-    const data = { h1, subtitle, serviceArea, checklistItems, ctaLabel, ctaUrl, phone, phoneHref };
+    const data = { h1, subtitle, serviceArea, checklistItems, ctaLabel, ctaUrl, phone, phoneHref, bodyParas };
 
     // Generate using existing builder with modified CTA label
     const idEngine = new UniqueIdEngine(
@@ -7873,10 +7923,15 @@ class HeroConverterView {
         }
       }
 
-      // Fix 2-column grids missing mobile breakpoint
-      // Pattern: gb-element with grid-template-columns: 1fr 1fr (or similar 2-col) but no @media rule
+      // Fix multi-column grids missing mobile breakpoint
+      // Catches 2-col (1fr 1fr), 3-col (1fr 1fr 1fr), 4-col (repeat(4, 1fr)), and repeat(2/3) patterns
       var gridMatch = null;
-      if (line.indexOf('wp:generateblocks/element') !== -1 && (line.indexOf('"gridTemplateColumns":"1fr 1fr"') !== -1 || line.indexOf('"gridTemplateColumns":"repeat(2') !== -1)) {
+      if (line.indexOf('wp:generateblocks/element') !== -1 &&
+          (line.indexOf('"gridTemplateColumns":"1fr 1fr"') !== -1 ||
+           line.indexOf('"gridTemplateColumns":"1fr 1fr 1fr"') !== -1 ||
+           line.indexOf('"gridTemplateColumns":"repeat(2') !== -1 ||
+           line.indexOf('"gridTemplateColumns":"repeat(3') !== -1 ||
+           line.indexOf('"gridTemplateColumns":"repeat(4') !== -1)) {
         const gmComment = line.match(/(<!-- wp:generateblocks\/element \{.+?\} -->)/);
         const gmUid = line.match(/"uniqueId":"([^"]+)"/);
         if (gmComment && gmUid) gridMatch = [null, gmComment[1], gmUid[1]];
@@ -7889,9 +7944,15 @@ class HeroConverterView {
           const cssMatch = fullComment.match(/"css":"([^"]*)"/);
           if (cssMatch) {
             const existingCss = cssMatch[1];
-            const mobileRule = ' @media(max-width:1024px){' + cssClass + '{grid-template-columns:1fr;gap:32px}}';
-            const newCss = existingCss + mobileRule;
-            const fixedComment = fullComment.replace('"css":"' + existingCss + '"', '"css":"' + newCss + '"');
+            // Use 1024px breakpoint for 2-col text grids, 768px for 3/4-col card grids
+            var is3or4col = line.indexOf('"gridTemplateColumns":"1fr 1fr 1fr"') !== -1 ||
+                            line.indexOf('"gridTemplateColumns":"repeat(3') !== -1 ||
+                            line.indexOf('"gridTemplateColumns":"repeat(4') !== -1;
+            var breakpoint = is3or4col ? '768px' : '1024px';
+            var gapSize = is3or4col ? '16px' : '32px';
+            var mobileRule = ' @media(max-width:' + breakpoint + '){' + cssClass + '{grid-template-columns:1fr;gap:' + gapSize + '}}';
+            var newCss = existingCss + mobileRule;
+            var fixedComment = fullComment.replace('"css":"' + existingCss + '"', '"css":"' + newCss + '"');
             result.push(line.replace(fullComment, fixedComment));
             fixes.push({ type: 'grid-mobile-breakpoint', line: i + 1, detail: uid });
             i++;
