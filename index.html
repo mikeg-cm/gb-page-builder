@@ -7819,9 +7819,14 @@ class HeroConverterView {
       }
 
       // Fix timeline-step elements missing mobile responsive CSS
-      // Pattern: gb-element with timeline-step class but no @media rule for mobile row layout
-      const stepMatch = line.match(/(<!-- wp:generateblocks\/element \{[^}]*"uniqueId":"([^"]+)"[^}]*"className":"timeline-step"[^}]*\})/);
-      if (stepMatch) {
+      // Detect by checking for both timeline-step className and generateblocks/element in the line
+      if (line.indexOf('"className":"timeline-step"') !== -1 && line.indexOf('wp:generateblocks/element') !== -1) {
+        // Extract the full GB comment
+        const stepCommentMatch = line.match(/(<!-- wp:generateblocks\/element \{.+?\} -->)/);
+        const stepUidMatch = line.match(/"uniqueId":"([^"]+)"/);
+        var stepMatch = stepCommentMatch && stepUidMatch ? [null, stepCommentMatch[1], stepUidMatch[1]] : null;
+      }
+      if (typeof stepMatch !== 'undefined' && stepMatch) {
         const fullComment = stepMatch[1];
         const uid = stepMatch[2];
         const cssClass = '.gb-element-' + uid;
@@ -7843,7 +7848,12 @@ class HeroConverterView {
       }
 
       // Fix timeline-grid containers missing mobile breakpoint (4-col → 1-col)
-      const timelineGridMatch = line.match(/(<!-- wp:generateblocks\/element \{[^}]*"uniqueId":"([^"]+)"[^}]*"className":"timeline-grid"[^}]*\})/);
+      var timelineGridMatch = null;
+      if (line.indexOf('"className":"timeline-grid"') !== -1 && line.indexOf('wp:generateblocks/element') !== -1) {
+        const tgComment = line.match(/(<!-- wp:generateblocks\/element \{.+?\} -->)/);
+        const tgUid = line.match(/"uniqueId":"([^"]+)"/);
+        if (tgComment && tgUid) timelineGridMatch = [null, tgComment[1], tgUid[1]];
+      }
       if (timelineGridMatch) {
         const fullComment = timelineGridMatch[1];
         const uid = timelineGridMatch[2];
@@ -7865,7 +7875,12 @@ class HeroConverterView {
 
       // Fix 2-column grids missing mobile breakpoint
       // Pattern: gb-element with grid-template-columns: 1fr 1fr (or similar 2-col) but no @media rule
-      const gridMatch = line.match(/(<!-- wp:generateblocks\/element \{[^}]*"uniqueId":"([^"]+)"[^}]*"gridTemplateColumns":"(1fr 1fr|repeat\(2)[^}]*\})/)
+      var gridMatch = null;
+      if (line.indexOf('wp:generateblocks/element') !== -1 && (line.indexOf('"gridTemplateColumns":"1fr 1fr"') !== -1 || line.indexOf('"gridTemplateColumns":"repeat(2') !== -1)) {
+        const gmComment = line.match(/(<!-- wp:generateblocks\/element \{.+?\} -->)/);
+        const gmUid = line.match(/"uniqueId":"([^"]+)"/);
+        if (gmComment && gmUid) gridMatch = [null, gmComment[1], gmUid[1]];
+      }
       if (gridMatch) {
         const fullComment = gridMatch[1];
         const uid = gridMatch[2];
