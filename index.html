@@ -4042,7 +4042,7 @@ function buildHeroConverterSection(config, data, idEngine) {
   // --- Cover wrapper ---
   var coverJson = {
     useFeaturedImage: true,
-    customOverlayColor: '#FFF',
+    customOverlayColor: data.overlayColor || '#151413',
     isUserOverlayColor: false,
     minHeight: 650,
     minHeightUnit: 'px',
@@ -4059,7 +4059,7 @@ function buildHeroConverterSection(config, data, idEngine) {
 
   var result = '<!-- wp:cover ' + JSON.stringify(coverJson) + ' -->\n';
   result += '<div class="wp-block-cover alignfull is-light has-text-color" style="color:#ffffff;padding-top:100px;padding-bottom:100px;min-height:650px">';
-  result += '<span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim has-background-gradient" style="background-color:#FFF;background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.65) 40%,rgba(0,0,0,0.3) 100%)"></span>';
+  result += '<span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim has-background-gradient" style="background-color:' + (data.overlayColor || '#151413') + ';background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.65) 40%,rgba(0,0,0,0.3) 100%)"></span>';
   result += '<div class="wp-block-cover__inner-container">';
   result += outerBlock;
   result += '</div></div>\n<!-- /wp:cover -->';
@@ -7444,6 +7444,14 @@ class HeroConverterView {
     const parser = new DOMParser();
     const doc = parser.parseFromString(heroHtml, 'text/html');
 
+    // Extract customOverlayColor from the original wp:cover comment
+    let originalOverlayColor = '#151413'; // default dark
+    const coverMatch = heroHtml.match(/<!-- wp:cover \{([^}]*"customOverlayColor":"([^"]+)"[^}]*)\}/);
+    if (coverMatch && coverMatch[2]) {
+      originalOverlayColor = coverMatch[2];
+    }
+    this._originalOverlayColor = originalOverlayColor;
+
     // Extract H1 (clean up <br> to space)
     const h1El = doc.querySelector('h1');
     let h1Text = '';
@@ -7777,7 +7785,8 @@ class HeroConverterView {
     const bodyParas = bodyParasRaw ? bodyParasRaw.split(/\n\n+/).filter(p => p.trim()) : [];
 
     // Build the data object
-    const data = { h1, subtitle, serviceArea, checklistItems, ctaLabel, ctaUrl, phone, phoneHref, bodyParas };
+    const overlayColor = this._originalOverlayColor || '#151413';
+    const data = { h1, subtitle, serviceArea, checklistItems, ctaLabel, ctaUrl, phone, phoneHref, bodyParas, overlayColor };
 
     // Generate using existing builder with modified CTA label
     const idEngine = new UniqueIdEngine(
