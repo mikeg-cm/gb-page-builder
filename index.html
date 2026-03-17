@@ -4108,22 +4108,23 @@ function buildHeroConverterSection(config, data, idEngine) {
     result += '</div>\n<!-- /wp:group -->';
   }
 
-  // --- Block 3: Extra body paragraphs (separate section below WYG) ---
+  // --- Block 3: Extra body paragraphs in a callout box ---
   var bodyParas = data.bodyParas || [];
   if (bodyParas.length > 0) {
     var introSectionId = idEngine.customId('IntroSec');
     var introContainerId = idEngine.customId('IntroCont');
+    var introBoxId = idEngine.customId('IntroBox');
 
-    var introContent = '';
-    introContent += buildParagraph(bodyParas[0], {
+    var boxContent = '';
+    boxContent += buildParagraph(bodyParas[0], {
       color: darkText,
       fontSize: 'clamp(15px, 1.2vw, 17px)',
       lineHeight: '1.7',
       fontWeight: '600',
-      marginBottom: '16px'
+      marginBottom: bodyParas.length > 1 ? '16px' : '0px'
     }) + '\n';
     for (var bp = 1; bp < bodyParas.length; bp++) {
-      introContent += buildParagraph(bodyParas[bp], {
+      boxContent += buildParagraph(bodyParas[bp], {
         color: bodyText,
         fontSize: 'clamp(15px, 1.2vw, 17px)',
         lineHeight: '1.7',
@@ -4131,7 +4132,24 @@ function buildHeroConverterSection(config, data, idEngine) {
       }) + '\n';
     }
 
-    result += '\n\n' + buildSectionWrapper(introSectionId, introContainerId, '#ffffff', '800px', introContent);
+    // Callout box with left border accent
+    var boxStyles = {
+      backgroundColor: '#FAF8F5',
+      borderColor: '#E5E2DD',
+      borderStyle: 'solid',
+      borderWidth: '1px',
+      borderRadius: '14px',
+      borderLeftColor: primary,
+      borderLeftWidth: '4px',
+      paddingTop: '28px',
+      paddingBottom: '28px',
+      paddingLeft: '28px',
+      paddingRight: '28px'
+    };
+    var boxCss = buildCSSString(introBoxId, boxStyles);
+    var boxBlock = buildGBElement(introBoxId, 'div', boxStyles, boxCss, 'intro-callout', boxContent);
+
+    result += '\n\n' + buildSectionWrapper(introSectionId, introContainerId, '#ffffff', '800px', boxBlock);
   }
 
   return result;
@@ -8055,6 +8073,22 @@ class HeroConverterView {
         html += '<p style="font-size:14px;color:' + bodyText + ';line-height:1.6;margin:0 0 8px">✔ ' + escapeHTML(item) + '</p>';
       });
       html += '</div>';
+    }
+
+    // --- Body paragraphs callout preview ---
+    const bodyParasVal = document.getElementById('convBodyParas') ? document.getElementById('convBodyParas').value.trim() : '';
+    if (bodyParasVal) {
+      const bParas = bodyParasVal.split(/\n\n+/).filter(p => p.trim());
+      if (bParas.length > 0) {
+        html += '<div style="background:#fff;padding:36px">';
+        html += '<div style="background:#FAF8F5;border:1px solid #E5E2DD;border-left:4px solid ' + primary + ';border-radius:14px;padding:24px 28px;max-width:600px;margin:0 auto">';
+        bParas.forEach((p, idx) => {
+          const weight = idx === 0 ? 'font-weight:600;color:' + darkText : 'font-weight:400;color:' + bodyText;
+          const mb = idx < bParas.length - 1 ? '12px' : '0';
+          html += '<p style="font-size:14px;line-height:1.7;' + weight + ';margin:0 0 ' + mb + '">' + escapeHTML(p) + '</p>';
+        });
+        html += '</div></div>';
+      }
     }
 
     // --- Retained content indicator ---
