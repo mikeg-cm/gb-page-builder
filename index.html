@@ -301,6 +301,116 @@ textarea{resize:vertical;min-height:64px}
 
 /* === FORM NOTE === */
 .form-note{margin-top:12px;font-size:12px;opacity:0.5}
+
+/* === MODE TOGGLE (Builder / Converter) === */
+.mode-toggle{display:flex;gap:2px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:2px;margin-top:10px}
+.mode-btn{flex:1;padding:7px 0;border:none;background:transparent;color:rgba(255,255,255,0.4);font-family:var(--font);font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;transition:all var(--transition);letter-spacing:-0.01em;text-align:center}
+.mode-btn:hover{color:rgba(255,255,255,0.65)}
+.mode-btn.active{background:rgba(255,255,255,0.12);color:#fff}
+
+/* === HERO CONVERTER VIEW === */
+.converter-panel{display:none;overflow-y:auto;background:var(--bg-editor)}
+.converter-preview{display:none;background:var(--bg-preview);flex-direction:column;border-left:1px solid rgba(255,255,255,0.06)}
+
+.app.converter-mode .editor-panel,
+.app.converter-mode .preview-panel{display:none!important}
+.app.converter-mode .converter-panel{display:block}
+.app.converter-mode .converter-preview{display:flex}
+.app.converter-mode .sidebar{display:none}
+.app.converter-mode{grid-template-columns:1fr var(--preview-w)}
+/* Sidebar visible when toggled on */
+.app.converter-mode.sidebar-open .sidebar{display:flex}
+.app.converter-mode.sidebar-open{grid-template-columns:var(--sidebar-w) 1fr var(--preview-w)}
+@media(max-width:1100px){.app.converter-mode{grid-template-columns:1fr}.app.converter-mode .converter-preview{display:none}}
+
+/* Converter toolbar */
+.converter-toolbar{position:sticky;top:0;z-index:10;background:rgba(242,242,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);padding:12px 24px;display:flex;align-items:center;gap:12px}
+.converter-toolbar h2{font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em}
+.converter-toolbar .converter-toolbar-actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+.sidebar-toggle-btn{padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;color:var(--text-secondary);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--transition);display:flex;align-items:center;gap:5px}
+.sidebar-toggle-btn:hover{background:var(--accent-light);color:var(--accent);border-color:rgba(0,122,255,0.3)}
+.sidebar-toggle-btn svg{width:14px;height:14px}
+
+.converter-body{padding:28px 32px 80px;max-width:720px;margin:0 auto}
+.converter-body .converter-subtitle{font-size:13px;color:var(--text-secondary);margin-bottom:24px;line-height:1.5}
+
+/* Steps */
+.converter-step{margin-bottom:28px}
+.converter-step-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.converter-step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.converter-step-num.done{background:#34c759}
+.converter-step-num.waiting{background:var(--border);color:var(--text-muted)}
+.converter-step-title{font-size:14px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em}
+
+.converter-textarea{width:100%;min-height:180px;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--text-primary);background:#fff;resize:vertical;transition:border-color var(--transition),box-shadow var(--transition)}
+.converter-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);outline:none}
+
+/* Extracted fields */
+.converter-fields{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:18px 20px;display:grid;gap:12px}
+.converter-fields label{font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:2px;display:block;text-transform:uppercase;letter-spacing:0.3px}
+.converter-fields input,.converter-fields textarea{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;background:#fff;color:var(--text-primary)}
+.converter-fields input:focus,.converter-fields textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);outline:none}
+.converter-fields textarea{resize:vertical;min-height:52px;font-size:13px}
+.converter-field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.converter-checklist-item{display:flex;gap:6px;align-items:center;margin-bottom:5px}
+.converter-checklist-item input{flex:1}
+.converter-checklist-item button{width:26px;height:26px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;border-radius:6px;font-size:15px;display:flex;align-items:center;justify-content:center}
+.converter-checklist-item button:hover{background:rgba(255,59,48,0.08);color:#ff3b30}
+#convTrustContainer{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.converter-trust-item{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,0.02);border:1px solid var(--border-light);border-radius:8px;padding:6px 8px}
+.converter-trust-item .trust-emoji{width:90px;flex:0 0 90px;text-align:center;font-size:14px;padding:5px 4px;border:1px solid var(--border-light);border-radius:6px;background:#fff}
+.converter-trust-item .trust-text{flex:1;min-width:0;font-size:14px;padding:5px 8px;border:1px solid var(--border-light);border-radius:6px;background:#fff}
+.converter-trust-item button{width:22px;height:22px;flex:0 0 22px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;border-radius:6px;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0}
+.converter-trust-item button:hover{background:rgba(255,59,48,0.08);color:#ff3b30}
+
+/* Buttons row */
+.converter-actions{display:flex;gap:8px;margin-top:14px;align-items:center}
+.converter-actions .btn{padding:9px 22px;font-size:13px}
+.converter-status{font-size:12px;color:var(--text-muted);margin-left:auto}
+.converter-status.success{color:#34c759;font-weight:600}
+
+/* Converter preview panel (right side) */
+.converter-preview-toolbar{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(28,28,30,0.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+.converter-preview-toolbar h3{font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:-0.01em}
+.converter-preview-body{flex:1;overflow:auto;padding:0;min-height:0}
+.converter-visual-body{flex:1;overflow:auto;padding:16px;min-height:0}
+.converter-preview-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);text-align:center;padding:48px}
+.converter-preview-empty p{font-size:13px;line-height:1.5;max-width:260px;opacity:0.5}
+.converter-code-output{font-family:var(--mono);font-size:12px;line-height:1.7;color:#d4d4d8;padding:16px;white-space:pre-wrap;word-break:break-all;tab-size:2}
+
+/* Workflow progress bar */
+.converter-workflow{display:flex;align-items:center;gap:6px;padding:14px 0 20px;border-bottom:1px solid var(--border-light);margin-bottom:24px;flex-wrap:wrap}
+.workflow-step{display:flex;align-items:center;gap:6px}
+.workflow-arrow{color:var(--text-muted);font-size:12px;opacity:0.3}
+.ws-num{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--text-muted);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.ws-num.active{background:var(--accent);color:#fff}
+.ws-num.done{background:#34c759;color:#fff}
+.ws-label{font-size:11px;color:var(--text-muted);white-space:nowrap}
+
+/* Step descriptions */
+.converter-step-desc{font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5}
+.converter-step-desc kbd{background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:11px;border:1px solid var(--border-light)}
+
+/* Code highlighting */
+.converter-code-highlighted{font-family:var(--mono);font-size:11px;line-height:1.6;padding:12px 0;white-space:pre;overflow-x:auto}
+.converter-code-highlighted .code-ln{display:inline-block;width:40px;text-align:right;padding-right:10px;color:rgba(255,255,255,0.2);user-select:none;flex-shrink:0}
+.converter-code-highlighted .code-dim{color:rgba(255,255,255,0.25);padding:0 12px;overflow:hidden;text-overflow:ellipsis}
+.converter-code-highlighted .code-hero{color:#ff9f0a;background:rgba(255,159,10,0.08);padding:0 12px;border-left:3px solid #ff9f0a}
+.converter-code-highlighted .code-trustbar{color:#5ac8fa;background:rgba(90,200,250,0.08);padding:0 12px;border-left:3px solid #5ac8fa}
+.converter-code-highlighted .code-wyg{color:#bf5af2;background:rgba(191,90,242,0.08);padding:0 12px;border-left:3px solid #bf5af2}
+.converter-code-highlighted .code-region-label{font-family:var(--font);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:6px 12px 2px;color:#ff9f0a;opacity:0.7}
+.converter-code-highlighted .code-region-label.retained{color:#34c759}
+
+/* Next steps cards */
+.converter-next-steps{margin-top:20px;display:grid;gap:10px}
+.next-step-card{display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);padding:14px 16px}
+.next-step-card .next-step-num{width:24px;height:24px;border-radius:50%;background:var(--border);color:var(--text-secondary);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.next-step-card strong{font-size:13px;color:var(--text-primary);display:block;margin-bottom:2px}
+.next-step-card p{font-size:12px;color:var(--text-secondary);line-height:1.45;margin:0}
+
+/* Fade-in animation */
+.converter-fade-in{animation:converterFadeIn 0.25s ease}
+@keyframes converterFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -310,6 +420,10 @@ textarea{resize:vertical;min-height:64px}
     <div class="sidebar-header">
       <h1>GB Page Builder</h1>
       <p>GenerateBlocks v2 Code Generator</p>
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn active" data-mode="builder">Builder</button>
+        <button class="mode-btn" data-mode="converter">Converter</button>
+      </div>
     </div>
     <div class="sidebar-body">
       <div style="padding:14px 18px 10px">
@@ -488,6 +602,139 @@ textarea{resize:vertical;min-height:64px}
     <div class="preview-body" id="previewBody">
       <div class="preview-empty-state">
         <p>Add sections to see a visual preview of your page layout.</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HERO CONVERTER (standalone view) -->
+  <div class="converter-panel" id="converterPanel">
+    <div class="converter-toolbar">
+      <h2>Hero Converter</h2>
+      <div class="converter-toolbar-actions">
+        <button class="sidebar-toggle-btn" id="btnToggleSidebar" title="Show client settings">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="14" height="12" rx="1.5"/><path d="M5 2v12"/></svg>
+          Settings
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btnConverterReset">Start Over</button>
+      </div>
+    </div>
+    <div class="converter-body">
+      <!-- Workflow steps overview -->
+      <div class="converter-workflow">
+        <div class="workflow-step" id="ws1"><span class="ws-num active">1</span><span class="ws-label">Paste full code</span></div>
+        <div class="workflow-arrow">&rarr;</div>
+        <div class="workflow-step" id="ws2"><span class="ws-num">2</span><span class="ws-label">Parse &amp; review</span></div>
+        <div class="workflow-arrow">&rarr;</div>
+        <div class="workflow-step" id="ws3"><span class="ws-num">3</span><span class="ws-label">Convert</span></div>
+        <div class="workflow-arrow">&rarr;</div>
+        <div class="workflow-step" id="ws4"><span class="ws-num">4</span><span class="ws-label">Replace page code</span></div>
+        <div class="workflow-arrow">&rarr;</div>
+        <div class="workflow-step" id="ws5"><span class="ws-num">5</span><span class="ws-label">Upload featured image</span></div>
+      </div>
+
+      <!-- Step 1: Paste -->
+      <div class="converter-step" id="converterStep1">
+        <div class="converter-step-header">
+          <span class="converter-step-num" id="stepNum1">1</span>
+          <span class="converter-step-title">Copy &amp; paste full page code</span>
+        </div>
+        <p class="converter-step-desc">In WordPress, open the page &rarr; Code Editor. Select all (<kbd>Ctrl+A</kbd>), copy, and paste below. The converter will detect the hero section automatically.</p>
+        <textarea class="converter-textarea" id="converterInput" placeholder="Paste full page code from WordPress Code Editor..."></textarea>
+        <div class="converter-actions">
+          <button class="btn btn-primary" id="btnConverterParse">Parse Hero</button>
+          <span class="converter-status" id="converterParseStatus"></span>
+        </div>
+      </div>
+
+      <!-- Step 2: Review / Edit (hidden until parsed) -->
+      <div class="converter-step" id="converterStep2" style="display:none">
+        <div class="converter-step-header">
+          <span class="converter-step-num" id="stepNum2">2</span>
+          <span class="converter-step-title">Review extracted content</span>
+        </div>
+        <p class="converter-step-desc">The detected hero region is highlighted in the preview panel. Review the extracted content below and edit if needed.</p>
+        <div class="converter-fields converter-fade-in">
+          <div>
+            <label>Heading (H1)</label>
+            <input type="text" id="convH1">
+          </div>
+          <div>
+            <label>Subtitle / Body Text</label>
+            <textarea id="convSubtitle" rows="3"></textarea>
+          </div>
+          <div>
+            <label>Gold Tagline (Serving...)</label>
+            <input type="text" id="convServiceArea">
+          </div>
+          <div>
+            <label>Primary CTA</label>
+            <div class="converter-field-row">
+              <input type="text" id="convCtaLabel" placeholder="Schedule Service →">
+              <input type="text" id="convCtaUrl" placeholder="/contact/">
+            </div>
+          </div>
+          <div>
+            <label>Phone CTA</label>
+            <div class="converter-field-row">
+              <input type="text" id="convPhone" placeholder="(941) 234-5678">
+              <input type="text" id="convPhoneHref" placeholder="tel:+19412345678">
+            </div>
+          </div>
+          <div>
+            <label>Trust Strip Items</label>
+            <div id="convTrustContainer"></div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="btnAddTrustItem">+ Add Trust Item</button>
+          </div>
+          <div>
+            <label>Checklist Items (What You Get)</label>
+            <div id="convChecklistContainer"></div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:6px" id="btnAddCheckItem">+ Add Item</button>
+          </div>
+        </div>
+        <div class="converter-actions">
+          <button class="btn btn-primary" id="btnConverterGenerate">Convert &rarr;</button>
+          <span class="converter-status success" id="converterOutputStatus"></span>
+        </div>
+        <div class="converter-next-steps" id="converterNextSteps" style="display:none">
+          <div class="next-step-card">
+            <span class="next-step-num">4</span>
+            <div>
+              <strong>Replace page code</strong>
+              <p>Copy the output from the right panel. In WordPress Code Editor, select all and paste to replace.</p>
+            </div>
+          </div>
+          <div class="next-step-card">
+            <span class="next-step-num">5</span>
+            <div>
+              <strong>Upload a featured image</strong>
+              <p>The new hero uses the page's Featured Image. Set one in the page sidebar under "Featured Image."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONVERTER PREVIEW (right panel) -->
+  <aside class="converter-preview" id="converterPreview">
+    <div class="converter-preview-toolbar">
+      <div class="preview-tabs" role="tablist" aria-label="Converter preview mode">
+        <button class="preview-tab active" role="tab" id="convTabCode" data-mode="code">Code</button>
+        <button class="preview-tab" role="tab" id="convTabVisual" data-mode="visual">Visual</button>
+      </div>
+      <div class="preview-toolbar-actions">
+        <button class="btn btn-secondary btn-sm" id="btnConverterCopy" style="display:none">Copy All</button>
+      </div>
+    </div>
+    <div class="converter-preview-body" id="converterPreviewBody">
+      <div class="converter-preview-empty">
+        <p>Paste page code and click Parse Hero to see the converted output here.</p>
+      </div>
+    </div>
+    <div class="converter-visual-body" id="converterVisualBody" style="display:none">
+      <div class="preview-empty-state">
+        <p>Convert the hero to see a visual preview.</p>
       </div>
     </div>
   </aside>
@@ -1006,7 +1253,7 @@ function buildGBElement(uniqueId, tagName, styles, css, className, innerHTML) {
   var html = '<' + tagName + ' class="' + classAttr + '">' + (innerHTML || '') + '</' + tagName + '>';
   var close = '<!-- /wp:generateblocks/element -->';
 
-  return open + ' ' + html + '\n' + close;
+  return open + '\n' + html + '\n' + close;
 }
 
 /**
@@ -1085,7 +1332,7 @@ function buildHeading(level, text, options) {
   var classAttr = classes.join(' ');
   var jsonStr = JSON.stringify(json);
 
-  return '<!-- wp:heading ' + jsonStr + ' --> <' + tag + ' class="' + classAttr + '"' + styleAttr + '>' + text + '</' + tag + '>\n<!-- /wp:heading -->';
+  return '<!-- wp:heading ' + jsonStr + ' -->\n<' + tag + ' class="' + classAttr + '"' + styleAttr + '>' + text + '</' + tag + '>\n<!-- /wp:heading -->';
 }
 
 /**
@@ -1161,7 +1408,7 @@ function buildParagraph(text, options) {
   var classAttr = classes.length > 0 ? ' class="' + classes.join(' ') + '"' : '';
   var jsonStr = JSON.stringify(json);
 
-  return '<!-- wp:paragraph ' + jsonStr + ' --> <p' + classAttr + styleAttr + '>' + text + '</p>\n<!-- /wp:paragraph -->';
+  return '<!-- wp:paragraph ' + jsonStr + ' -->\n<p' + classAttr + styleAttr + '>' + text + '</p>\n<!-- /wp:paragraph -->';
 }
 
 /**
@@ -1276,7 +1523,6 @@ function buildButton(text, url, options) {
   if (opts.borderColor) {
     inlineStyles.push('border-color:' + opts.borderColor);
     inlineStyles.push('border-width:' + (opts.borderWidth || '2px'));
-    inlineStyles.push('border-style:solid');
   }
   inlineStyles.push('color:' + textColor);
   inlineStyles.push('background-color:' + bgColor);
@@ -1301,7 +1547,7 @@ function buildButton(text, url, options) {
     divClasses.push('wp-block-button__width-' + opts.width);
   }
 
-  var result = '<!-- wp:button ' + jsonStr + ' --> ';
+  var result = '<!-- wp:button ' + jsonStr + ' -->\n';
   result += '<div class="' + divClasses.join(' ') + '">';
   result += '<a class="' + linkClasses.join(' ') + '" href="' + url + '" style="' + inlineStyles.join(';') + '"' + targetAttr + '>' + text + '</a>';
   result += '</div>\n<!-- /wp:button -->';
@@ -1354,7 +1600,7 @@ function buildButtons(buttons, options) {
   if (opts.margin && opts.margin.bottom) inlineStyles.push('margin-bottom:' + opts.margin.bottom);
   var styleAttr = inlineStyles.length > 0 ? ' style="' + inlineStyles.join(';') + '"' : '';
 
-  var result = '<!-- wp:buttons ' + jsonStr + ' --> <div class="wp-block-buttons"' + styleAttr + '>\n';
+  var result = '<!-- wp:buttons ' + jsonStr + ' -->\n<div class="wp-block-buttons"' + styleAttr + '>\n';
   result += buttons.join('\n') + '\n';
   result += '</div>\n<!-- /wp:buttons -->';
 
@@ -1515,7 +1761,7 @@ function buildSectionWrapper(sectionId, containerId, bgColor, maxWidth, innerCon
     tagName: 'div',
     styles: containerStyles,
     css: containerCss
-  }) + ' --> <div class="gb-element-' + containerId + '">\n' + innerContent + '\n</div>\n<!-- /wp:generateblocks/element -->';
+  }) + ' -->\n<div class="gb-element-' + containerId + '">\n' + innerContent + '\n</div>\n<!-- /wp:generateblocks/element -->';
 
   // Build outer section
   var sectionJson = {
@@ -1526,7 +1772,7 @@ function buildSectionWrapper(sectionId, containerId, bgColor, maxWidth, innerCon
     className: 'section-name'
   };
 
-  var result = '<!-- wp:generateblocks/element ' + JSON.stringify(sectionJson) + ' --> <section class="gb-element-' + sectionId + ' section-name">\n';
+  var result = '<!-- wp:generateblocks/element ' + JSON.stringify(sectionJson) + ' -->\n<section class="gb-element-' + sectionId + ' section-name">\n';
   result += containerBlock;
   result += '</section>\n<!-- /wp:generateblocks/element -->';
 
@@ -1617,7 +1863,8 @@ function buildHeroSection(config, data, idEngine) {
 
   // --- Outline button ---
   var outlineBtn = btns.outline || {};
-  var btn2 = buildButton('Call ' + phone, phoneHref, {
+  var phoneLabel = phone.replace(/^Call\s+/i, '');
+  var btn2 = buildButton('Call ' + phoneLabel, phoneHref, {
     bgColor: outlineBtn.bg_color || 'transparent',
     textColor: outlineBtn.text_color || primary,
     borderColor: outlineBtn.border_color || primary,
@@ -1814,7 +2061,7 @@ function buildHeroSection(config, data, idEngine) {
     }
   };
 
-  var result = '<!-- wp:cover ' + JSON.stringify(coverJson) + ' --> ';
+  var result = '<!-- wp:cover ' + JSON.stringify(coverJson) + ' -->\n';
   result += '<div class="wp-block-cover is-light hero-section has-text-color" style="color:#ffffff;padding-top:clamp(100px, 14vw, 200px);padding-right:clamp(20px, 5vw, 60px);padding-bottom:clamp(60px, 8vw, 100px);padding-left:clamp(20px, 5vw, 60px)">';
   result += '<span aria-hidden="true" class="wp-block-cover__background has-background-dim-40 has-background-dim" style="background-color:#151413"></span>';
   result += '<div class="wp-block-cover__inner-container">\n';
@@ -2670,7 +2917,7 @@ function buildServiceAreasSection(config, data, idEngine) {
     className: 'section-name'
   };
 
-  var result = '<!-- wp:generateblocks/element ' + JSON.stringify(sectionJson) + ' --> <section class="gb-element-' + sectionId + ' section-name">\n';
+  var result = '<!-- wp:generateblocks/element ' + JSON.stringify(sectionJson) + ' -->\n<section class="gb-element-' + sectionId + ' section-name">\n';
   result += containerBlock;
   result += '</section>\n<!-- /wp:generateblocks/element -->';
 
@@ -3067,7 +3314,7 @@ function buildCTABannerSection(config, data, idEngine) {
     className: 'section-name'
   };
 
-  var result = '<!-- wp:generateblocks/element ' + JSON.stringify(sectionJson) + ' --> <section class="gb-element-' + sectionId + ' section-name">\n';
+  var result = '<!-- wp:generateblocks/element ' + JSON.stringify(sectionJson) + ' -->\n<section class="gb-element-' + sectionId + ' section-name">\n';
   result += containerBlock;
   result += '</section>\n<!-- /wp:generateblocks/element -->';
 
@@ -3659,9 +3906,10 @@ function buildHeroConverterSection(config, data, idEngine) {
   var cardId = idEngine.customId('HeroCard');
   var proofId = idEngine.customId('HeroProof');
 
-  var ctaUrl = config.cta_url || '/contact/';
-  var phone = config.phone || '';
-  var phoneHref = config.phone_href || '#';
+  var ctaLabel = data.ctaLabel || 'Schedule Service \u2192';
+  var ctaUrl = data.ctaUrl || config.cta_url || '/contact/';
+  var phone = data.phone || config.phone || '';
+  var phoneHref = data.phoneHref || config.phone_href || '#';
 
   // --- H1 ---
   var h1Block = buildHeading(1, data.h1 || '', {
@@ -3693,7 +3941,7 @@ function buildHeroConverterSection(config, data, idEngine) {
 
   // --- Primary button ---
   var primaryBtn = btns.primary || {};
-  var btn1 = buildButton('Schedule Service \u2192', ctaUrl, {
+  var btn1 = buildButton(ctaLabel, ctaUrl, {
     bgColor: primaryBtn.bg_color || primary,
     textColor: primaryBtn.text_color || '#ffffff',
     borderRadius: primaryBtn.border_radius || '7px',
@@ -3704,7 +3952,8 @@ function buildHeroConverterSection(config, data, idEngine) {
 
   // --- Outline button ---
   var outlineBtn = btns.outline || {};
-  var btn2 = buildButton('Call ' + phone, phoneHref, {
+  var phoneLabel = phone.replace(/^Call\s+/i, '');
+  var btn2 = buildButton('Call ' + phoneLabel, phoneHref, {
     bgColor: '#ffffff',
     textColor: outlineBtn.text_color || primary,
     borderColor: outlineBtn.border_color || primary,
@@ -3825,8 +4074,8 @@ function buildHeroConverterSection(config, data, idEngine) {
       marginBottom: '16px'
     });
 
-    var separator = '<!-- wp:separator {"style":{"color":{"background":"' + starGold + '"},"spacing":{"margin":{"bottom":"24px"}}}} -->\n';
-    separator += '<hr class="wp-block-separator has-text-color has-alpha-channel-opacity has-background" style="background-color:' + starGold + ';margin-bottom:24px"/>\n';
+    var separator = '<!-- wp:separator -->\n';
+    separator += '<hr class="wp-block-separator has-alpha-channel-opacity"/>\n';
     separator += '<!-- /wp:separator -->';
 
     var wygJson = {
@@ -6899,6 +7148,743 @@ class PageManager {
 
 
 // ---------------------------------------------------------------------------
+// Hero Converter View (Standalone)
+// ---------------------------------------------------------------------------
+class HeroConverterView {
+  constructor() {
+    this._parsed = false;
+    this._heroStartIdx = -1;
+    this._heroEndIdx = -1;
+    this._replaceEndIdx = -1;
+    this._utilityBlocks = [];
+    this._contentStartIdx = -1;
+    this._fullLines = [];
+  }
+
+  init() {
+    const modeToggle = document.getElementById('modeToggle');
+    if (modeToggle) {
+      modeToggle.addEventListener('click', (e) => {
+        const btn = e.target.closest('.mode-btn');
+        if (!btn) return;
+        this.setMode(btn.dataset.mode);
+      });
+    }
+
+    document.getElementById('btnConverterParse').onclick = () => this.parse();
+    document.getElementById('btnConverterGenerate').onclick = () => this.generate();
+    document.getElementById('btnConverterReset').onclick = () => this.reset();
+    document.getElementById('btnConverterCopy').onclick = () => this.copy();
+    document.getElementById('btnAddCheckItem').onclick = () => this.addCheckItem('');
+    document.getElementById('btnAddTrustItem').onclick = () => this.addTrustItem('', '');
+
+    // CTA URL red highlight when not /contact/
+    const ctaUrlInput = document.getElementById('convCtaUrl');
+    if (ctaUrlInput) {
+      ctaUrlInput.addEventListener('input', () => this._checkCtaUrl());
+    }
+
+    // Converter preview tab switching (Code / Visual)
+    this._convPreviewMode = 'code';
+    const convTabCode = document.getElementById('convTabCode');
+    const convTabVisual = document.getElementById('convTabVisual');
+    if (convTabCode) convTabCode.onclick = () => this.setConvPreviewMode('code');
+    if (convTabVisual) convTabVisual.onclick = () => this.setConvPreviewMode('visual');
+
+    // Sidebar toggle
+    const sidebarBtn = document.getElementById('btnToggleSidebar');
+    if (sidebarBtn) {
+      const sidebarIcon = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="14" height="12" rx="1.5"/><path d="M5 2v12"/></svg>';
+      sidebarBtn.onclick = () => {
+        const app = document.querySelector('.app');
+        app.classList.toggle('sidebar-open');
+        sidebarBtn.innerHTML = sidebarIcon + (app.classList.contains('sidebar-open') ? ' Hide Settings' : ' Settings');
+      };
+    }
+
+    // Handle hash-based deep linking (#converter)
+    window.addEventListener('hashchange', () => this._applyHash());
+    this._applyHash();
+  }
+
+  setMode(mode) {
+    const modeToggle = document.getElementById('modeToggle');
+    if (modeToggle) {
+      modeToggle.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      const active = modeToggle.querySelector('[data-mode="' + mode + '"]');
+      if (active) active.classList.add('active');
+    }
+    const app = document.querySelector('.app');
+    if (mode === 'converter') {
+      app.classList.add('converter-mode');
+      if (window.location.hash !== '#converter') window.history.replaceState(null, '', '#converter');
+    } else {
+      app.classList.remove('converter-mode');
+      app.classList.remove('sidebar-open');
+      if (window.location.hash === '#converter') window.history.replaceState(null, '', window.location.pathname);
+    }
+  }
+
+  _applyHash() {
+    if (window.location.hash === '#converter') {
+      this.setMode('converter');
+    }
+  }
+
+  _updatePreview(code) {
+    const body = document.getElementById('converterPreviewBody');
+    const copyBtn = document.getElementById('btnConverterCopy');
+    if (code) {
+      body.innerHTML = '<pre class="converter-code-output"></pre>';
+      body.querySelector('pre').textContent = code;
+      this._outputCode = code;
+      // Show copy button only if in code mode
+      if (copyBtn) copyBtn.style.display = this._convPreviewMode === 'code' ? '' : 'none';
+      // If visual tab is active, render that too
+      if (this._convPreviewMode === 'visual') {
+        this._renderVisualPreview();
+      }
+    } else {
+      body.innerHTML = '<div class="converter-preview-empty"><p>Paste page code and click Parse Hero to see the converted output here.</p></div>';
+      if (copyBtn) copyBtn.style.display = 'none';
+      this._outputCode = '';
+      const visualBody = document.getElementById('converterVisualBody');
+      if (visualBody) visualBody.innerHTML = '<div class="preview-empty-state"><p>Convert the hero to see a visual preview.</p></div>';
+    }
+  }
+
+  parse() {
+    const input = document.getElementById('converterInput').value.trim();
+    if (!input) return;
+
+    this._fullLines = input.split('\n');
+    this._heroStartIdx = -1;
+    this._heroEndIdx = -1;
+    this._heroOnly = false; // true if paste is just the hero (not full page)
+
+    // --- Strategy 1: Find a wp:cover block with dark overlay containing H1 ---
+    this._findBlock('<!-- wp:cover', '<!-- /wp:cover', (line) => {
+      return line.includes('#151413') || line.includes('"isDark":true');
+    });
+
+    // --- Strategy 2: Find a GB element section with #151413 background containing H1 ---
+    if (this._heroStartIdx < 0) {
+      this._findBlock('<!-- wp:generateblocks/element', '<!-- /wp:generateblocks/element', (line) => {
+        return line.includes('#151413') || line.includes('hero');
+      });
+    }
+
+    // --- Strategy 3: Any wp:cover with an H1 ---
+    if (this._heroStartIdx < 0) {
+      this._findBlock('<!-- wp:cover', '<!-- /wp:cover', () => true);
+    }
+
+    // --- Strategy 4: Any GB element section with an H1 ---
+    if (this._heroStartIdx < 0) {
+      this._findBlock('<!-- wp:generateblocks/element', '<!-- /wp:generateblocks/element', (line) => {
+        return line.includes('tagName":"section') || line.includes('hero');
+      });
+    }
+
+    // --- Strategy 5: Treat entire paste as the hero if it contains an H1 ---
+    if (this._heroStartIdx < 0) {
+      const hasH1 = this._fullLines.some(l => l.match(/<h1[\s>]/) || (l.includes('<!-- wp:heading') && l.includes('"level":1')));
+      if (hasH1) {
+        this._heroStartIdx = 0;
+        this._heroEndIdx = this._fullLines.length - 1;
+        this._heroOnly = true;
+      }
+    }
+
+    if (this._heroStartIdx < 0) {
+      const statusEl = document.getElementById('converterParseStatus');
+      statusEl.innerHTML = 'Couldn\'t find a hero section. Double-check that you copied from the top of the page through the <code style="background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;font-size:11px">&lt;!-- /wp:heading --&gt;</code> line. If it still doesn\'t work, let Mike know.';
+      statusEl.className = 'converter-status';
+      return;
+    }
+
+    // Find where main content starts after the hero.
+    // Strategy: scan after the hero for "utility" blocks (trust bars, spacers, wyg-sections)
+    // that sit between the hero and the first real content section. Everything before that
+    // first content section is part of the hero area and gets replaced.
+    //
+    // A "content section" is identified by: tagName:"section" in GB, or a wp:cover/wp:group
+    // with a class ending in "-section" (problems-section, history-section, services-section, etc.)
+    this._utilityBlocks = []; // track what we found between hero and content
+    this._contentStartIdx = -1;
+    if (!this._heroOnly) {
+      let scanIdx = this._heroEndIdx + 1;
+      // Skip blank lines
+      while (scanIdx < this._fullLines.length && this._fullLines[scanIdx].trim() === '') scanIdx++;
+
+      while (scanIdx < this._fullLines.length) {
+        const line = this._fullLines[scanIdx];
+        if (!line || line.trim() === '') { scanIdx++; continue; }
+
+        // Check if this line starts a new top-level block
+        const isBlockStart = line.includes('<!-- wp:generateblocks/element') ||
+                             line.includes('<!-- wp:cover') ||
+                             line.includes('<!-- wp:group');
+
+        if (!isBlockStart) { scanIdx++; continue; }
+
+        // Is this a content section? (has tagName:"section" or a class ending in -section)
+        const isContentSection = (line.includes('tagName":"section') ||
+                                  line.match(/-section[" }]/) ||
+                                  line.includes('problems-section') ||
+                                  line.includes('history-section') ||
+                                  line.includes('services-section') ||
+                                  line.includes('solving-section'));
+
+        if (isContentSection) {
+          this._contentStartIdx = scanIdx;
+          break;
+        }
+
+        // This is a utility block (trust bar, spacer, wyg, etc.) — include in replacement
+        // Determine what kind for labeling
+        let blockLabel = 'utility block';
+        if (line.includes('trust-bar') || line.includes('trust_bar')) blockLabel = 'trust bar';
+        else if (line.includes('wyg-section') || line.includes('WHAT YOU GET')) blockLabel = 'what you get';
+
+        // Find closing tag for this block
+        const openTag = line.includes('wp:generateblocks') ? '<!-- wp:generateblocks/element' :
+                        line.includes('wp:cover') ? '<!-- wp:cover' : '<!-- wp:group';
+        const closeTag = line.includes('wp:generateblocks') ? '<!-- /wp:generateblocks/element' :
+                         line.includes('wp:cover') ? '<!-- /wp:cover' : '<!-- /wp:group';
+        let depth = 1;
+        let blockEnd = scanIdx;
+        for (let j = scanIdx + 1; j < this._fullLines.length && depth > 0; j++) {
+          if (this._fullLines[j].includes(openTag) && !this._fullLines[j].includes(closeTag)) depth++;
+          if (this._fullLines[j].includes(closeTag)) depth--;
+          if (depth === 0) { blockEnd = j; break; }
+        }
+
+        this._utilityBlocks.push({ label: blockLabel, start: scanIdx, end: blockEnd });
+        scanIdx = blockEnd + 1;
+        // Skip blank lines
+        while (scanIdx < this._fullLines.length && this._fullLines[scanIdx].trim() === '') scanIdx++;
+      }
+    }
+
+    // Parse the hero HTML content
+    const heroHtml = this._fullLines.slice(this._heroStartIdx, this._heroEndIdx + 1).join('\n');
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(heroHtml, 'text/html');
+
+    // Extract H1 (clean up <br> to space)
+    const h1El = doc.querySelector('h1');
+    let h1Text = '';
+    if (h1El) {
+      // Replace <br> with newline, then get text
+      h1El.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+      h1Text = h1El.textContent.trim();
+    }
+    document.getElementById('convH1').value = h1Text;
+
+    // Extract subtitle — try H2 first, then first substantial <p> after H1
+    const h2El = doc.querySelector('h2');
+    let subtitleText = h2El ? h2El.textContent.trim() : '';
+    if (!subtitleText) {
+      // Find first substantial paragraph that isn't a checklist item, tagline, or label
+      const allP = doc.querySelectorAll('p');
+      for (const p of allP) {
+        const text = p.textContent.trim();
+        if (!text || text.length < 30) continue;
+        if (text.match(/^[\u2713\u2714\u2022]/)) continue;
+        if (text.toLowerCase().startsWith('serving ')) continue;
+        if (text.toLowerCase().includes('what you get')) continue;
+        subtitleText = text;
+        break;
+      }
+    }
+    document.getElementById('convSubtitle').value = subtitleText;
+
+    // Extract "Serving..." tagline
+    let serviceArea = '';
+    doc.querySelectorAll('p').forEach(p => {
+      const text = p.textContent.trim();
+      if (text.toLowerCase().startsWith('serving ') && !serviceArea) serviceArea = text;
+    });
+    document.getElementById('convServiceArea').value = serviceArea;
+
+    // Extract CTA button text and URLs
+    const links = doc.querySelectorAll('a');
+    let ctaLabel = 'Schedule Service \u2192';
+    let ctaUrl = '/contact/';
+    let phone = '';
+    let phoneHref = '';
+    links.forEach(a => {
+      const href = a.getAttribute('href') || '';
+      const text = a.textContent.trim();
+      if (href.startsWith('tel:')) {
+        phone = text;
+        phoneHref = href;
+      } else if (text.toLowerCase().includes('schedule') || text.toLowerCase().includes('free') || text.toLowerCase().includes('contact') || text.toLowerCase().includes('inspection')) {
+        ctaLabel = text;
+        ctaUrl = href || '/contact/';
+      }
+    });
+    document.getElementById('convCtaLabel').value = ctaLabel;
+    document.getElementById('convCtaUrl').value = ctaUrl;
+    this._checkCtaUrl();
+    document.getElementById('convPhone').value = phone;
+    document.getElementById('convPhoneHref').value = phoneHref;
+
+    // Extract checklist items
+    const checklistItems = [];
+    const extractChecks = (root) => {
+      root.querySelectorAll('p, li').forEach(el => {
+        const text = el.textContent.trim();
+        if (text.match(/^[\u2713\u2714\u2022]/)) {
+          checklistItems.push(text.replace(/^[\u2713\u2714\u2022]\s*/, '').trim());
+        }
+      });
+    };
+    extractChecks(doc);
+
+    // Also check the wyg-section if found
+    if (this._wygStartIdx >= 0 && this._wygEndIdx >= 0) {
+      const wygHtml = this._fullLines.slice(this._wygStartIdx, this._wygEndIdx + 1).join('\n');
+      extractChecks(parser.parseFromString(wygHtml, 'text/html'));
+    }
+
+    // Extract trust/proof strip items — short paragraphs with emoji prefixes (★, 🇺🇸, 🛡️, etc.)
+    // These are typically in a proof-strip or trust-bar div
+    const trustItems = [];
+    doc.querySelectorAll('p').forEach(p => {
+      const text = p.textContent.trim();
+      if (!text || text.length > 40) return; // trust items are short
+      if (text.match(/^[\u2713\u2714\u2022]/)) return; // skip checklist items
+      if (text.toLowerCase().startsWith('serving ')) return;
+      // Look for items with stars, ratings, guarantee, veteran, family, reviews, licensed, insured
+      if (text.match(/★|rating|review|veteran|guarantee|family|licensed|insured|bonded|owned|operated|same.day|emergency/i)) {
+        // Split emoji prefix from text
+        const match = text.match(/^([\u2B50\u2605\u2606\u2B1B-\u2BFF\u{1F1E0}-\u{1F9FF}\u{1F300}-\u{1F6FF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}✅✔🎖️🛡️🇺🇸👨‍👩‍👧‍👦⭐]+\s*)(.*)/su);
+        if (match) {
+          trustItems.push({ emoji: match[1].trim(), text: match[2].trim() });
+        } else {
+          trustItems.push({ emoji: '', text: text });
+        }
+      }
+    });
+
+    // Render trust items — fall back to client config if none found
+    const trustContainer = document.getElementById('convTrustContainer');
+    trustContainer.innerHTML = '';
+    if (trustItems.length > 0) {
+      trustItems.forEach(item => this.addTrustItem(item.emoji, item.text));
+    } else {
+      // Use client config defaults
+      let badges = [];
+      if (window.app && window.app.clientManager) {
+        const cfg = window.app.clientManager.getActive();
+        if (cfg && cfg.trust_badges) badges = cfg.trust_badges;
+      }
+      if (badges.length > 0) {
+        badges.forEach(b => this.addTrustItem(b.isStars ? '★★★★★' : (b.emoji || ''), b.text || ''));
+      } else {
+        this.addTrustItem('★★★★★', '4.9 Rating');
+        this.addTrustItem('🇺🇸', 'Veteran Owned');
+        this.addTrustItem('🛡️', '100% Guarantee');
+      }
+    }
+
+    // Render checklist
+    const container = document.getElementById('convChecklistContainer');
+    container.innerHTML = '';
+    if (checklistItems.length > 0) {
+      checklistItems.forEach(item => this.addCheckItem(item));
+    } else {
+      this.addCheckItem('');
+    }
+
+    // Determine the full replacement end (hero + any utility blocks before first content section)
+    this._replaceEndIdx = this._heroEndIdx;
+    if (this._utilityBlocks.length > 0) {
+      this._replaceEndIdx = this._utilityBlocks[this._utilityBlocks.length - 1].end;
+    }
+
+    // Show highlighted code preview — mark the detected hero region
+    this._showHighlightedCode();
+
+    // Show step 2
+    document.getElementById('converterStep2').style.display = '';
+    document.getElementById('stepNum1').classList.add('done');
+    document.getElementById('stepNum1').textContent = '\u2713';
+    this._setWorkflowStep(2);
+
+    // Build descriptive status
+    let statusMsg = this._heroOnly ? 'Hero code detected' : 'Hero found (lines ' + (this._heroStartIdx + 1) + '\u2013' + (this._heroEndIdx + 1) + ')';
+    if (this._utilityBlocks.length > 0) {
+      statusMsg += ' + ' + this._utilityBlocks.map(b => b.label).join(' + ');
+    }
+    document.getElementById('converterParseStatus').textContent = statusMsg;
+    document.getElementById('converterParseStatus').className = 'converter-status success';
+    this._parsed = true;
+
+    document.getElementById('converterStep2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Helper: find a block by open/close tags that contains an H1
+  _setWorkflowStep(activeStep) {
+    for (let i = 1; i <= 5; i++) {
+      const el = document.querySelector('#ws' + i + ' .ws-num');
+      if (!el) continue;
+      el.classList.remove('active', 'done');
+      if (i < activeStep) { el.classList.add('done'); el.textContent = '\u2713'; }
+      else if (i === activeStep) { el.classList.add('active'); el.textContent = String(i); }
+      else { el.textContent = String(i); }
+    }
+  }
+
+  _showHighlightedCode() {
+    const body = document.getElementById('converterPreviewBody');
+    // Build highlighted code view — hero region highlighted, rest dimmed
+    let html = '<div class="converter-code-highlighted">';
+    const replaceEnd = this._replaceEndIdx;
+
+    // Show context: up to 3 lines before hero, all hero lines, up to 3 lines after
+    const showStart = Math.max(0, this._heroStartIdx - 3);
+    const showEnd = Math.min(this._fullLines.length - 1, replaceEnd + 3);
+
+    // Before hero (dimmed)
+    if (showStart > 0) {
+      html += '<div class="code-dim">... (' + showStart + ' lines above) ...</div>';
+    }
+    for (let i = showStart; i < this._heroStartIdx; i++) {
+      html += '<div class="code-dim"><span class="code-ln">' + (i + 1) + '</span>' + escapeHTML(this._fullLines[i]) + '</div>';
+    }
+
+    // Hero region label
+    html += '<div class="code-region-label">HERO SECTION (will be replaced)</div>';
+
+    // Hero lines (highlighted)
+    for (let i = this._heroStartIdx; i <= this._heroEndIdx; i++) {
+      html += '<div class="code-hero"><span class="code-ln">' + (i + 1) + '</span>' + escapeHTML(this._fullLines[i]) + '</div>';
+    }
+
+    // Utility blocks between hero and content (trust bar, wyg, etc.)
+    const utilityColors = ['code-trustbar', 'code-wyg', 'code-hero'];
+    (this._utilityBlocks || []).forEach((block, idx) => {
+      const colorClass = utilityColors[idx % utilityColors.length];
+      html += '<div class="code-region-label">' + escapeHTML(block.label.toUpperCase()) + ' (will be replaced)</div>';
+      for (let i = block.start; i <= block.end; i++) {
+        html += '<div class="' + colorClass + '"><span class="code-ln">' + (i + 1) + '</span>' + escapeHTML(this._fullLines[i]) + '</div>';
+      }
+    });
+
+    // After replacement (dimmed, retained)
+    const afterStart = replaceEnd + 1;
+    if (afterStart < this._fullLines.length) {
+      html += '<div class="code-region-label retained">RETAINED (everything below stays)</div>';
+      for (let i = afterStart; i <= showEnd; i++) {
+        html += '<div class="code-dim"><span class="code-ln">' + (i + 1) + '</span>' + escapeHTML(this._fullLines[i]) + '</div>';
+      }
+      if (showEnd < this._fullLines.length - 1) {
+        html += '<div class="code-dim">... (' + (this._fullLines.length - 1 - showEnd) + ' more lines) ...</div>';
+      }
+    }
+
+    html += '</div>';
+    body.innerHTML = html;
+    document.getElementById('btnConverterCopy').style.display = 'none';
+  }
+
+  _findBlock(openTag, closeTag, lineFilter) {
+    for (let i = 0; i < this._fullLines.length; i++) {
+      const line = this._fullLines[i];
+      if (line.includes(openTag) && !line.includes(closeTag) && lineFilter(line)) {
+        let depth = 1;
+        let hasH1 = false;
+        for (let j = i + 1; j < this._fullLines.length && depth > 0; j++) {
+          if (this._fullLines[j].includes(openTag) && !this._fullLines[j].includes(closeTag)) depth++;
+          if (this._fullLines[j].includes(closeTag)) depth--;
+          if (this._fullLines[j].match(/<h1[\s>]/) || (this._fullLines[j].includes('<!-- wp:heading') && this._fullLines[j].includes('"level":1'))) hasH1 = true;
+          if (depth === 0 && hasH1) {
+            this._heroStartIdx = i;
+            this._heroEndIdx = j;
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  addTrustItem(emoji, text) {
+    const container = document.getElementById('convTrustContainer');
+    const row = document.createElement('div');
+    row.className = 'converter-trust-item';
+    row.innerHTML = '<input type="text" class="trust-emoji" value="' + escapeHTML(emoji) + '" placeholder="Emoji">' +
+      '<input type="text" class="trust-text" value="' + escapeHTML(text) + '" placeholder="Trust text">' +
+      '<button onclick="this.parentElement.remove()" title="Remove">\u00d7</button>';
+    container.appendChild(row);
+  }
+
+  addCheckItem(text) {
+    const container = document.getElementById('convChecklistContainer');
+    const row = document.createElement('div');
+    row.className = 'converter-checklist-item';
+    row.style.marginBottom = '6px';
+    row.innerHTML = '<input type="text" value="' + escapeHTML(text) + '" placeholder="Checklist item">' +
+      '<button onclick="this.parentElement.remove()" title="Remove">\u00d7</button>';
+    container.appendChild(row);
+  }
+
+  generate() {
+    if (!this._parsed) return;
+
+    // Gather edited values
+    const h1 = document.getElementById('convH1').value.trim();
+    const subtitle = document.getElementById('convSubtitle').value.trim();
+    const serviceArea = document.getElementById('convServiceArea').value.trim();
+    const ctaLabel = document.getElementById('convCtaLabel').value.trim() || 'Schedule Service \u2192';
+    const ctaUrl = document.getElementById('convCtaUrl').value.trim() || '/contact/';
+    const phone = document.getElementById('convPhone').value.trim();
+    const phoneHref = document.getElementById('convPhoneHref').value.trim() || '#';
+
+    // Gather checklist items
+    const checklistItems = [];
+    document.querySelectorAll('#convChecklistContainer .converter-checklist-item input').forEach(inp => {
+      const val = inp.value.trim();
+      if (val) checklistItems.push({ text: val });
+    });
+
+    // Get client config from current selection (if available), else use Paske defaults
+    let config;
+    if (window.app && window.app.clientManager) {
+      config = window.app.clientManager.getActive();
+    }
+    if (!config || !config.colors || !config.colors.primary) {
+      config = {
+        colors: { primary: '#C4282D', dark_text: '#151413', body_text: '#3A3937', secondary_text: '#6B6966', star_gold: '#D4A843' },
+        typography: { h1_size: 'clamp(32px, 5vw, 48px)', h1_weight: '800' },
+        buttons: {
+          primary: { bg_color: '#C4282D', text_color: '#ffffff', border_radius: '7px' },
+          outline: { text_color: '#C4282D', border_color: '#C4282D' }
+        },
+        cta_url: ctaUrl,
+        phone: phone,
+        phone_href: phoneHref,
+        trust_badges: [
+          { isStars: true, emoji: '\u2605\u2605\u2605\u2605\u2605', text: '4.9 Rating' },
+          { emoji: '\ud83c\uddfa\ud83c\uddf8', text: 'Veteran Owned' },
+          { emoji: '\ud83d\udee1\ufe0f', text: '100% Guarantee' }
+        ]
+      };
+    }
+    // Override CTA/phone with user's edited values
+    config.cta_url = ctaUrl;
+    config.phone = phone;
+    config.phone_href = phoneHref;
+
+    // Build the data object
+    const data = { h1, subtitle, serviceArea, checklistItems, ctaLabel, ctaUrl, phone, phoneHref };
+
+    // Generate using existing builder with modified CTA label
+    const idEngine = new UniqueIdEngine(
+      document.getElementById('pagePrefix') ? document.getElementById('pagePrefix').value || 'pg' : 'pg',
+      'conv'
+    );
+
+    // Build the new hero + WYG markup
+    const newHeroMarkup = buildHeroConverterSection(config, data, idEngine);
+
+    // Build output — either replace within full page or output hero-only
+    let output;
+    if (this._heroOnly) {
+      output = newHeroMarkup;
+    } else {
+      // Full page — replace old hero + trust bar + wyg in place
+      const before = this._fullLines.slice(0, this._heroStartIdx);
+      let afterIdx = this._replaceEndIdx + 1;
+
+      // Skip blank lines between replacement end and next block
+      while (afterIdx < this._fullLines.length && this._fullLines[afterIdx].trim() === '') {
+        afterIdx++;
+      }
+
+      const after = this._fullLines.slice(afterIdx);
+      output = before.join('\n') + '\n' + newHeroMarkup + '\n\n' + after.join('\n');
+    }
+
+    // Update preview panel with output
+    this._updatePreview(output);
+    document.getElementById('stepNum2').classList.add('done');
+    document.getElementById('stepNum2').textContent = '\u2713';
+    document.getElementById('converterOutputStatus').textContent = 'Done — copy the full page code from the right panel.';
+
+    // Update workflow indicators
+    this._setWorkflowStep(3);
+
+    // Show next steps (4 & 5)
+    document.getElementById('converterNextSteps').style.display = '';
+
+    // Scroll preview to top
+    document.getElementById('converterPreviewBody').scrollTop = 0;
+  }
+
+  setConvPreviewMode(mode) {
+    this._convPreviewMode = mode;
+    const tabCode = document.getElementById('convTabCode');
+    const tabVisual = document.getElementById('convTabVisual');
+    const codeBody = document.getElementById('converterPreviewBody');
+    const visualBody = document.getElementById('converterVisualBody');
+    const copyBtn = document.getElementById('btnConverterCopy');
+
+    if (tabCode) { tabCode.classList.toggle('active', mode === 'code'); tabCode.setAttribute('aria-selected', String(mode === 'code')); }
+    if (tabVisual) { tabVisual.classList.toggle('active', mode === 'visual'); tabVisual.setAttribute('aria-selected', String(mode === 'visual')); }
+    if (codeBody) codeBody.style.display = mode === 'code' ? '' : 'none';
+    if (visualBody) visualBody.style.display = mode === 'visual' ? '' : 'none';
+    if (copyBtn) copyBtn.style.display = (mode === 'code' && this._outputCode) ? '' : 'none';
+
+    if (mode === 'visual' && this._outputCode) {
+      this._renderVisualPreview();
+    }
+  }
+
+  _checkCtaUrl() {
+    const inp = document.getElementById('convCtaUrl');
+    if (!inp) return;
+    const val = inp.value.trim();
+    const isDefault = !val || val === '/contact/';
+    inp.style.background = isDefault ? '' : 'rgba(196,40,45,0.08)';
+    inp.style.borderColor = isDefault ? '' : '#C4282D';
+  }
+
+  _renderVisualPreview() {
+    const visualBody = document.getElementById('converterVisualBody');
+    if (!visualBody || !this._outputCode) {
+      if (visualBody) visualBody.innerHTML = '<div class="preview-empty-state"><p>Convert the hero to see a visual preview.</p></div>';
+      return;
+    }
+
+    // Extract meaningful content from WP block markup for a visual representation
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this._outputCode, 'text/html');
+
+    // Build a styled visual preview
+    let html = '<div class="conv-visual-wrapper" style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;overflow:hidden">';
+
+    // --- Hero section preview ---
+    const h1 = document.getElementById('convH1') ? document.getElementById('convH1').value : '';
+    const subtitle = document.getElementById('convSubtitle') ? document.getElementById('convSubtitle').value : '';
+    const serviceArea = document.getElementById('convServiceArea') ? document.getElementById('convServiceArea').value : '';
+    const ctaLabel = document.getElementById('convCtaLabel') ? document.getElementById('convCtaLabel').value : 'Schedule Service →';
+    const phone = document.getElementById('convPhone') ? document.getElementById('convPhone').value : '';
+
+    // Get client colors
+    let primary = '#C4282D', darkText = '#151413', bodyText = '#3A3937', starGold = '#D4A843';
+    if (window.app && window.app.clientManager) {
+      const cfg = window.app.clientManager.getActive();
+      if (cfg && cfg.colors) {
+        primary = cfg.colors.primary || primary;
+        darkText = cfg.colors.dark_text || darkText;
+        bodyText = cfg.colors.body_text || bodyText;
+        starGold = cfg.colors.star_gold || starGold;
+      }
+    }
+
+    // Hero cover area
+    html += '<div style="background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.65) 40%,rgba(0,0,0,0.3) 100%),#888;padding:60px 24px;min-height:350px;display:flex;align-items:center;justify-content:center">';
+    html += '<div style="background:rgba(255,255,255,0.92);border-radius:16px;padding:32px 36px;max-width:600px;width:100%;box-shadow:0 6px 32px rgba(0,0,0,0.12)">';
+
+    // H1
+    if (h1) html += '<h1 style="font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.15;color:' + darkText + ';margin:0 0 14px;letter-spacing:-0.02em">' + escapeHTML(h1) + '</h1>';
+    // Subtitle
+    if (subtitle) html += '<p style="font-size:clamp(14px,1.3vw,16px);line-height:1.65;color:' + bodyText + ';margin:0 0 14px">' + escapeHTML(subtitle) + '</p>';
+    // Gold tagline
+    if (serviceArea) html += '<p style="font-size:13px;font-weight:600;color:#cf9c27;margin:0 0 16px">' + escapeHTML(serviceArea) + '</p>';
+    // Buttons
+    html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">';
+    html += '<span style="display:inline-block;background:' + primary + ';color:#fff;padding:10px 24px;border-radius:7px;font-size:14px;font-weight:600">' + escapeHTML(ctaLabel) + '</span>';
+    if (phone) html += '<span style="display:inline-block;background:#fff;color:' + primary + ';border:2px solid ' + primary + ';padding:10px 24px;border-radius:7px;font-size:14px;font-weight:600">Call ' + escapeHTML(phone) + '</span>';
+    html += '</div>';
+    // Proof strip — read from editable trust items
+    html += '<div style="border-top:1px solid #E5E2DD;padding-top:10px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-weight:600;color:#6B6966">';
+    document.querySelectorAll('#convTrustContainer .converter-trust-item').forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length < 2) return;
+      const emoji = inputs[0].value.trim();
+      const text = inputs[1].value.trim();
+      if (!text) return;
+      if (emoji.includes('★')) {
+        html += '<span><span style="color:' + starGold + '">' + escapeHTML(emoji) + '</span> ' + escapeHTML(text) + '</span>';
+      } else {
+        html += '<span>' + (emoji ? escapeHTML(emoji) + ' ' : '') + escapeHTML(text) + '</span>';
+      }
+    });
+    html += '</div>';
+
+    html += '</div></div>'; // close card + hero cover
+
+    // --- What You Get section preview ---
+    const checkItems = [];
+    document.querySelectorAll('#convChecklistContainer .converter-checklist-item input').forEach(inp => {
+      const val = inp.value.trim();
+      if (val) checkItems.push(val);
+    });
+
+    if (checkItems.length > 0) {
+      html += '<div style="background:#F5F3F0;padding:28px 36px">';
+      html += '<h3 style="font-size:18px;font-weight:700;color:#8B2020;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.5px">What You Get</h3>';
+      html += '<hr style="border:none;height:2px;background:' + starGold + ';margin:0 0 18px;max-width:60px">';
+      checkItems.forEach(item => {
+        html += '<p style="font-size:14px;color:' + bodyText + ';line-height:1.6;margin:0 0 8px">✔ ' + escapeHTML(item) + '</p>';
+      });
+      html += '</div>';
+    }
+
+    // --- Retained content indicator ---
+    if (!this._heroOnly && this._contentStartIdx >= 0) {
+      html += '<div style="background:#f0f0f0;padding:20px 24px;text-align:center;border-top:2px dashed #ccc">';
+      html += '<p style="font-size:13px;color:#999;margin:0">⬇ Retained page content (' + (this._fullLines.length - this._contentStartIdx) + ' lines) ⬇</p>';
+      html += '</div>';
+    }
+
+    html += '</div>'; // close wrapper
+    visualBody.innerHTML = html;
+  }
+
+  copy() {
+    if (!this._outputCode) return;
+    navigator.clipboard.writeText(this._outputCode).then(() => {
+      const btn = document.getElementById('btnConverterCopy');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy All'; }, 2000);
+      if (typeof showToast === 'function') showToast('Code copied to clipboard', 'success');
+      this._setWorkflowStep(4);
+    });
+  }
+
+  reset() {
+    document.getElementById('converterInput').value = '';
+    document.getElementById('converterStep2').style.display = 'none';
+    document.getElementById('converterNextSteps').style.display = 'none';
+    document.getElementById('stepNum1').classList.remove('done');
+    document.getElementById('stepNum1').textContent = '1';
+    document.getElementById('stepNum2').classList.remove('done');
+    document.getElementById('stepNum2').textContent = '2';
+    document.getElementById('converterParseStatus').textContent = '';
+    document.getElementById('converterOutputStatus').textContent = '';
+    this._parsed = false;
+    this._heroStartIdx = -1;
+    this._heroEndIdx = -1;
+    this._replaceEndIdx = -1;
+    this._utilityBlocks = [];
+    this._contentStartIdx = -1;
+    this._fullLines = [];
+    this._updatePreview('');
+    this._setWorkflowStep(1);
+    // Reset preview back to code mode
+    this.setConvPreviewMode('code');
+
+    document.getElementById('converterStep1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+
+// ---------------------------------------------------------------------------
 // App Initialization
 // ---------------------------------------------------------------------------
 function initApp() {
@@ -6908,8 +7894,12 @@ function initApp() {
   const sectionManager = new SectionManager(clientManager, previewManager);
   const pageManager = new PageManager(sectionManager);
 
+  // Hero converter (standalone)
+  const heroConverterView = new HeroConverterView();
+  heroConverterView.init();
+
   // Wire up global references
-  window.app = { clientManager, sectionManager, previewManager, pageManager };
+  window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView };
 
   // --- Sidebar buttons ---
   const btnSaveClient = document.getElementById('btnSaveClient');
