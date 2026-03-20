@@ -323,6 +323,44 @@ textarea{resize:vertical;min-height:64px}
 .app.converter-mode.sidebar-open{grid-template-columns:var(--sidebar-w) 1fr var(--preview-w)}
 @media(max-width:1100px){.app.converter-mode{grid-template-columns:1fr}.app.converter-mode .converter-preview{display:none}}
 
+/* === PAGE MAKER (TEMPLATES) VIEW === */
+.templates-panel{display:none;overflow-y:auto;background:var(--bg-editor)}
+.templates-preview{display:none;background:var(--bg-preview);flex-direction:column;border-left:1px solid rgba(255,255,255,0.06)}
+
+.app.templates-mode .editor-panel,
+.app.templates-mode .preview-panel,
+.app.templates-mode .converter-panel,
+.app.templates-mode .converter-preview{display:none!important}
+.app.templates-mode .templates-panel{display:block}
+.app.templates-mode .templates-preview{display:flex}
+.app.templates-mode .sidebar{display:none}
+.app.templates-mode{grid-template-columns:1fr var(--preview-w)}
+.app.templates-mode.sidebar-open .sidebar{display:flex}
+.app.templates-mode.sidebar-open{grid-template-columns:var(--sidebar-w) 1fr var(--preview-w)}
+@media(max-width:1100px){.app.templates-mode{grid-template-columns:1fr}.app.templates-mode .templates-preview{display:none}}
+
+.templates-body{padding:28px 32px 80px;max-width:720px;margin:0 auto}
+.templates-selector{margin-bottom:24px}
+.template-fields{display:grid;gap:16px}
+.template-fields label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px}
+.template-fields input,.template-fields textarea,.template-fields select{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;transition:border-color var(--transition),box-shadow var(--transition)}
+.template-fields input:focus,.template-fields textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);outline:none}
+.template-fields textarea{min-height:80px;resize:vertical}
+.template-fields .tpl-section-header{font-size:13px;font-weight:700;color:var(--text-primary);padding:10px 0 4px;border-bottom:1px solid var(--border-light);margin-top:8px}
+.template-fields .tpl-hint{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.templates-actions{padding:20px 0;display:flex;align-items:center;gap:12px}
+
+/* Repeater groups for area groups / towns */
+.tpl-repeater{border:1px solid var(--border-light);border-radius:var(--radius);padding:14px;background:var(--bg-card);margin-bottom:8px}
+.tpl-repeater-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tpl-repeater-header strong{font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px}
+.tpl-repeater .tpl-town-row{display:grid;grid-template-columns:1fr 1fr 28px;gap:6px;margin-bottom:6px;align-items:center}
+.tpl-repeater .tpl-town-row input{font-size:13px;padding:6px 10px}
+.btn-remove-sm{width:24px;height:24px;border:none;background:rgba(255,59,48,0.08);color:#ff3b30;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background var(--transition)}
+.btn-remove-sm:hover{background:rgba(255,59,48,0.15)}
+.btn-add-sm{padding:5px 12px;border:1px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--transition)}
+.btn-add-sm:hover{background:var(--accent-light);border-color:var(--accent)}
+
 /* Converter toolbar */
 .converter-toolbar{position:sticky;top:0;z-index:10;background:rgba(242,242,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);padding:12px 24px;display:flex;align-items:center;gap:12px}
 .converter-toolbar h2{font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em}
@@ -424,6 +462,7 @@ textarea{resize:vertical;min-height:64px}
       <div class="mode-toggle" id="modeToggle">
         <button class="mode-btn active" data-mode="builder">Builder</button>
         <button class="mode-btn" data-mode="converter">Converter</button>
+        <button class="mode-btn" data-mode="templates">Page Maker</button>
       </div>
     </div>
     <div class="sidebar-body">
@@ -741,6 +780,53 @@ textarea{resize:vertical;min-height:64px}
     <div class="converter-visual-body" id="converterVisualBody" style="display:none">
       <div class="preview-empty-state">
         <p>Convert the hero to see a visual preview.</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PAGE MAKER (templates mode) -->
+  <div class="templates-panel" id="templatesPanel">
+    <div class="converter-toolbar">
+      <h2>Page Maker</h2>
+      <div class="converter-toolbar-actions">
+        <button class="sidebar-toggle-btn" id="btnTemplatesSidebar" title="Show client settings">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="14" height="12" rx="1.5"/><path d="M5 2v12"/></svg>
+          Settings
+        </button>
+      </div>
+    </div>
+    <div class="templates-body">
+      <div class="templates-selector">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-bottom:6px;display:block">Template</label>
+        <select id="templateType" style="width:100%;padding:8px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:rgba(255,255,255,0.06);color:#fff;font-size:14px">
+          <option value="">Select a template...</option>
+          <option value="serviceAreas">Service Areas Main Page</option>
+          <option value="locationPage">Individual Location Page</option>
+        </select>
+      </div>
+      <div id="templateFields" class="template-fields"></div>
+      <div class="templates-actions" id="templatesActions" style="display:none">
+        <button class="btn btn-primary" id="btnGenerateTemplate">Generate Page Code</button>
+        <span class="converter-status" id="templateStatus"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPLATES PREVIEW (right panel) -->
+  <aside class="templates-preview" id="templatesPreview">
+    <div class="converter-preview-toolbar">
+      <div class="preview-tabs" role="tablist" aria-label="Template preview mode">
+        <button class="preview-tab active" role="tab" id="tplTabCode" data-mode="code">Code</button>
+        <button class="preview-tab" role="tab" id="tplTabVisual" data-mode="visual">Visual</button>
+      </div>
+      <div class="preview-toolbar-actions">
+        <button class="btn btn-secondary btn-sm" id="btnTemplateCopy" style="display:none">Copy All</button>
+        <button class="btn btn-secondary btn-sm" id="btnTemplateDownload" style="display:none">Download</button>
+      </div>
+    </div>
+    <div class="converter-preview-body" id="templatesPreviewBody">
+      <div class="converter-preview-empty">
+        <p>Select a template and fill in the fields to generate page code.</p>
       </div>
     </div>
   </aside>
@@ -7287,19 +7373,24 @@ class HeroConverterView {
       if (active) active.classList.add('active');
     }
     const app = document.querySelector('.app');
+    // Remove all mode classes first
+    app.classList.remove('converter-mode', 'templates-mode', 'sidebar-open');
     if (mode === 'converter') {
       app.classList.add('converter-mode');
       if (window.location.hash !== '#converter') window.history.replaceState(null, '', '#converter');
+    } else if (mode === 'templates') {
+      app.classList.add('templates-mode');
+      if (window.location.hash !== '#templates') window.history.replaceState(null, '', '#templates');
     } else {
-      app.classList.remove('converter-mode');
-      app.classList.remove('sidebar-open');
-      if (window.location.hash === '#converter') window.history.replaceState(null, '', window.location.pathname);
+      if (window.location.hash) window.history.replaceState(null, '', window.location.pathname);
     }
   }
 
   _applyHash() {
     if (window.location.hash === '#converter') {
       this.setMode('converter');
+    } else if (window.location.hash === '#templates') {
+      this.setMode('templates');
     }
   }
 
@@ -8191,6 +8282,1220 @@ class HeroConverterView {
 
 
 // ---------------------------------------------------------------------------
+// Class 6: TemplateManager — Page Maker templates
+// ---------------------------------------------------------------------------
+class TemplateManager {
+  constructor() {
+    this._template = null;
+    this._outputCode = '';
+    this._previewMode = 'code';
+  }
+
+  init() {
+    const select = document.getElementById('templateType');
+    if (select) select.onchange = () => this.selectTemplate(select.value);
+
+    const btnGenerate = document.getElementById('btnGenerateTemplate');
+    if (btnGenerate) btnGenerate.onclick = () => this.generate();
+
+    const btnCopy = document.getElementById('btnTemplateCopy');
+    if (btnCopy) btnCopy.onclick = () => this._copy();
+
+    const btnDownload = document.getElementById('btnTemplateDownload');
+    if (btnDownload) btnDownload.onclick = () => this._download();
+
+    // Preview tabs
+    const tplTabCode = document.getElementById('tplTabCode');
+    const tplTabVisual = document.getElementById('tplTabVisual');
+    if (tplTabCode) tplTabCode.onclick = () => this._setPreviewMode('code');
+    if (tplTabVisual) tplTabVisual.onclick = () => this._setPreviewMode('visual');
+
+    // Sidebar toggle
+    const sidebarBtn = document.getElementById('btnTemplatesSidebar');
+    if (sidebarBtn) {
+      const sidebarIcon = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="14" height="12" rx="1.5"/><path d="M5 2v12"/></svg>';
+      sidebarBtn.onclick = () => {
+        const app = document.querySelector('.app');
+        app.classList.toggle('sidebar-open');
+        sidebarBtn.innerHTML = sidebarIcon + (app.classList.contains('sidebar-open') ? ' Hide Settings' : ' Settings');
+      };
+    }
+  }
+
+  _setPreviewMode(mode) {
+    this._previewMode = mode;
+    const codeTab = document.getElementById('tplTabCode');
+    const visualTab = document.getElementById('tplTabVisual');
+    if (mode === 'code') {
+      codeTab.classList.add('active'); visualTab.classList.remove('active');
+    } else {
+      visualTab.classList.add('active'); codeTab.classList.remove('active');
+    }
+    const copyBtn = document.getElementById('btnTemplateCopy');
+    const dlBtn = document.getElementById('btnTemplateDownload');
+    if (copyBtn) copyBtn.style.display = mode === 'code' && this._outputCode ? '' : 'none';
+    if (dlBtn) dlBtn.style.display = mode === 'code' && this._outputCode ? '' : 'none';
+    this._renderPreview();
+  }
+
+  _getConfig() {
+    if (window.app && window.app.clientManager) {
+      return window.app.clientManager.getActive();
+    }
+    return null;
+  }
+
+  selectTemplate(type) {
+    this._template = type;
+    const container = document.getElementById('templateFields');
+    const actions = document.getElementById('templatesActions');
+    if (!type) {
+      container.innerHTML = '';
+      if (actions) actions.style.display = 'none';
+      return;
+    }
+    if (actions) actions.style.display = 'flex';
+    if (type === 'serviceAreas') {
+      container.innerHTML = this._fieldsServiceAreas();
+    } else if (type === 'locationPage') {
+      container.innerHTML = this._fieldsLocationPage();
+    }
+    this._wireRepeaters(container);
+  }
+
+  // ---- Service Areas Main Page form ----
+  _fieldsServiceAreas() {
+    return `
+      <div class="tpl-section-header">Hero</div>
+      <div><label>Page Title (H1)</label><input type="text" id="tplSaTitle" placeholder="SWFL Service Areas"></div>
+      <div><label>Subtitle Paragraphs</label><textarea id="tplSaSubtitle" rows="4" placeholder="Two to three sentences about the service areas..."></textarea><div class="tpl-hint">Separate paragraphs with a blank line</div></div>
+      <div><label>Gold Tagline</label><input type="text" id="tplSaTagline" placeholder="Serving Sarasota, Charlotte, Lee, and Collier Counties"></div>
+      <div><label>Primary CTA Text</label><input type="text" id="tplSaCtaText" placeholder="Schedule Service →"></div>
+      <div><label>Primary CTA URL</label><input type="text" id="tplSaCtaUrl" placeholder="/contact/"></div>
+      <div><label>Checklist Items (hero card)</label>
+        <div id="tplSaChecklist">
+          <div class="tpl-town-row"><input type="text" placeholder="e.g. BBB A+ Rated"><button class="btn-remove-sm" onclick="this.closest('.tpl-town-row').remove()">&times;</button></div>
+        </div>
+        <button class="btn-add-sm" data-add-to="tplSaChecklist" data-type="single">+ Add Item</button>
+      </div>
+
+      <div class="tpl-section-header">Service Areas Grid</div>
+      <div><label>Section Eyebrow</label><input type="text" id="tplSaEyebrow" value="SERVICE AREAS"></div>
+      <div><label>Section Heading</label><input type="text" id="tplSaSectionHeading" placeholder="Professional Service Areas Across Southwest Florida"></div>
+      <div><label>Section Description</label><textarea id="tplSaSectionDesc" rows="2" placeholder="Overview paragraph about service coverage..."></textarea></div>
+      <div><label>Lead-in Line</label><input type="text" id="tplSaLeadIn" placeholder="The primary service locations include:"></div>
+      <div id="tplSaAreasContainer">
+        <label>Area Groups</label>
+        ${this._areaGroupHtml('Lee County', 'Cape Coral (HQ)\nFort Myers\nLehigh Acres')}
+      </div>
+      <button class="btn-add-sm" id="btnAddAreaGroup">+ Add Area Group</button>
+
+      <div class="tpl-section-header">Why Choose Us Cards</div>
+      <div><label>Section Eyebrow</label><input type="text" id="tplSaWhyEyebrow" value="WHY CHOOSE US"></div>
+      <div><label>Section Heading</label><input type="text" id="tplSaWhyHeading" placeholder="Why Choose [Company]?"></div>
+      <div><label>Section Subtitle</label><input type="text" id="tplSaWhySubtitle" placeholder="100% Guaranteed Services..."></div>
+      <div id="tplSaWhyCards">
+        <label>Cards (emoji | title | description)</label>
+        <div class="tpl-repeater">
+          <div><label>Emoji</label><input type="text" class="why-emoji" value="🎖️" style="width:60px;display:inline-block"></div>
+          <div><label>Title</label><input type="text" class="why-title" value="Local & Veteran-Owned"></div>
+          <div><label>Description</label><input type="text" class="why-desc" value="Every service is rooted in a tradition of integrity, discipline, and attention to detail."></div>
+        </div>
+      </div>
+      <button class="btn-add-sm" id="btnAddWhyCard">+ Add Card</button>
+
+      <div class="tpl-section-header">Reviews (Optional)</div>
+      <div><label>Include reviews section?</label><select id="tplSaIncludeReviews"><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div id="tplSaReviewsContainer">
+        <label>Reviews</label>
+        <div class="tpl-repeater">
+          <div><label>Quote</label><textarea class="review-quote" rows="2" placeholder="Review text..."></textarea></div>
+          <div><label>Author</label><input type="text" class="review-author" placeholder="— Name"></div>
+        </div>
+      </div>
+      <button class="btn-add-sm" id="btnAddReview">+ Add Review</button>
+
+      <div class="tpl-section-header">Final CTA</div>
+      <div><label>Eyebrow</label><input type="text" id="tplSaCtaEyebrow" value="GET STARTED"></div>
+      <div><label>Heading</label><input type="text" id="tplSaCtaHeading" placeholder="Not Sure If We Service Your Area?"></div>
+      <div><label>Subtitle</label><input type="text" id="tplSaCtaSubline" placeholder="Give us a call and we'll let you know if we can help."></div>
+      <div><label>CTA Button 1 Text</label><input type="text" id="tplSaCtaBtn1" placeholder="📞 Call (239) 475-5393"></div>
+      <div><label>CTA Button 2 Text</label><input type="text" id="tplSaCtaBtn2" placeholder="Request Quote Online"></div>
+    `;
+  }
+
+  // ---- Individual Location Page form ----
+  _fieldsLocationPage() {
+    return `
+      <div class="tpl-section-header">Hero</div>
+      <div><label>Page Title (H1)</label><input type="text" id="tplLocTitle" placeholder="Fort Myers Pest Control for Homes, Businesses, and Rental Properties"></div>
+      <div><label>Subtitle</label><textarea id="tplLocSubtitle" rows="2" placeholder="Prevention-first exterminator service..."></textarea></div>
+      <div><label>Serving Line (small text below subtitle)</label><input type="text" id="tplLocServing" placeholder="Serving all Fort Myers neighborhoods, including..."></div>
+      <div><label>Primary CTA Text</label><input type="text" id="tplLocCtaText" placeholder="Schedule My Service →"></div>
+      <div><label>Primary CTA URL</label><input type="text" id="tplLocCtaUrl" placeholder=""></div>
+      <div><label>Checklist Items (What You Get card)</label>
+        <div id="tplLocChecklist">
+          <div class="tpl-town-row"><input type="text" placeholder="e.g. Same-day service available"><button class="btn-remove-sm" onclick="this.closest('.tpl-town-row').remove()">&times;</button></div>
+        </div>
+        <button class="btn-add-sm" data-add-to="tplLocChecklist" data-type="single">+ Add Item</button>
+      </div>
+
+      <div class="tpl-section-header">The Challenge Section</div>
+      <div><label>Eyebrow</label><input type="text" id="tplLocChalEyebrow" value="The Challenge"></div>
+      <div><label>Heading</label><input type="text" id="tplLocChalHeading" placeholder="[Location] Properties Demand Year-Round Pest Control"></div>
+      <div><label>Content Paragraphs</label><textarea id="tplLocChalContent" rows="6" placeholder="Location-specific pest challenge text. Separate paragraphs with blank lines."></textarea></div>
+
+      <div class="tpl-section-header">Our Community Section</div>
+      <div><label>Eyebrow</label><input type="text" id="tplLocCommEyebrow" value="Our Community"></div>
+      <div><label>Heading</label><input type="text" id="tplLocCommHeading" placeholder="[Location] History, Growth, and What It Means for Pest Control"></div>
+      <div><label>Intro Paragraph</label><textarea id="tplLocCommIntro" rows="3" placeholder="Community overview paragraph..."></textarea></div>
+      <div><label>Google Maps Embed URL</label><input type="text" id="tplLocMapUrl" placeholder="https://www.google.com/maps/embed?pb=..."></div>
+      <div><label>Community Detail Paragraphs</label><textarea id="tplLocCommDetail" rows="6" placeholder="Detailed community and pest history. Separate paragraphs with blank lines."></textarea></div>
+
+      <div class="tpl-section-header">Local Pest Challenges</div>
+      <div><label>Eyebrow</label><input type="text" id="tplLocPestEyebrow" value="Local Challenges"></div>
+      <div><label>Heading</label><input type="text" id="tplLocPestHeading" placeholder="Why Pest Problems in [Location] Get Worse Without a Plan"></div>
+      <div><label>Intro Paragraphs</label><textarea id="tplLocPestIntro" rows="3" placeholder="Overview of local pest pressure..."></textarea></div>
+      <div id="tplLocPestRows">
+        <label>Pest Types</label>
+        <div class="tpl-repeater">
+          <div><label>Emoji</label><input type="text" class="pest-emoji" value="🐀" style="width:60px;display:inline-block"></div>
+          <div><label>Name</label><input type="text" class="pest-name" value="Rodents"></div>
+          <div><label>Service URL (optional)</label><input type="text" class="pest-url" placeholder="/services/rodent-exterminator/"></div>
+          <div><label>Description</label><textarea class="pest-desc" rows="3" placeholder="Pest description for this location..."></textarea></div>
+        </div>
+      </div>
+      <button class="btn-add-sm" id="btnAddPestRow">+ Add Pest Type</button>
+      <div><label>Sidebar Items (Also Active In...)</label>
+        <div id="tplLocSidebarItems">
+          <div class="tpl-town-row"><input type="text" placeholder="e.g. German and American roaches..."><button class="btn-remove-sm" onclick="this.closest('.tpl-town-row').remove()">&times;</button></div>
+        </div>
+        <button class="btn-add-sm" data-add-to="tplLocSidebarItems" data-type="single">+ Add Item</button>
+      </div>
+      <div><label>Sidebar Title</label><input type="text" id="tplLocSidebarTitle" placeholder="Also Active in [Location]"></div>
+      <div><label>Closing Line</label><input type="text" id="tplLocPestClosing" placeholder="One-time treatments provide temporary relief..."></div>
+
+      <div class="tpl-section-header">Services Grid</div>
+      <div><label>Eyebrow</label><input type="text" id="tplLocSvcEyebrow" value="Our Services"></div>
+      <div><label>Heading</label><input type="text" id="tplLocSvcHeading" placeholder="Full-Service Pest Control for [Location]"></div>
+      <div><label>Subtitle Line 1</label><input type="text" id="tplLocSvcSub1" placeholder="You do not need multiple companies..."></div>
+      <div><label>Subtitle Line 2</label><input type="text" id="tplLocSvcSub2" placeholder="Each service is designed to work together..."></div>
+      <div id="tplLocServices">
+        <label>Services</label>
+        <div class="tpl-repeater">
+          <div><label>Emoji</label><input type="text" class="svc-emoji" value="🪳" style="width:60px;display:inline-block"></div>
+          <div><label>Title</label><input type="text" class="svc-title" value="General Pests"></div>
+          <div><label>Subtitle</label><input type="text" class="svc-subtitle" value="Roaches, ants, spiders, silverfish"></div>
+          <div><label>URL (optional)</label><input type="text" class="svc-url" placeholder="/services/..."></div>
+        </div>
+      </div>
+      <button class="btn-add-sm" id="btnAddService">+ Add Service</button>
+
+      <div class="tpl-section-header">Final CTA</div>
+      <div><label>Eyebrow</label><input type="text" id="tplLocCtaEyebrow" value="PROTECT YOUR HOME"></div>
+      <div><label>Heading</label><input type="text" id="tplLocCtaHeading" placeholder="Ready to Protect Your [Location] Home?"></div>
+      <div><label>Subtitle</label><input type="text" id="tplLocCtaSubline" placeholder="Schedule a free inspection..."></div>
+    `;
+  }
+
+  _areaGroupHtml(name, towns) {
+    return `<div class="tpl-repeater area-group">
+      <div class="tpl-repeater-header"><strong>Area Group</strong><button class="btn-remove-sm" onclick="this.closest('.area-group').remove()">&times;</button></div>
+      <div><label>Group Name (e.g. County)</label><input type="text" class="area-name" value="${name || ''}"></div>
+      <div><label>Group URL (optional)</label><input type="text" class="area-url" placeholder="/lee-county-fl/"></div>
+      <div><label>Towns (one per line; format: Name or Name|URL)</label><textarea class="area-towns" rows="4">${towns || ''}</textarea></div>
+      <div><label>Footnote (optional, e.g. *Service availability may vary)</label><input type="text" class="area-footnote" placeholder=""></div>
+    </div>`;
+  }
+
+  _wireRepeaters(container) {
+    // Wire up "Add" buttons for simple repeater items
+    container.querySelectorAll('.btn-add-sm[data-add-to]').forEach(btn => {
+      btn.onclick = () => {
+        const target = document.getElementById(btn.dataset.addTo);
+        const row = document.createElement('div');
+        row.className = 'tpl-town-row';
+        row.innerHTML = '<input type="text" placeholder=""><button class="btn-remove-sm" onclick="this.closest(\'.tpl-town-row\').remove()">&times;</button>';
+        target.appendChild(row);
+      };
+    });
+
+    // Add area group
+    const btnAddGroup = document.getElementById('btnAddAreaGroup');
+    if (btnAddGroup) btnAddGroup.onclick = () => {
+      const c = document.getElementById('tplSaAreasContainer');
+      c.insertAdjacentHTML('beforeend', this._areaGroupHtml('', ''));
+    };
+
+    // Add why card
+    const btnAddWhy = document.getElementById('btnAddWhyCard');
+    if (btnAddWhy) btnAddWhy.onclick = () => {
+      const c = document.getElementById('tplSaWhyCards');
+      c.insertAdjacentHTML('beforeend', `<div class="tpl-repeater">
+        <div class="tpl-repeater-header"><strong>Card</strong><button class="btn-remove-sm" onclick="this.closest('.tpl-repeater').remove()">&times;</button></div>
+        <div><label>Emoji</label><input type="text" class="why-emoji" value="" style="width:60px;display:inline-block"></div>
+        <div><label>Title</label><input type="text" class="why-title" value=""></div>
+        <div><label>Description</label><input type="text" class="why-desc" value=""></div>
+      </div>`);
+    };
+
+    // Add review
+    const btnAddReview = document.getElementById('btnAddReview');
+    if (btnAddReview) btnAddReview.onclick = () => {
+      const c = document.getElementById('tplSaReviewsContainer');
+      c.insertAdjacentHTML('beforeend', `<div class="tpl-repeater">
+        <div class="tpl-repeater-header"><strong>Review</strong><button class="btn-remove-sm" onclick="this.closest('.tpl-repeater').remove()">&times;</button></div>
+        <div><label>Quote</label><textarea class="review-quote" rows="2" placeholder="Review text..."></textarea></div>
+        <div><label>Author</label><input type="text" class="review-author" placeholder="— Name"></div>
+      </div>`);
+    };
+
+    // Add pest row
+    const btnAddPest = document.getElementById('btnAddPestRow');
+    if (btnAddPest) btnAddPest.onclick = () => {
+      const c = document.getElementById('tplLocPestRows');
+      c.insertAdjacentHTML('beforeend', `<div class="tpl-repeater">
+        <div class="tpl-repeater-header"><strong>Pest</strong><button class="btn-remove-sm" onclick="this.closest('.tpl-repeater').remove()">&times;</button></div>
+        <div><label>Emoji</label><input type="text" class="pest-emoji" value="" style="width:60px;display:inline-block"></div>
+        <div><label>Name</label><input type="text" class="pest-name" value=""></div>
+        <div><label>Service URL (optional)</label><input type="text" class="pest-url" placeholder=""></div>
+        <div><label>Description</label><textarea class="pest-desc" rows="3" placeholder=""></textarea></div>
+      </div>`);
+    };
+
+    // Add service
+    const btnAddSvc = document.getElementById('btnAddService');
+    if (btnAddSvc) btnAddSvc.onclick = () => {
+      const c = document.getElementById('tplLocServices');
+      c.insertAdjacentHTML('beforeend', `<div class="tpl-repeater">
+        <div class="tpl-repeater-header"><strong>Service</strong><button class="btn-remove-sm" onclick="this.closest('.tpl-repeater').remove()">&times;</button></div>
+        <div><label>Emoji</label><input type="text" class="svc-emoji" value="" style="width:60px;display:inline-block"></div>
+        <div><label>Title</label><input type="text" class="svc-title" value=""></div>
+        <div><label>Subtitle</label><input type="text" class="svc-subtitle" value=""></div>
+        <div><label>URL (optional)</label><input type="text" class="svc-url" placeholder=""></div>
+      </div>`);
+    };
+  }
+
+  // ---- Value getters ----
+  _val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  _paras(id) { return this._val(id).split(/\n\n+/).filter(p => p.trim()); }
+  _listItems(containerId) {
+    const items = [];
+    document.querySelectorAll('#' + containerId + ' .tpl-town-row input[type="text"]').forEach(inp => {
+      const v = inp.value.trim(); if (v) items.push(v);
+    });
+    return items;
+  }
+
+  // ---- Generate ----
+  generate() {
+    const cfg = this._getConfig();
+    if (!cfg) { alert('Please select a client first.'); return; }
+    const status = document.getElementById('templateStatus');
+    if (this._template === 'serviceAreas') {
+      this._outputCode = this._buildServiceAreasPage(cfg);
+    } else if (this._template === 'locationPage') {
+      this._outputCode = this._buildLocationPage(cfg);
+    } else {
+      if (status) status.textContent = 'Select a template first.';
+      return;
+    }
+    if (status) { status.textContent = 'Generated!'; status.className = 'converter-status success'; }
+    this._setPreviewMode('code');
+    this._renderPreview();
+  }
+
+  // ===========================================================================
+  //  SERVICE AREAS MAIN PAGE GENERATOR
+  // ===========================================================================
+  _buildServiceAreasPage(cfg) {
+    const c = cfg.colors || {};
+    const t = cfg.typography || {};
+    const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D';
+    const darkText = c.dark_text || c.heading_text || '#151413';
+    const bodyText = c.body_text || '#3A3937';
+    const mutedText = c.muted_text || c.secondary_text || '#6B6966';
+    const starGold = c.star_gold || '#D4A843';
+    const cardBorder = c.card_border || '#E5E2DD';
+    const sectionLight = c.section_light || '#FAF8F5';
+    const sectionDark = c.section_dark || '#151413';
+    const maxW = cfg.section_max_width || '1100px';
+    const phone = cfg.phone || '';
+    const phoneHref = cfg.phone_href || '';
+    const ctaUrl = cfg.cta_url || '/contact/';
+
+    let uid = 1;
+    const id = () => 'sa' + String(uid++).padStart(3, '0');
+
+    const title = this._val('tplSaTitle') || 'Service Areas';
+    const subtitleParas = this._paras('tplSaSubtitle');
+    const tagline = this._val('tplSaTagline');
+    const ctaText = this._val('tplSaCtaText') || 'Schedule Service →';
+    const ctaLink = this._val('tplSaCtaUrl') || ctaUrl;
+    const checkItems = this._listItems('tplSaChecklist');
+
+    let out = '';
+
+    // --- HERO ---
+    out += `<!-- wp:cover {"useFeaturedImage":true,"dimRatio":40,"customOverlayColor":"${darkText}","isUserOverlayColor":true,"sizeSlug":"full","className":"hero-section","style":{"color":{"text":"#ffffff"},"spacing":{"padding":{"top":"${sp.hero_padding_top || 'clamp(100px, 14vw, 200px)'}","bottom":"${sp.hero_padding_bottom || 'clamp(60px, 8vw, 100px)'}","left":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","right":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"}}}} -->\n`;
+    out += `<div class="wp-block-cover hero-section has-text-color" style="color:#ffffff;padding-top:${sp.hero_padding_top || 'clamp(100px, 14vw, 200px)'};padding-right:${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'};padding-bottom:${sp.hero_padding_bottom || 'clamp(60px, 8vw, 100px)'};padding-left:${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-40 has-background-dim" style="background-color:${darkText}"></span><div class="wp-block-cover__inner-container">\n`;
+
+    // Hero grid
+    const gId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${gId}","tagName":"div","styles":{"maxWidth":"${maxW}","marginLeft":"auto","marginRight":"auto","display":"grid","gridTemplateColumns":"1.6fr 1fr","gap":"28px","alignItems":"start"},"css":".gb-element-${gId}{align-items:start;display:grid;gap:28px;grid-template-columns:1.6fr 1fr;margin-left:auto;margin-right:auto;max-width:${maxW}}@media(max-width:900px){.gb-element-${gId}{grid-template-columns:1fr}}","className":"hero-layout"} -->\n`;
+    out += `<div class="gb-element-${gId} hero-layout">\n`;
+
+    // Hero card (left)
+    const cId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${cId}","tagName":"div","styles":{"backgroundColor":"rgba(255,254,251,0.97)","borderRadius":"16px","boxShadow":"0 6px 32px rgba(0,0,0,0.12)","paddingTop":"clamp(28px, 3vw, 40px)","paddingBottom":"clamp(22px, 2.5vw, 30px)","paddingLeft":"clamp(24px, 4vw, 48px)","paddingRight":"clamp(24px, 4vw, 48px)"},"css":".gb-element-${cId}{background-color:rgba(255,254,251,0.97);border-radius:16px;box-shadow:0 6px 32px rgba(0,0,0,0.12);padding:clamp(28px,3vw,40px) clamp(24px,4vw,48px) clamp(22px,2.5vw,30px)}","className":"hero-card"} -->\n`;
+    out += `<div class="gb-element-${cId} hero-card">\n`;
+
+    // H1
+    out += `<!-- wp:heading {"level":1,"style":{"typography":{"fontSize":"${t.h1_size || 'clamp(32px, 5vw, 48px)'}","fontWeight":"${t.h1_weight || '800'}","lineHeight":"${t.h1_line_height || '1.15'}","letterSpacing":"${t.h1_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"18px"}}}} -->\n`;
+    out += `<h1 class="wp-block-heading has-text-color" style="color:${darkText};margin-bottom:18px;font-size:${t.h1_size || 'clamp(32px, 5vw, 48px)'};font-style:normal;font-weight:${t.h1_weight || '800'};letter-spacing:${t.h1_letter_spacing || '-0.02em'};line-height:${t.h1_line_height || '1.15'}">${this._esc(title)}</h1>\n<!-- /wp:heading -->\n`;
+
+    // Subtitle paragraphs
+    subtitleParas.forEach(p => {
+      out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"clamp(16px, 1.5vw, 18px)","lineHeight":"1.65"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"18px"}}}} -->\n`;
+      out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:18px;font-size:clamp(16px, 1.5vw, 18px);line-height:1.65">${this._esc(p)}</p>\n<!-- /wp:paragraph -->\n`;
+    });
+
+    // Tagline
+    if (tagline) {
+      out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontWeight":"600","fontStyle":"normal"},"color":{"text":"${starGold}"},"spacing":{"margin":{"bottom":"20px"}}}} -->\n`;
+      out += `<p class="has-text-color" style="color:${starGold};margin-bottom:20px;font-size:14px;font-style:normal;font-weight:600">${this._esc(tagline)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Buttons
+    const btn1 = buildButton(ctaText, ctaLink, {
+      bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+      fontSize: cfg.buttons?.primary?.font_size || '15px', fontWeight: cfg.buttons?.primary?.font_weight || '600',
+      fontStyle: 'normal', padding: cfg.buttons?.primary?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: cfg.cta_target || '_blank'
+    });
+    const phoneLabel = phone ? 'Call ' + phone : 'Call Us';
+    const btn2 = buildButton(phoneLabel, phoneHref || 'tel:', {
+      bgColor: '#ffffff', textColor: primary, borderRadius: cfg.buttons?.outline?.border_radius || '7px',
+      fontSize: cfg.buttons?.outline?.font_size || '15px', fontWeight: cfg.buttons?.outline?.font_weight || '600',
+      fontStyle: 'normal', borderColor: primary, borderWidth: cfg.buttons?.outline?.border_width || '2px',
+      padding: cfg.buttons?.outline?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: '_self'
+    });
+    out += buildButtons([btn1, btn2], { justify: 'left', margin: { bottom: '18px' } }) + '\n';
+
+    // Proof strip
+    const pId = id();
+    const badges = cfg.trust_badges || [];
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${pId}","tagName":"div","styles":{"borderTopColor":"${cardBorder}","borderTopStyle":"solid","borderTopWidth":"1px","paddingTop":"14px","marginTop":"12px","display":"flex","gap":"clamp(16px, 2.5vw, 32px)","flexWrap":"wrap","alignItems":"center"},"css":".gb-element-${pId}{align-items:center;border-top:1px solid ${cardBorder};display:flex;flex-wrap:wrap;gap:clamp(16px,2.5vw,32px);margin-top:12px;padding-top:14px}","className":"hero-proof-strip"} -->\n`;
+    out += `<div class="gb-element-${pId} hero-proof-strip">\n`;
+    badges.forEach(b => {
+      const txt = (b.emoji ? b.emoji + ' ' : '') + b.text;
+      out += `<!-- wp:paragraph {"style":{"spacing":{"margin":{"bottom":"0px"}},"typography":{"fontSize":"13px","fontWeight":"600"},"color":{"text":"${mutedText}"}},"className":"proof-text"} -->\n`;
+      out += `<p class="proof-text has-text-color" style="color:${mutedText};margin-bottom:0px;font-size:13px;font-weight:600">${this._esc(txt)}</p>\n<!-- /wp:paragraph -->\n`;
+    });
+    out += `</div><!-- /wp:generateblocks/element -->\n`;
+    out += `</div><!-- /wp:generateblocks/element -->\n`; // close hero-card
+
+    // Hero popover (right — checklist)
+    if (checkItems.length > 0) {
+      const ppId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${ppId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderRadius":"16px","borderLeftColor":"${primary}","borderLeftStyle":"solid","borderLeftWidth":"4px","boxShadow":"0 20px 60px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.06)","paddingTop":"28px","paddingBottom":"24px","paddingLeft":"24px","paddingRight":"24px"},"css":".gb-element-${ppId}{background-color:#fff;border-left:4px solid ${primary};border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.18),0 4px 12px rgba(0,0,0,0.06);padding:28px 24px 24px}","className":"hero-popover"} -->\n`;
+      out += `<div class="gb-element-${ppId} hero-popover">\n`;
+      out += `<!-- wp:heading {"level":3,"style":{"typography":{"fontSize":"18px","fontWeight":"800","lineHeight":"1.2","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"16px"}}}} -->\n`;
+      out += `<h3 class="wp-block-heading has-text-color" style="color:${primary};margin-bottom:16px;font-size:18px;font-style:normal;font-weight:800;letter-spacing:-0.02em;line-height:1.2">Our Promise</h3>\n<!-- /wp:heading -->\n`;
+      const ciId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${ciId}","tagName":"div","styles":{"display":"flex","flexDirection":"column","gap":"12px"},"css":".gb-element-${ciId}{display:flex;flex-direction:column;gap:12px}"} -->\n`;
+      out += `<div class="gb-element-${ciId}">\n`;
+      checkItems.forEach(item => {
+        out += `<!-- wp:paragraph {"style":{"spacing":{"margin":{"bottom":"0px"}},"typography":{"fontSize":"14px","lineHeight":"1.6","fontWeight":"600"},"color":{"text":"${darkText}"}},"className":"checklist-item"} -->\n`;
+        out += `<p class="checklist-item has-text-color" style="color:${darkText};margin-bottom:0px;font-size:14px;font-weight:600;line-height:1.6">${this._esc('✓ ' + item)}</p>\n<!-- /wp:paragraph -->\n`;
+      });
+      out += `</div><!-- /wp:generateblocks/element -->\n`;
+      out += `</div><!-- /wp:generateblocks/element -->\n`;
+    }
+
+    out += `</div><!-- /wp:generateblocks/element -->\n`; // close hero-layout
+    out += `</div></div>\n<!-- /wp:cover -->\n\n`;
+
+    // --- SERVICE AREAS GRID ---
+    const saEyebrow = this._val('tplSaEyebrow') || 'SERVICE AREAS';
+    const saHeading = this._val('tplSaSectionHeading');
+    const saDesc = this._val('tplSaSectionDesc');
+    const saLeadIn = this._val('tplSaLeadIn');
+
+    const groups = [];
+    document.querySelectorAll('#tplSaAreasContainer .area-group').forEach(g => {
+      const name = g.querySelector('.area-name')?.value.trim() || '';
+      const url = g.querySelector('.area-url')?.value.trim() || '';
+      const towns = (g.querySelector('.area-towns')?.value || '').split('\n').filter(t => t.trim());
+      const footnote = g.querySelector('.area-footnote')?.value.trim() || '';
+      if (name) groups.push({ name, url, towns, footnote });
+    });
+
+    const sId = id();
+    const siId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${sectionLight}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:${sectionLight};padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"service-areas-section"} -->\n`;
+    out += `<section class="gb-element-${sId} service-areas-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    // Eyebrow
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(saEyebrow)}</p>\n<!-- /wp:paragraph -->\n`;
+
+    // Heading
+    if (saHeading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"8px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:8px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(saHeading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    // Description
+    if (saDesc) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.65"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"16px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:16px;font-size:16px;line-height:1.65">${this._esc(saDesc)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Lead-in
+    if (saLeadIn) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","fontWeight":"700"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"48px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:48px;font-size:16px;font-weight:700">${this._esc(saLeadIn)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Area cards grid
+    if (groups.length > 0) {
+      const cols = Math.min(groups.length, 4);
+      const gcId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${gcId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"repeat(${cols}, 1fr)","gap":"24px","marginBottom":"28px"},"css":".gb-element-${gcId}{display:grid;gap:24px;grid-template-columns:repeat(${cols},1fr);margin-bottom:28px} @media(max-width:768px){.gb-element-${gcId}{grid-template-columns:1fr}}","className":"card-grid"} -->\n`;
+      out += `<div class="gb-element-${gcId} card-grid">\n`;
+
+      groups.forEach(g => {
+        const acId = id();
+        out += `<!-- wp:generateblocks/element {"uniqueId":"${acId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"14px","paddingTop":"32px","paddingBottom":"32px","paddingLeft":"24px","paddingRight":"24px"},"css":".gb-element-${acId}{background-color:#fff;border:1px solid ${cardBorder};border-radius:14px;padding:32px 24px}","className":"area-card"} -->\n`;
+        out += `<div class="gb-element-${acId} area-card">\n`;
+
+        // County heading
+        const headingContent = g.url ? `<a href="${this._esc(g.url)}">${this._esc(g.name)}</a>` : this._esc(g.name);
+        out += `<!-- wp:heading {"textAlign":"center","level":3,"style":{"typography":{"fontSize":"17px","fontWeight":"700","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"16px"}}}} -->\n`;
+        out += `<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:16px;font-size:17px;font-style:normal;font-weight:700">${headingContent}</h3>\n<!-- /wp:heading -->\n`;
+
+        // Towns
+        if (g.towns.length > 0) {
+          const townLines = g.towns.map(t => {
+            const parts = t.split('|');
+            const name = parts[0].trim();
+            const url = parts[1] ? parts[1].trim() : '';
+            return url ? `<a href="${this._esc(url)}">${this._esc(name)}</a>` : this._esc(name);
+          }).join('<br>');
+          const mb = g.footnote ? '12px' : '0px';
+          out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"14px","lineHeight":"2.1"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"${mb}"}}}} -->\n`;
+          out += `<p class="has-text-align-center has-text-color" style="color:${bodyText};margin-bottom:${mb};font-size:14px;line-height:2.1">${townLines}</p>\n<!-- /wp:paragraph -->\n`;
+        }
+
+        // Footnote
+        if (g.footnote) {
+          out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"12px","fontStyle":"italic","lineHeight":"1.5"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+          out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:0px;font-size:12px;font-style:italic;line-height:1.5">${this._esc(g.footnote)}</p>\n<!-- /wp:paragraph -->\n`;
+        }
+
+        out += `</div><!-- /wp:generateblocks/element -->\n`;
+      });
+
+      out += `</div><!-- /wp:generateblocks/element -->\n`;
+    }
+
+    out += `</div><!-- /wp:generateblocks/element --></section><!-- /wp:generateblocks/element -->\n\n`;
+
+    // --- WHY CHOOSE US CARDS ---
+    const whyEyebrow = this._val('tplSaWhyEyebrow') || 'WHY CHOOSE US';
+    const whyHeading = this._val('tplSaWhyHeading');
+    const whySubtitle = this._val('tplSaWhySubtitle');
+    const whyCards = [];
+    document.querySelectorAll('#tplSaWhyCards .tpl-repeater').forEach(r => {
+      const emoji = r.querySelector('.why-emoji')?.value.trim() || '';
+      const title = r.querySelector('.why-title')?.value.trim() || '';
+      const desc = r.querySelector('.why-desc')?.value.trim() || '';
+      if (title) whyCards.push({ emoji, title, desc });
+    });
+
+    if (whyCards.length > 0) {
+      out += this._buildCardSection(cfg, whyEyebrow, whyHeading, whySubtitle, whyCards, '#ffffff', id);
+    }
+
+    // --- REVIEWS ---
+    const includeReviews = this._val('tplSaIncludeReviews');
+    if (includeReviews !== 'no') {
+      const reviews = [];
+      document.querySelectorAll('#tplSaReviewsContainer .tpl-repeater').forEach(r => {
+        const quote = r.querySelector('.review-quote')?.value.trim() || '';
+        const author = r.querySelector('.review-author')?.value.trim() || '';
+        if (quote) reviews.push({ quote, author });
+      });
+      if (reviews.length > 0) {
+        out += this._buildReviewsSection(cfg, reviews, id);
+      }
+    }
+
+    // --- FINAL CTA ---
+    out += this._buildFinalCta(cfg, {
+      eyebrow: this._val('tplSaCtaEyebrow') || 'GET STARTED',
+      heading: this._val('tplSaCtaHeading'),
+      subtitle: this._val('tplSaCtaSubline'),
+      btn1Text: this._val('tplSaCtaBtn1'),
+      btn2Text: this._val('tplSaCtaBtn2')
+    }, id);
+
+    return out;
+  }
+
+  // ===========================================================================
+  //  INDIVIDUAL LOCATION PAGE GENERATOR
+  // ===========================================================================
+  _buildLocationPage(cfg) {
+    const c = cfg.colors || {};
+    const t = cfg.typography || {};
+    const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D';
+    const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937';
+    const mutedText = c.muted_text || '#6B6966';
+    const cardBorder = c.card_border || '#E5E2DD';
+    const sectionLight = c.section_light || '#FAF8F5';
+    const maxW = cfg.section_max_width || '1100px';
+    const phone = cfg.phone || '';
+    const phoneHref = cfg.phone_href || '';
+    const ctaUrl = cfg.cta_url || '/contact/';
+
+    let uid = 1;
+    const id = () => 'lc' + String(uid++).padStart(2, '0');
+
+    const title = this._val('tplLocTitle');
+    const subtitle = this._val('tplLocSubtitle');
+    const serving = this._val('tplLocServing');
+    const locCtaText = this._val('tplLocCtaText') || 'Schedule My Service →';
+    const locCtaUrl = this._val('tplLocCtaUrl') || ctaUrl;
+    const checkItems = this._listItems('tplLocChecklist');
+
+    let out = '';
+
+    // --- HERO (centered card layout) ---
+    out += `<!-- wp:cover {"useFeaturedImage":true,"dimRatio":50,"customOverlayColor":"${darkText}","isUserOverlayColor":true,"sizeSlug":"full","className":"hero-section","style":{"color":{"text":"#ffffff"},"spacing":{"padding":{"top":"${sp.hero_padding_top || 'clamp(100px, 14vw, 200px)'}","bottom":"${sp.hero_padding_bottom || 'clamp(60px, 8vw, 100px)'}","left":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","right":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"}}}} -->\n`;
+    out += `<div class="wp-block-cover hero-section has-text-color" style="color:#ffffff;padding-top:${sp.hero_padding_top || 'clamp(100px, 14vw, 200px)'};padding-right:${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'};padding-bottom:${sp.hero_padding_bottom || 'clamp(60px, 8vw, 100px)'};padding-left:${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"><span aria-hidden="true" class="wp-block-cover__background has-background-dim" style="background-color:${darkText}"></span><div class="wp-block-cover__inner-container">`;
+
+    const hg = cfg.hero || {};
+    const gridCols = hg.grid_columns || '1.3fr 1fr';
+    const gridGap = hg.grid_gap || '32px';
+    const innerMax = hg.inner_max_width || maxW;
+
+    const glId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${glId}","tagName":"div","styles":{"maxWidth":"${innerMax}","marginLeft":"auto","marginRight":"auto","display":"grid","gridTemplateColumns":"${gridCols}","gap":"${gridGap}","alignItems":"start"},"css":".gb-element-${glId}{align-items:start;display:grid;gap:${gridGap};grid-template-columns:${gridCols};margin-left:auto;margin-right:auto;max-width:${innerMax}} @media(max-width:900px){.gb-element-${glId}{grid-template-columns:1fr;max-width:680px}}","className":"hero-layout"} -->\n`;
+    out += `<div class="gb-element-${glId} hero-layout">`;
+
+    // Hero card
+    const hcId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${hcId}","tagName":"div","styles":{"backgroundColor":"rgba(255,254,251,0.97)","borderRadius":"16px","boxShadow":"0 6px 32px rgba(0,0,0,0.12)","paddingTop":"clamp(28px, 3vw, 40px)","paddingBottom":"clamp(22px, 2.5vw, 30px)","paddingLeft":"clamp(24px, 4vw, 48px)","paddingRight":"clamp(24px, 4vw, 48px)"},"css":".gb-element-${hcId}{background-color:rgba(255,254,251,0.97);border-radius:16px;box-shadow:0 6px 32px rgba(0,0,0,0.12);padding:clamp(28px,3vw,40px) clamp(24px,4vw,48px) clamp(22px,2.5vw,30px) clamp(24px,4vw,48px)}","className":"hero-card"} -->\n`;
+    out += `<div class="gb-element-${hcId} hero-card">`;
+
+    // H1
+    out += `<!-- wp:heading {"textAlign":"center","level":1,"style":{"typography":{"fontSize":"${t.h1_size || 'clamp(32px, 5vw, 46px)'}","fontWeight":"${t.h1_weight || '800'}","lineHeight":"${t.h1_line_height || '1.1'}","letterSpacing":"${t.h1_letter_spacing || '-0.025em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"10px"}}}} -->\n`;
+    out += `<h1 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:10px;font-size:${t.h1_size || 'clamp(32px, 5vw, 46px)'};font-style:normal;font-weight:${t.h1_weight || '800'};letter-spacing:${t.h1_letter_spacing || '-0.025em'};line-height:${t.h1_line_height || '1.1'}">${this._esc(title)}</h1>\n<!-- /wp:heading -->\n`;
+
+    // Subtitle (H2)
+    if (subtitle) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'}","lineHeight":"${t.subtitle_line_height || '1.5'}"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:12px;font-size:${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'};line-height:${t.subtitle_line_height || '1.5'}">${this._esc(subtitle)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    // Serving line
+    if (serving) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"13px","lineHeight":"1.6"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"0px","top":"0px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-top:0px;margin-bottom:0px;font-size:13px;line-height:1.6">${this._esc(serving)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Buttons
+    const btn1 = buildButton(locCtaText, locCtaUrl, {
+      bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+      fontSize: cfg.buttons?.primary?.font_size || '15px', fontWeight: cfg.buttons?.primary?.font_weight || '600',
+      fontStyle: 'normal', padding: cfg.buttons?.primary?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: cfg.cta_target || '_blank'
+    });
+    const phoneLabel = phone ? 'Call ' + phone : 'Call Us';
+    const btn2 = buildButton(phoneLabel, phoneHref || 'tel:', {
+      bgColor: 'transparent', textColor: primary, borderRadius: cfg.buttons?.outline?.border_radius || '7px',
+      fontSize: cfg.buttons?.outline?.font_size || '15px', fontWeight: cfg.buttons?.outline?.font_weight || '600',
+      fontStyle: 'normal', borderColor: primary, borderWidth: cfg.buttons?.outline?.border_width || '1.5px',
+      padding: cfg.buttons?.outline?.padding || { top:'14px', bottom:'14px', left:'28px', right:'28px' },
+      target: '_self'
+    });
+    out += buildButtons([btn1, btn2], { justify: 'center', orientation: 'horizontal', flexWrap: 'wrap', margin: { top: '20px' } }) + '\n';
+
+    // Proof strip
+    const badges = cfg.trust_badges || [];
+    const psId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${psId}","tagName":"div","styles":{"display":"flex","alignItems":"center","justifyContent":"center","gap":"clamp(16px, 2.5vw, 32px)","flexWrap":"wrap","marginTop":"12px","paddingTop":"14px","borderTopColor":"${cardBorder}","borderTopStyle":"solid","borderTopWidth":"1px"},"css":".gb-element-${psId}{align-items:center;border-top:1px solid ${cardBorder};display:flex;flex-wrap:wrap;gap:clamp(16px,2.5vw,32px);justify-content:center;margin-top:12px;padding-top:14px}","className":"hero-proof-strip"} -->\n`;
+    out += `<div class="gb-element-${psId} hero-proof-strip">`;
+    badges.forEach(b => {
+      const txt = (b.emoji ? b.emoji + ' ' : '') + b.text;
+      out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"13px","fontWeight":"600"},"color":{"text":"#444444"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+      out += `<p class="has-text-color" style="color:#444444;margin-bottom:0px;font-size:13px;font-weight:600">${this._esc(txt)}</p>\n<!-- /wp:paragraph -->\n`;
+    });
+    out += `</div>\n<!-- /wp:generateblocks/element -->`;
+    out += `</div>\n<!-- /wp:generateblocks/element -->\n`; // close hero-card
+
+    // What You Get popover
+    if (checkItems.length > 0) {
+      const wpId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${wpId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderRadius":"16px","boxShadow":"0 20px 60px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.06)","borderLeftColor":"${primary}","borderLeftStyle":"solid","borderLeftWidth":"4px","paddingTop":"28px","paddingBottom":"24px","paddingLeft":"24px","paddingRight":"24px"},"css":".gb-element-${wpId}{background-color:#fff;border-left:4px solid ${primary};border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.18),0 4px 12px rgba(0,0,0,0.06);padding:28px 24px 24px}","className":"hero-popover"} -->\n`;
+      out += `<div class="gb-element-${wpId} hero-popover">`;
+      out += `<!-- wp:heading {"level":3,"style":{"typography":{"fontSize":"${t.h3_size || 'clamp(16px, 1.8vw, 20px)'}","fontWeight":"700","textTransform":"uppercase","letterSpacing":"1.5px","fontStyle":"normal","lineHeight":"1.2"},"spacing":{"margin":{"bottom":"16px","top":"0px"}},"color":{"text":"${primary}"}}} -->\n`;
+      out += `<h3 class="wp-block-heading has-text-color" style="color:${primary};margin-top:0px;margin-bottom:16px;font-size:${t.h3_size || 'clamp(16px, 1.8vw, 20px)'};font-style:normal;font-weight:700;letter-spacing:1.5px;line-height:1.2;text-transform:uppercase">What You Get</h3>\n<!-- /wp:heading -->\n`;
+      const ckId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${ckId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"1fr","gap":"10px"},"css":".gb-element-${ckId}{display:grid;gap:10px;grid-template-columns:1fr}"} -->\n`;
+      out += `<div class="gb-element-${ckId}">`;
+      checkItems.forEach(item => {
+        out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","lineHeight":"1.5"},"spacing":{"margin":{"bottom":"0px"}},"color":{"text":"${bodyText}"}}} -->\n`;
+        out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:0px;font-size:14px;line-height:1.5"><span style="color:${primary};font-weight:700">✓</span> ${this._esc(item)}</p>\n<!-- /wp:paragraph -->\n`;
+      });
+      out += `</div>\n<!-- /wp:generateblocks/element -->`;
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    }
+
+    out += `</div>\n<!-- /wp:generateblocks/element --></div></div>\n<!-- /wp:cover -->\n`;
+
+    // --- THE CHALLENGE SECTION ---
+    const chalEyebrow = this._val('tplLocChalEyebrow') || 'The Challenge';
+    const chalHeading = this._val('tplLocChalHeading');
+    const chalParas = this._paras('tplLocChalContent');
+    if (chalHeading || chalParas.length > 0) {
+      out += this._buildTextSection(cfg, chalEyebrow, chalHeading, chalParas, sectionLight, 'intro-section', id, locCtaUrl);
+    }
+
+    // --- OUR COMMUNITY SECTION ---
+    const commEyebrow = this._val('tplLocCommEyebrow') || 'Our Community';
+    const commHeading = this._val('tplLocCommHeading');
+    const commIntro = this._val('tplLocCommIntro');
+    const mapUrl = this._val('tplLocMapUrl');
+    const commParas = this._paras('tplLocCommDetail');
+    if (commHeading) {
+      out += this._buildCommunitySection(cfg, commEyebrow, commHeading, commIntro, mapUrl, commParas, id, locCtaUrl);
+    }
+
+    // --- LOCAL PEST CHALLENGES ---
+    const pestEyebrow = this._val('tplLocPestEyebrow') || 'Local Challenges';
+    const pestHeading = this._val('tplLocPestHeading');
+    const pestIntroParas = this._paras('tplLocPestIntro');
+    const pestRows = [];
+    document.querySelectorAll('#tplLocPestRows .tpl-repeater').forEach(r => {
+      const emoji = r.querySelector('.pest-emoji')?.value.trim() || '';
+      const name = r.querySelector('.pest-name')?.value.trim() || '';
+      const url = r.querySelector('.pest-url')?.value.trim() || '';
+      const desc = r.querySelector('.pest-desc')?.value.trim() || '';
+      if (name) pestRows.push({ emoji, name, url, desc });
+    });
+    const sidebarItems = this._listItems('tplLocSidebarItems');
+    const sidebarTitle = this._val('tplLocSidebarTitle');
+    const pestClosing = this._val('tplLocPestClosing');
+    if (pestHeading || pestRows.length > 0) {
+      out += this._buildPestSection(cfg, pestEyebrow, pestHeading, pestIntroParas, pestRows, sidebarTitle, sidebarItems, pestClosing, id, locCtaUrl);
+    }
+
+    // --- SERVICES GRID ---
+    const svcEyebrow = this._val('tplLocSvcEyebrow') || 'Our Services';
+    const svcHeading = this._val('tplLocSvcHeading');
+    const svcSub1 = this._val('tplLocSvcSub1');
+    const svcSub2 = this._val('tplLocSvcSub2');
+    const services = [];
+    document.querySelectorAll('#tplLocServices .tpl-repeater').forEach(r => {
+      const emoji = r.querySelector('.svc-emoji')?.value.trim() || '';
+      const title = r.querySelector('.svc-title')?.value.trim() || '';
+      const subtitle = r.querySelector('.svc-subtitle')?.value.trim() || '';
+      const url = r.querySelector('.svc-url')?.value.trim() || '';
+      if (title) services.push({ emoji, title, subtitle, url });
+    });
+    if (services.length > 0) {
+      out += this._buildServicesGrid(cfg, svcEyebrow, svcHeading, svcSub1, svcSub2, services, id);
+    }
+
+    // --- FINAL CTA ---
+    out += this._buildFinalCta(cfg, {
+      eyebrow: this._val('tplLocCtaEyebrow') || 'PROTECT YOUR HOME',
+      heading: this._val('tplLocCtaHeading'),
+      subtitle: this._val('tplLocCtaSubline')
+    }, id);
+
+    return out;
+  }
+
+  // ===========================================================================
+  //  SHARED SECTION BUILDERS
+  // ===========================================================================
+
+  _buildTextSection(cfg, eyebrow, heading, paras, bg, className, id, ctaUrl) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const darkText = c.dark_text || '#151413'; const bodyText = c.body_text || '#3A3937';
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"${sp.section_padding_y || 'clamp(48px, 7vw, 80px)'}","paddingBottom":"${sp.section_padding_y || 'clamp(48px, 7vw, 80px)'}","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:${bg};padding:${sp.section_padding_y || 'clamp(48px,7vw,80px)'} ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"${className}"} -->\n`;
+    out += `<section class="gb-element-${sId} ${className}"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"780px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:780px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(eyebrow)}</p>\n<!-- /wp:paragraph -->\n`;
+
+    if (heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:32px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    paras.forEach(p => {
+      out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"16px","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"18px"}}}} -->\n`;
+      out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:18px;font-size:16px;line-height:1.7">${this._esc(p)}</p>\n<!-- /wp:paragraph -->\n`;
+    });
+
+    out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+
+    // CTA button
+    if (ctaUrl) {
+      const btn = buildButton('Get My Free Inspection →', ctaUrl, {
+        bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+        fontSize: '14px', fontWeight: '600', fontStyle: 'normal',
+        padding: { top:'12px', bottom:'12px', left:'28px', right:'28px' },
+        target: cfg.cta_target || '_blank'
+      });
+      out += buildButtons([btn], { justify: 'center' }) + '\n';
+    }
+
+    out += `</section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  _buildCommunitySection(cfg, eyebrow, heading, intro, mapUrl, paras, id, ctaUrl) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937'; const mutedText = c.muted_text || '#6B6966';
+    const sId = id(); const siId = id();
+
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"#ffffff","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:#fff;padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"history-section"} -->\n`;
+    out += `<section class="gb-element-${sId} history-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(eyebrow)}</p>\n<!-- /wp:paragraph -->\n`;
+
+    out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+    out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:32px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(heading)}</h2>\n<!-- /wp:heading -->\n`;
+
+    if (intro) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'}","lineHeight":"1.7"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:32px;font-size:${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'};line-height:1.7">${this._esc(intro)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Map embed
+    if (mapUrl) {
+      const mwId = id(); const mfId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${mwId}","tagName":"div","styles":{"marginBottom":"48px"},"css":".gb-element-${mwId}{margin-bottom:48px}","className":"map-inset-wrap"} -->\n`;
+      out += `<div class="gb-element-${mwId} map-inset-wrap"><!-- wp:generateblocks/element {"uniqueId":"${mfId}","tagName":"div","styles":{"borderRadius":"14px","overflow":"hidden","boxShadow":"0 4px 24px rgba(0,0,0,0.08)","marginBottom":"20px"},"css":".gb-element-${mfId}{border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,0.08);margin-bottom:20px;overflow:hidden}"} -->\n`;
+      out += `<div class="gb-element-${mfId}"><!-- wp:html -->\n`;
+      out += `<iframe src="${this._esc(mapUrl)}" style="width:100%;height:400px;border:0;display:block" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Service area map"></iframe>\n`;
+      out += `<!-- /wp:html --></div>\n<!-- /wp:generateblocks/element -->\n`;
+
+      // CTA below map
+      const btn = buildButton('Get My Free Inspection →', ctaUrl || cfg.cta_url || '/contact/', {
+        bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+        fontSize: '14px', fontWeight: '600', fontStyle: 'normal',
+        padding: { top:'12px', bottom:'12px', left:'28px', right:'28px' },
+        target: cfg.cta_target || '_blank'
+      });
+      out += buildButtons([btn], { justify: 'center' }) + '\n';
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    }
+
+    // Detail paragraphs
+    if (paras.length > 0) {
+      const dtId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${dtId}","tagName":"div","styles":{"marginBottom":"0px"},"css":".gb-element-${dtId}{margin-bottom:0px}","className":"community-text-columns"} -->\n`;
+      out += `<div class="gb-element-${dtId} community-text-columns">\n`;
+      paras.forEach(p => {
+        out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"16px","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"20px"}}}} -->\n`;
+        out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:20px;font-size:16px;line-height:1.7">${this._esc(p)}</p>\n<!-- /wp:paragraph -->\n`;
+      });
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    }
+
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  _buildPestSection(cfg, eyebrow, heading, introParas, pestRows, sidebarTitle, sidebarItems, closing, id, ctaUrl) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937'; const mutedText = c.muted_text || '#6B6966';
+    const cardBorder = c.card_border || '#E5E2DD'; const sectionLight = c.section_light || '#FAF8F5';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${sectionLight}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","position":"relative"},"css":".gb-element-${sId}{background-color:${sectionLight};position:relative;padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"problems-section"} -->\n`;
+    out += `<section class="gb-element-${sId} problems-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(eyebrow)}</p>\n<!-- /wp:paragraph -->\n`;
+
+    if (heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"20px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:20px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    introParas.forEach(p => {
+      out += `<!-- wp:paragraph {"align":"left","style":{"typography":{"fontSize":"${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'}","lineHeight":"1.7"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"48px"}}}} -->\n`;
+      out += `<p class="has-text-align-left has-text-color" style="color:${mutedText};margin-bottom:48px;font-size:${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'};line-height:1.7">${this._esc(p)}</p>\n<!-- /wp:paragraph -->\n`;
+    });
+
+    // Content grid (pest rows + sidebar)
+    if (pestRows.length > 0 || sidebarItems.length > 0) {
+      const pgId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${pgId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"1fr 320px","gap":"48px","alignItems":"start","marginBottom":"40px"},"css":".gb-element-${pgId}{align-items:start;display:grid;gap:48px;grid-template-columns:1fr 320px;margin-bottom:40px} @media(max-width:768px){.gb-element-${pgId}{grid-template-columns:1fr}}","className":"pest-content-grid"} -->\n`;
+      out += `<div class="gb-element-${pgId} pest-content-grid">\n`;
+
+      // Pest rows
+      const plId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${plId}","tagName":"div","styles":{"display":"flex","flexDirection":"column","gap":"0px"},"css":".gb-element-${plId}{display:flex;flex-direction:column;gap:0}","className":"problems-list"} -->\n`;
+      out += `<div class="gb-element-${plId} problems-list">\n`;
+
+      pestRows.forEach((pest, idx) => {
+        const isLast = idx === pestRows.length - 1;
+        const prId = id();
+        const borderCss = isLast ? '' : `border-bottom:1px solid ${cardBorder};`;
+        const mb = isLast ? '0' : '28px';
+        const pb = isLast ? '0' : '28px';
+        out += `<!-- wp:generateblocks/element {"uniqueId":"${prId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"52px 1fr","gap":"24px","alignItems":"start","paddingBottom":"${pb}px","marginBottom":"${mb}px"${isLast ? '' : ',"borderBottomColor":"' + cardBorder + '","borderBottomStyle":"solid","borderBottomWidth":"1px"'}},"css":".gb-element-${prId}{align-items:start;${borderCss}display:grid;gap:24px;grid-template-columns:52px 1fr;margin-bottom:${mb}px;padding-bottom:${pb}px}","className":"pest-row"} -->\n`;
+        out += `<div class="gb-element-${prId} pest-row">\n`;
+
+        // Icon
+        const icId = id();
+        out += `<!-- wp:generateblocks/element {"uniqueId":"${icId}","tagName":"div","styles":{"width":"52px","height":"52px","display":"flex","alignItems":"center","justifyContent":"center","backgroundColor":"rgba(196, 40, 45, 0.06)","borderRadius":"12px"},"css":".gb-element-${icId}{align-items:center;background-color:rgba(196,40,45,0.06);border-radius:12px;display:flex;height:52px;justify-content:center;width:52px}","className":"pest-icon"} -->\n`;
+        out += `<div class="gb-element-${icId} pest-icon"><!-- wp:paragraph {"style":{"typography":{"fontSize":"26px"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<p style="margin-bottom:0px;font-size:26px">${pest.emoji}</p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:generateblocks/element -->\n`;
+
+        // Text
+        const txId = id();
+        out += `<!-- wp:generateblocks/element {"uniqueId":"${txId}","tagName":"div","className":"gb-element-${txId}"} -->\n<div class="gb-element-${txId}">\n`;
+        const nameHtml = pest.url ? `<a href="${this._esc(pest.url)}" class="card-link">${this._esc(pest.name)}</a>` : this._esc(pest.name);
+        out += `<!-- wp:heading {"level":3,"style":{"typography":{"fontSize":"clamp(16px, 1.5vw, 19px)","fontWeight":"700","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"6px"}}}} -->\n`;
+        out += `<h3 class="wp-block-heading has-text-color" style="color:${darkText};margin-bottom:6px;font-size:clamp(16px, 1.5vw, 19px);font-style:normal;font-weight:700">${nameHtml}</h3>\n<!-- /wp:heading -->\n`;
+        if (pest.desc) {
+          out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","lineHeight":"1.6"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+          out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:0px;font-size:14px;line-height:1.6">${this._esc(pest.desc)}</p>\n<!-- /wp:paragraph -->\n`;
+        }
+        out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+        out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+      });
+
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+
+      // Sidebar
+      if (sidebarItems.length > 0) {
+        const sbId = id();
+        out += `<!-- wp:generateblocks/element {"uniqueId":"${sbId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"14px","paddingTop":"24px","paddingBottom":"24px","paddingLeft":"24px","paddingRight":"24px","position":"sticky","top":"120px","borderLeftColor":"${primary}","borderLeftWidth":"4px"},"css":".gb-element-${sbId}{background-color:#fff;border:1px solid ${cardBorder};border-left:4px solid ${primary};border-radius:14px;padding:24px;position:sticky;top:120px} @media(max-width:768px){.gb-element-${sbId}{position:static}}","className":"concerns-sidebar"} -->\n`;
+        out += `<div class="gb-element-${sbId} concerns-sidebar">\n`;
+        if (sidebarTitle) {
+          out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"13px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"1px"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"14px"}}}} -->\n`;
+          out += `<p class="has-text-color" style="color:${darkText};margin-bottom:14px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase">${this._esc(sidebarTitle)}</p>\n<!-- /wp:paragraph -->\n`;
+        }
+        sidebarItems.forEach((item, idx) => {
+          const mb = idx < sidebarItems.length - 1 ? '10px' : '0px';
+          out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"13px","lineHeight":"1.6"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"${mb}"}}}} -->\n`;
+          out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:${mb};font-size:13px;line-height:1.6"><span style="color:${primary};font-weight:700">•</span> ${this._esc(item)}</p>\n<!-- /wp:paragraph -->\n`;
+        });
+        out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+      }
+
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    }
+
+    // Closing + CTA
+    if (closing) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'}","lineHeight":"1.7"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:0px;font-size:${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'};line-height:1.7">${this._esc(closing)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+    const btn = buildButton('Schedule Service Today →', ctaUrl || cfg.cta_url || '/contact/', {
+      bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+      fontSize: cfg.buttons?.primary?.font_size || '15px', fontWeight: cfg.buttons?.primary?.font_weight || '600',
+      fontStyle: 'normal', padding: cfg.buttons?.primary?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: cfg.cta_target || '_blank'
+    });
+    out += buildButtons([btn], { justify: 'center', margin: { top: '28px' } }) + '\n';
+
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  _buildServicesGrid(cfg, eyebrow, heading, sub1, sub2, services, id) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const darkText = c.dark_text || '#151413';
+    const mutedText = c.muted_text || '#6B6966'; const cardBorder = c.card_border || '#E5E2DD';
+    const sectionLight = c.section_light || '#FAF8F5';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"#ffffff","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:#fff;padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"services-section"} -->\n`;
+    out += `<section class="gb-element-${sId} services-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(eyebrow)}</p>\n<!-- /wp:paragraph -->\n`;
+
+    if (heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"20px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:20px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    if (sub1) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'}","lineHeight":"1.7"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:12px;font-size:${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'};line-height:1.7">${this._esc(sub1)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+    if (sub2) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'}","lineHeight":"1.7"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"48px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:48px;font-size:${t.subtitle_size || 'clamp(15px, 1.2vw, 17px)'};line-height:1.7">${this._esc(sub2)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Services grid (4-col)
+    const sgId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${sgId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"repeat(4, 1fr)","gap":"16px"},"css":".gb-element-${sgId}{display:grid;gap:16px;grid-template-columns:repeat(4,1fr)} @media(max-width:1024px){.gb-element-${sgId}{grid-template-columns:repeat(3,1fr)}} @media(max-width:768px){.gb-element-${sgId}{grid-template-columns:repeat(2,1fr)}}","className":"services-grid"} -->\n`;
+    out += `<div class="gb-element-${sgId} services-grid">\n`;
+
+    services.forEach(svc => {
+      const scId = id(); const icId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${scId}","tagName":"div","styles":{"backgroundColor":"${sectionLight}","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"10px","paddingTop":"28px","paddingBottom":"28px","paddingLeft":"20px","paddingRight":"20px","textAlign":"center"},"css":".gb-element-${scId}{background-color:${sectionLight};border:1px solid ${cardBorder};border-radius:10px;padding:28px 20px;text-align:center}","className":"service-card"} -->\n`;
+      out += `<div class="gb-element-${scId} service-card">\n`;
+
+      // Icon
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${icId}","tagName":"div","styles":{"width":"56px","height":"56px","marginLeft":"auto","marginRight":"auto","marginBottom":"14px","display":"flex","alignItems":"center","justifyContent":"center","backgroundColor":"rgba(196, 40, 45, 0.06)","borderRadius":"14px"},"css":".gb-element-${icId}{align-items:center;background-color:rgba(196,40,45,0.06);border-radius:14px;display:flex;height:56px;justify-content:center;margin:0 auto 14px;width:56px}","className":"svc-icon"} -->\n`;
+      out += `<div class="gb-element-${icId} svc-icon"><!-- wp:paragraph {"style":{"typography":{"fontSize":"28px"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+      out += `<p style="margin-bottom:0px;font-size:28px">${svc.emoji}</p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:generateblocks/element -->\n`;
+
+      // Title
+      const titleHtml = svc.url ? `<a href="${this._esc(svc.url)}" class="card-link">${this._esc(svc.title)}</a>` : this._esc(svc.title);
+      out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontWeight":"700"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"4px"}}}} -->\n`;
+      out += `<p class="has-text-color" style="color:${darkText};margin-bottom:4px;font-size:14px;font-weight:700">${titleHtml}</p>\n<!-- /wp:paragraph -->\n`;
+
+      // Subtitle
+      if (svc.subtitle) {
+        out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"12px","lineHeight":"1.4"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<p class="has-text-color" style="color:${mutedText};margin-bottom:0px;font-size:12px;line-height:1.4">${this._esc(svc.subtitle)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    });
+
+    out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  _buildCardSection(cfg, eyebrow, heading, subtitle, cards, bg, id) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937'; const mutedText = c.muted_text || '#6B6966';
+    const cardBorder = c.card_border || '#E5E2DD';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"why-section"} -->\n`;
+    out += `<section class="gb-element-${sId} why-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(eyebrow)}</p>\n<!-- /wp:paragraph -->\n`;
+
+    if (heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"8px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:8px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    if (subtitle) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.65"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"40px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:40px;font-size:16px;line-height:1.65">${this._esc(subtitle)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Cards grid
+    const cols = Math.min(cards.length, 4);
+    const gcId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${gcId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"repeat(${cols}, 1fr)","gap":"24px","marginBottom":"28px"},"css":".gb-element-${gcId}{display:grid;gap:24px;grid-template-columns:repeat(${cols},1fr);margin-bottom:28px} @media(max-width:768px){.gb-element-${gcId}{grid-template-columns:1fr}}","className":"card-grid"} -->\n`;
+    out += `<div class="gb-element-${gcId} card-grid">\n`;
+
+    cards.forEach(card => {
+      const ccId = id(); const icId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${ccId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"14px","paddingTop":"24px","paddingBottom":"24px","paddingLeft":"24px","paddingRight":"24px","borderTopColor":"${primary}","borderTopWidth":"3px"},"css":".gb-element-${ccId}{background-color:#fff;border:1px solid ${cardBorder};border-radius:14px;border-top:3px solid ${primary};padding:24px}","className":"solution-card"} -->\n`;
+      out += `<div class="gb-element-${ccId} solution-card">\n`;
+
+      // Icon
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${icId}","tagName":"div","styles":{"width":"44px","height":"44px","display":"flex","alignItems":"center","justifyContent":"center","backgroundColor":"rgba(196, 40, 45, 0.06)","borderRadius":"10px","marginBottom":"12px"},"css":".gb-element-${icId}{align-items:center;background-color:rgba(196,40,45,0.06);border-radius:10px;display:flex;height:44px;justify-content:center;margin-bottom:12px;width:44px}","className":"sol-icon"} -->\n`;
+      out += `<div class="gb-element-${icId} sol-icon"><!-- wp:paragraph {"style":{"typography":{"fontSize":"22px"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+      out += `<p style="margin-bottom:0px;font-size:22px">${card.emoji}</p><!-- /wp:paragraph --></div><!-- /wp:generateblocks/element -->\n`;
+
+      // Title
+      out += `<!-- wp:heading {"level":3,"style":{"typography":{"fontSize":"16px","fontWeight":"800","lineHeight":"1.2","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"8px"}}}} -->\n`;
+      out += `<h3 class="wp-block-heading has-text-color" style="color:${darkText};margin-bottom:8px;font-size:16px;font-style:normal;font-weight:800;letter-spacing:-0.02em;line-height:1.2">${this._esc(card.title)}</h3><!-- /wp:heading -->\n`;
+
+      if (card.desc) {
+        out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:0px;font-size:14px;line-height:1.7">${this._esc(card.desc)}</p><!-- /wp:paragraph -->\n`;
+      }
+
+      out += `</div><!-- /wp:generateblocks/element -->\n`;
+    });
+
+    out += `</div><!-- /wp:generateblocks/element -->\n`;
+    out += `</div><!-- /wp:generateblocks/element --></section><!-- /wp:generateblocks/element -->\n\n`;
+    return out;
+  }
+
+  _buildReviewsSection(cfg, reviews, id) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937'; const cardBorder = c.card_border || '#E5E2DD';
+    const sectionLight = c.section_light || '#FAF8F5';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${sectionLight}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:${sectionLight};padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"reviews-section"} -->\n`;
+    out += `<section class="gb-element-${sId} reviews-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">TESTIMONIALS</p>\n<!-- /wp:paragraph -->\n`;
+
+    out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"40px"}}}} -->\n`;
+    out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:40px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">What Our Customers Say</h2>\n<!-- /wp:heading -->\n`;
+
+    const cols = Math.min(reviews.length, 3);
+    const rgId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${rgId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"repeat(${cols}, 1fr)","gap":"24px","marginBottom":"28px"},"css":".gb-element-${rgId}{display:grid;gap:24px;grid-template-columns:repeat(${cols},1fr);margin-bottom:28px} @media(max-width:768px){.gb-element-${rgId}{grid-template-columns:1fr}}","className":"card-grid"} -->\n`;
+    out += `<div class="gb-element-${rgId} card-grid">\n`;
+
+    reviews.forEach(r => {
+      const rcId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${rcId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"14px","paddingTop":"28px","paddingBottom":"28px","paddingLeft":"24px","paddingRight":"24px"},"css":".gb-element-${rcId}{background-color:#fff;border:1px solid ${cardBorder};border-radius:14px;padding:28px 24px}","className":"review-card"} -->\n`;
+      out += `<div class="gb-element-${rcId} review-card">\n`;
+
+      // Stars
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${primary};margin-bottom:12px;font-size:16px">&#11088;&#11088;&#11088;&#11088;&#11088;</p>\n<!-- /wp:paragraph -->\n`;
+
+      // Quote
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"14px","fontStyle":"italic","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"16px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${bodyText};margin-bottom:16px;font-size:14px;font-style:italic;line-height:1.7">"${this._esc(r.quote)}"</p>\n<!-- /wp:paragraph -->\n`;
+
+      // Author
+      if (r.author) {
+        out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"13px","fontWeight":"700"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<p class="has-text-align-center has-text-color" style="color:${darkText};margin-bottom:0px;font-size:13px;font-weight:700">${this._esc(r.author)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      out += `</div><!-- /wp:generateblocks/element -->\n`;
+    });
+
+    out += `</div><!-- /wp:generateblocks/element -->\n`;
+
+    // View All Reviews button
+    const btn = buildButton('View All Reviews', '/reviews/', {
+      bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+      fontSize: cfg.buttons?.primary?.font_size || '15px', fontWeight: cfg.buttons?.primary?.font_weight || '600',
+      fontStyle: 'normal', padding: cfg.buttons?.primary?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: '_self'
+    });
+    out += buildButtons([btn], { justify: 'center' }) + '\n';
+
+    out += `</div><!-- /wp:generateblocks/element --></section><!-- /wp:generateblocks/element -->\n\n`;
+    return out;
+  }
+
+  _buildFinalCta(cfg, data, id) {
+    const c = cfg.colors || {}; const t = cfg.typography || {}; const sp = cfg.spacing || {};
+    const primary = c.primary || '#C4282D'; const sectionDark = c.section_dark || '#151413';
+    const starGold = c.star_gold || '#D4A843';
+    const phone = cfg.phone || ''; const phoneHref = cfg.phone_href || '';
+    const ctaUrl = cfg.cta_url || '/contact/';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${sectionDark}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}","paddingRight":"${sp.section_padding_x || 'clamp(20px, 5vw, 60px)'}"},"css":".gb-element-${sId}{background-color:${sectionDark};padding:clamp(56px,8vw,100px) ${sp.section_padding_x || 'clamp(20px,5vw,60px)'}}","className":"final-cta-section"} -->\n`;
+    out += `<section class="gb-element-${sId} final-cta-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"760px","marginLeft":"auto","marginRight":"auto","textAlign":"center"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:760px;text-align:center}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"11px","fontWeight":"700","textTransform":"uppercase","letterSpacing":"2.5px"},"color":{"text":"${starGold}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+    out += `<p class="has-text-align-center has-text-color" style="color:${starGold};margin-bottom:12px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase">${this._esc(data.eyebrow || 'GET STARTED')}</p>\n<!-- /wp:paragraph -->\n`;
+
+    if (data.heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"${t.h2_line_height || '1.15'}","letterSpacing":"${t.h2_letter_spacing || '-0.02em'}","fontStyle":"normal"},"color":{"text":"#ffffff"},"spacing":{"margin":{"bottom":"8px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#ffffff;margin-bottom:8px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:${t.h2_letter_spacing || '-0.02em'};line-height:${t.h2_line_height || '1.15'}">${this._esc(data.heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    if (data.subtitle) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.65"},"color":{"text":"#ffffff"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:#ffffff;margin-bottom:32px;font-size:16px;line-height:1.65">${this._esc(data.subtitle)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // CTA buttons
+    const phoneLabel = data.btn1Text || (phone ? '📞 Call ' + phone : '📞 Call Us');
+    const quoteLabel = data.btn2Text || 'Request Quote Online';
+    const btn1 = buildButton(phoneLabel, phoneHref || 'tel:', {
+      bgColor: primary, textColor: '#ffffff', borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+      fontSize: cfg.buttons?.primary?.font_size || '15px', fontWeight: cfg.buttons?.primary?.font_weight || '600',
+      fontStyle: 'normal', padding: cfg.buttons?.primary?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: '_self'
+    });
+    const btn2 = buildButton(quoteLabel, ctaUrl, {
+      bgColor: '#ffffff', textColor: sectionDark, borderRadius: cfg.buttons?.primary?.border_radius || '7px',
+      fontSize: cfg.buttons?.primary?.font_size || '15px', fontWeight: cfg.buttons?.primary?.font_weight || '600',
+      fontStyle: 'normal', padding: cfg.buttons?.primary?.padding || { top:'15px', bottom:'15px', left:'32px', right:'32px' },
+      target: cfg.cta_target || '_blank'
+    });
+    out += buildButtons([btn1, btn2], { justify: 'center', orientation: 'vertical' }) + '\n';
+
+    out += `</div><!-- /wp:generateblocks/element --></section><!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  // ---- Render preview ----
+  _renderPreview() {
+    const body = document.getElementById('templatesPreviewBody');
+    const copyBtn = document.getElementById('btnTemplateCopy');
+    const dlBtn = document.getElementById('btnTemplateDownload');
+    if (!this._outputCode) {
+      body.innerHTML = '<div class="converter-preview-empty"><p>Select a template and fill in the fields to generate page code.</p></div>';
+      if (copyBtn) copyBtn.style.display = 'none';
+      if (dlBtn) dlBtn.style.display = 'none';
+      return;
+    }
+    if (this._previewMode === 'code') {
+      body.innerHTML = '<pre class="converter-code-output"></pre>';
+      body.querySelector('pre').textContent = this._outputCode;
+      if (copyBtn) copyBtn.style.display = '';
+      if (dlBtn) dlBtn.style.display = '';
+    } else {
+      // Simple visual preview
+      body.innerHTML = '<div style="padding:16px;font-size:12px;color:rgba(255,255,255,0.5)">Visual preview coming soon. Use Code tab to view and copy the generated markup.</div>';
+      if (copyBtn) copyBtn.style.display = 'none';
+      if (dlBtn) dlBtn.style.display = 'none';
+    }
+  }
+
+  _copy() {
+    if (!this._outputCode) return;
+    navigator.clipboard.writeText(this._outputCode).then(() => {
+      const btn = document.getElementById('btnTemplateCopy');
+      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy All'; }, 2000); }
+      if (typeof showToast === 'function') showToast('Page code copied to clipboard', 'success');
+    });
+  }
+
+  _download() {
+    if (!this._outputCode) return;
+    const blob = new Blob([this._outputCode], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (this._template || 'page') + '-template.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  _esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+}
+
+
+// ---------------------------------------------------------------------------
 // App Initialization
 // ---------------------------------------------------------------------------
 function initApp() {
@@ -8204,8 +9509,12 @@ function initApp() {
   const heroConverterView = new HeroConverterView();
   heroConverterView.init();
 
+  // Template manager (Page Maker mode)
+  const templateManager = new TemplateManager();
+  templateManager.init();
+
   // Wire up global references
-  window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView };
+  window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView, templateManager };
 
   // --- Sidebar buttons ---
   const btnSaveClient = document.getElementById('btnSaveClient');
