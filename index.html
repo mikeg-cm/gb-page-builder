@@ -4231,6 +4231,7 @@ function buildHeroConverterSection(config, data, idEngine) {
   // --- Cover wrapper ---
   var coverJson = {
     useFeaturedImage: true,
+    dimRatio: 100,
     customOverlayColor: data.overlayColor || '#151413',
     isUserOverlayColor: false,
     minHeight: 650,
@@ -9449,7 +9450,7 @@ class HeroConverterView {
     const c = config.colors || {};
     const primary = c.primary || '#C4282D';
     let out = '';
-    out += `<!-- wp:cover {"useFeaturedImage":true,"customOverlayColor":"#151413","isUserOverlayColor":true,"minHeight":650,"minHeightUnit":"px","customGradient":"linear-gradient(180deg,rgba(21,20,19,0.55) 0%,rgba(21,20,19,0.7) 100%)","isDark":false,"align":"full","className":"is-light","style":{"color":{"text":"#ffffff"},"spacing":{"padding":{"top":"100px","bottom":"100px"}}}} -->\n`;
+    out += `<!-- wp:cover {"useFeaturedImage":true,"dimRatio":100,"customOverlayColor":"#151413","isUserOverlayColor":true,"minHeight":650,"minHeightUnit":"px","customGradient":"linear-gradient(180deg,rgba(21,20,19,0.55) 0%,rgba(21,20,19,0.7) 100%)","isDark":false,"align":"full","className":"is-light","style":{"color":{"text":"#ffffff"},"spacing":{"padding":{"top":"100px","bottom":"100px"}}}} -->\n`;
     out += `<div class="wp-block-cover alignfull is-light has-text-color" style="color:#ffffff;padding-top:100px;padding-bottom:100px;min-height:650px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim has-background-gradient" style="background-color:#151413;background:linear-gradient(180deg,rgba(21,20,19,0.55) 0%,rgba(21,20,19,0.7) 100%)"></span><div class="wp-block-cover__inner-container">\n`;
     out += `<!-- wp:heading {"level":1} -->\n<h1 class="wp-block-heading">${this._escHtml(d.h1)}</h1>\n<!-- /wp:heading -->\n`;
     out += `</div></div>\n<!-- /wp:cover -->\n`;
