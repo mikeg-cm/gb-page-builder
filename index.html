@@ -8647,19 +8647,52 @@ class HeroConverterView {
     // Build full output — replace within page or output cards only
     let output;
     if (this._svcGridStartIdx >= 0 && this._svcGridEndIdx >= 0) {
-      // Replace just the cards inside the grid (keep grid wrapper)
-      // Find where the first card starts and last card ends inside the grid
-      const gridOpenEnd = this._svcGridStartIdx;
-      // Find the inner div line after the grid comment
-      let gridInnerStart = gridOpenEnd + 1;
-      // Find the closing of the grid div
-      let gridCloseStart = this._svcGridEndIdx;
+      // Strategy: find the grid wrapper open (comment + div) and close (div + comment).
+      // Replace everything BETWEEN them with the new cards.
+      // The grid comment is on line _svcGridStartIdx.
+      // The grid <div> may be on the same or next line — and may share a line with the first card comment.
 
-      // Rebuild: grid open lines + new cards + grid close lines
-      const before = this._fullLines.slice(0, gridInnerStart + 1); // includes grid open div
-      const after = this._fullLines.slice(gridCloseStart); // includes grid close div + rest
+      const before = this._fullLines.slice(0, this._svcGridStartIdx);
+      const gridCommentLine = this._fullLines[this._svcGridStartIdx];
 
-      output = before.join('\n') + '\n' + cardsOut + after.join('\n');
+      // Find the grid's <div> opening — extract just the grid wrapper part
+      let gridOpenMarkup = gridCommentLine + '\n';
+
+      // Check if the <div> is on a separate line
+      const nextLine = this._fullLines[this._svcGridStartIdx + 1] || '';
+      if (!gridCommentLine.includes('<div')) {
+        // Comment and div on separate lines — but the div line may also contain card comments
+        // Extract ONLY up to the end of the grid's own <div> tag
+        const divEndIdx = nextLine.indexOf('>');
+        if (divEndIdx >= 0 && nextLine.includes('services-grid')) {
+          gridOpenMarkup = gridCommentLine + '\n' + nextLine.substring(0, divEndIdx + 1) + '\n';
+        } else {
+          gridOpenMarkup = gridCommentLine + '\n' + nextLine + '\n';
+        }
+      }
+
+      // Grid close: find the last </div> + close comment for the grid
+      // The grid end line should be <!-- /wp:generateblocks/element -->
+      // The line before it (or same line) has </div>
+      let gridCloseMarkup = '';
+      const gridEndLine = this._fullLines[this._svcGridEndIdx];
+      if (gridEndLine.includes('</div>') && gridEndLine.includes('<!-- /wp:generateblocks/element -->')) {
+        gridCloseMarkup = gridEndLine;
+      } else if (gridEndLine.includes('<!-- /wp:generateblocks/element -->')) {
+        // Check if </div> is on the line before
+        const prevLine = this._fullLines[this._svcGridEndIdx - 1] || '';
+        if (prevLine.trim() === '</div>') {
+          gridCloseMarkup = '</div>\n' + gridEndLine;
+        } else {
+          gridCloseMarkup = '</div>\n' + gridEndLine;
+        }
+      } else {
+        gridCloseMarkup = '</div>\n<!-- /wp:generateblocks/element -->';
+      }
+
+      const after = this._fullLines.slice(this._svcGridEndIdx + 1);
+
+      output = before.join('\n') + '\n' + gridOpenMarkup + cardsOut + gridCloseMarkup + '\n' + after.join('\n');
     } else {
       // Just output the cards
       output = cardsOut;
