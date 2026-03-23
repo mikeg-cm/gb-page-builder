@@ -8629,11 +8629,13 @@ class HeroConverterView {
       cardsOut += `<p style="margin-bottom:0px;font-size:28px">${card.emoji}</p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:generateblocks/element -->\n`;
 
       // Title (with optional card-link)
-      const titleContent = card.linkUrl
+      const hasLink = !!card.linkUrl;
+      const titleContent = hasLink
         ? `<a href="${this._escAttr(card.linkUrl)}" class="card-link">${this._escHtml(card.title)}</a>`
         : this._escHtml(card.title);
-      cardsOut += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontWeight":"700"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"4px"}}}} -->\n`;
-      cardsOut += `<p class="has-text-color" style="color:${darkText};margin-bottom:4px;font-size:14px;font-weight:700">${titleContent}</p>\n<!-- /wp:paragraph -->\n`;
+      const titleColor = hasLink ? primary : darkText;
+      cardsOut += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontWeight":"700"},"color":{"text":"${titleColor}"},"spacing":{"margin":{"bottom":"4px"}}}} -->\n`;
+      cardsOut += `<p class="has-text-color" style="color:${titleColor};margin-bottom:4px;font-size:14px;font-weight:700">${titleContent}</p>\n<!-- /wp:paragraph -->\n`;
 
       // Description
       if (card.description) {
@@ -8690,7 +8692,24 @@ class HeroConverterView {
         gridCloseMarkup = '</div>\n<!-- /wp:generateblocks/element -->';
       }
 
-      const after = this._fullLines.slice(this._svcGridEndIdx + 1);
+      let after = this._fullLines.slice(this._svcGridEndIdx + 1);
+
+      // Clean up common issues in lines after the grid:
+      // 1. Remove empty wp:paragraph blocks (cause "Type / to choose a block")
+      // 2. Fix non-centered wp:buttons (add justifyContent center)
+      after = after.map(line => {
+        // Remove empty paragraphs
+        if (line.includes('<!-- wp:paragraph -->') && line.includes('<p></p>')) return '';
+        if (line.trim() === '<!-- wp:paragraph -->' || line.trim() === '<p></p>' || line.trim() === '<!-- /wp:paragraph -->') return '';
+        // Fix buttons without justifyContent center
+        if (line.includes('<!-- wp:buttons') && !line.includes('"justifyContent"')) {
+          return line.replace('<!-- wp:buttons', '<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}}');
+        }
+        if (line.includes('<!-- wp:buttons') && line.includes('"justifyContent"') && !line.includes('"center"')) {
+          return line.replace(/"justifyContent":"[^"]*"/, '"justifyContent":"center"');
+        }
+        return line;
+      }).filter(line => line !== '');
 
       output = before.join('\n') + '\n' + gridOpenMarkup + cardsOut + gridCloseMarkup + '\n' + after.join('\n');
     } else {
