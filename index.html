@@ -8692,24 +8692,7 @@ class HeroConverterView {
         gridCloseMarkup = '</div>\n<!-- /wp:generateblocks/element -->';
       }
 
-      let after = this._fullLines.slice(this._svcGridEndIdx + 1);
-
-      // Clean up common issues in lines after the grid:
-      // 1. Remove empty wp:paragraph blocks (cause "Type / to choose a block")
-      // 2. Fix non-centered wp:buttons (add justifyContent center)
-      after = after.map(line => {
-        // Remove empty paragraphs
-        if (line.includes('<!-- wp:paragraph -->') && line.includes('<p></p>')) return '';
-        if (line.trim() === '<!-- wp:paragraph -->' || line.trim() === '<p></p>' || line.trim() === '<!-- /wp:paragraph -->') return '';
-        // Fix buttons without justifyContent center
-        if (line.includes('<!-- wp:buttons') && !line.includes('"justifyContent"')) {
-          return line.replace('<!-- wp:buttons', '<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}}');
-        }
-        if (line.includes('<!-- wp:buttons') && line.includes('"justifyContent"') && !line.includes('"center"')) {
-          return line.replace(/"justifyContent":"[^"]*"/, '"justifyContent":"center"');
-        }
-        return line;
-      }).filter(line => line !== '');
+      const after = this._fullLines.slice(this._svcGridEndIdx + 1);
 
       output = before.join('\n') + '\n' + gridOpenMarkup + cardsOut + gridCloseMarkup + '\n' + after.join('\n');
     } else {
