@@ -8858,7 +8858,7 @@ class HeroConverterView {
       const line = lines[i];
 
       // Capture HTML comment labels like <!-- HERO --> <!-- PRICING -->
-      const commentMatch = line.match(/^<!--\s*([A-Z][A-Z\s]+?)\s*-->$/);
+      const commentMatch = line.match(/^<!--\s*([A-Za-z][A-Za-z\s]+?)\s*-->$/i);
       if (commentMatch) {
         lastComment = commentMatch[1].trim();
         i++;
@@ -9467,7 +9467,7 @@ class HeroConverterView {
     const h2Weight = t.h2_weight || '800';
 
     const sId = id(); const siId = id();
-    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"package-section"} -->\n`;
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/, /g,',')}}","className":"package-section"} -->\n`;
     out += `<section class="gb-element-${sId} package-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
 
     // Heading
@@ -9486,7 +9486,8 @@ class HeroConverterView {
     const cols = cardCount === 1 ? '1fr' : `repeat(${cardCount}, 1fr)`;
 
     if (cardCount === 1) {
-      out += `<!-- wp:generateblocks/element {"uniqueId":"${id()}","tagName":"div","styles":{"marginLeft":"auto","marginRight":"auto","maxWidth":"${maxW}"},"css":".gb-element-${id()}{margin-left:auto;margin-right:auto;max-width:${maxW}}"} -->\n<div class="gb-element-${id()}">\n`;
+      const wrapId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${wrapId}","tagName":"div","styles":{"marginLeft":"auto","marginRight":"auto","maxWidth":"${maxW}"},"css":".gb-element-${wrapId}{margin-left:auto;margin-right:auto;max-width:${maxW}}"} -->\n<div class="gb-element-${wrapId}">\n`;
     }
 
     const gId = id();
@@ -9570,7 +9571,7 @@ class HeroConverterView {
     const cardBorder = c.card_border || '#E5E2DD';
 
     const sId = id(); const siId = id();
-    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"cards-section"} -->\n`;
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/, /g,',')}}","className":"cards-section"} -->\n`;
     out += `<section class="gb-element-${sId} cards-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
 
     if (d.sectionH2) {
@@ -9636,7 +9637,7 @@ class HeroConverterView {
     const primary = c.primary || '#C4282D';
 
     const sId = id(); const siId = id();
-    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"service-areas-section"} -->\n`;
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/, /g,',')}}","className":"service-areas-section"} -->\n`;
     out += `<section class="gb-element-${sId} service-areas-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"960px","marginLeft":"auto","marginRight":"auto","textAlign":"center"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:960px;text-align:center}"} -->\n<div class="gb-element-${siId}">\n`;
 
     if (d.heading) {
@@ -9671,7 +9672,7 @@ class HeroConverterView {
     const starGold = c.star_gold || '#D4A843';
 
     const sId = id(); const siId = id();
-    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"#151413","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:#151413;padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"cta-section"} -->\n`;
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"#151413","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:#151413;padding:clamp(56px,8vw,100px) ${padX.replace(/, /g,',')}}","className":"cta-section"} -->\n`;
     out += `<section class="gb-element-${sId} cta-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"760px","marginLeft":"auto","marginRight":"auto","textAlign":"center"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:760px;text-align:center}"} -->\n<div class="gb-element-${siId}">\n`;
 
     if (d.heading) {
