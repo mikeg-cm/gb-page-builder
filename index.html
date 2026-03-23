@@ -379,6 +379,38 @@ textarea{resize:vertical;min-height:64px}
 .svc-cards-header span{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px}
 @media(max-width:900px){.svc-card-row,.svc-cards-header{grid-template-columns:1fr}.svc-cards-header{display:none}}
 
+/* Full page section review cards */
+.fp-sections-list{display:grid;gap:8px;margin-bottom:16px}
+.fp-section-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;transition:border-color var(--transition)}
+.fp-section-card.expanded{border-color:var(--accent)}
+.fp-section-header{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none}
+.fp-section-header:hover{background:rgba(0,0,0,0.015)}
+.fp-section-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;flex-shrink:0}
+.fp-section-badge.hero{background:rgba(196,40,45,0.1);color:#C4282D}
+.fp-section-badge.pricing{background:rgba(212,168,67,0.12);color:#9B7B1F}
+.fp-section-badge.cards{background:rgba(0,122,255,0.08);color:var(--accent)}
+.fp-section-badge.cta{background:rgba(21,20,19,0.08);color:#151413}
+.fp-section-badge.areas{background:rgba(52,199,89,0.1);color:#1B8A3B}
+.fp-section-badge.generic{background:rgba(0,0,0,0.04);color:var(--text-muted)}
+.fp-section-title{flex:1;font-size:13px;font-weight:600;color:var(--text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fp-section-toggle{font-size:12px;color:var(--text-muted);transition:transform 0.2s}
+.fp-section-card.expanded .fp-section-toggle{transform:rotate(180deg)}
+.fp-section-convert{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-secondary);flex-shrink:0}
+.fp-section-convert input[type="checkbox"]{margin:0;accent-color:var(--accent)}
+.fp-section-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border-light)}
+.fp-section-card.expanded .fp-section-body{display:block;padding-top:14px}
+.fp-section-body .fp-field{margin-bottom:10px}
+.fp-section-body .fp-field label{display:block;font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px}
+.fp-section-body .fp-field input,.fp-section-body .fp-field textarea{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:12px;background:#fff;color:var(--text-primary)}
+.fp-section-body .fp-field textarea{resize:vertical;min-height:48px;font-size:12px}
+.fp-section-body .fp-field input:focus,.fp-section-body .fp-field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);outline:none}
+.fp-section-iframe-note{background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.2);border-radius:6px;padding:8px 12px;font-size:11px;color:#9B7B1F;margin-top:8px}
+.fp-card-repeater{display:grid;gap:6px}
+.fp-card-item{background:rgba(0,0,0,0.02);border:1px solid var(--border-light);border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:40px 1fr 1.5fr;gap:6px;align-items:start}
+.fp-card-item input{font-size:11px;padding:4px 6px}
+.fp-card-item .fp-card-emoji{text-align:center;font-size:16px}
+@media(max-width:700px){.fp-card-item{grid-template-columns:1fr}}
+
 /* Converter toolbar */
 .converter-toolbar{position:sticky;top:0;z-index:10;background:rgba(242,242,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);padding:12px 24px;display:flex;align-items:center;gap:12px}
 .converter-toolbar h2{font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em}
@@ -681,6 +713,7 @@ textarea{resize:vertical;min-height:64px}
       <div class="converter-type-toggle" id="converterTypeToggle">
         <button class="conv-type-btn active" data-type="hero">Hero</button>
         <button class="conv-type-btn" data-type="serviceCards">Service Cards</button>
+        <button class="conv-type-btn" data-type="fullPage">Full Page</button>
       </div>
 
       <!-- Workflow steps overview -->
@@ -800,6 +833,29 @@ textarea{resize:vertical;min-height:64px}
             <div>
               <strong>Replace page code</strong>
               <p>Copy the output from the right panel. In WordPress Code Editor, find the services section and replace it.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Full Page Section Review (hidden until parsed) -->
+      <div class="converter-step" id="converterStep2Full" style="display:none">
+        <div class="converter-step-header">
+          <span class="converter-step-num" id="stepNum2Full">2</span>
+          <span class="converter-step-title">Review detected sections</span>
+        </div>
+        <p class="converter-step-desc">Each section below was detected from the page. Expand to review content. Uncheck "Convert" to pass a section through unchanged.</p>
+        <div id="fullPageSectionsContainer" class="fp-sections-list"></div>
+        <div class="converter-actions">
+          <button class="btn btn-primary" id="btnFullPageGenerate">Convert All &rarr;</button>
+          <span class="converter-status success" id="fullPageOutputStatus"></span>
+        </div>
+        <div class="converter-next-steps" id="fullPageNextSteps" style="display:none">
+          <div class="next-step-card">
+            <span class="next-step-num">4</span>
+            <div>
+              <strong>Replace full page code</strong>
+              <p>Copy the output from the right panel. In WordPress Code Editor, select all and paste to replace the entire page.</p>
             </div>
           </div>
         </div>
@@ -7369,6 +7425,8 @@ class HeroConverterView {
     this._parsedCards = [];
     this._svcGridStartIdx = -1;
     this._svcGridEndIdx = -1;
+    // Full page converter state
+    this._fpSections = [];
   }
 
   init() {
@@ -7388,6 +7446,7 @@ class HeroConverterView {
     document.getElementById('btnAddCheckItem').onclick = () => this.addCheckItem('');
     document.getElementById('btnAddTrustItem').onclick = () => this.addTrustItem('', '');
     document.getElementById('btnSvcGenerate').onclick = () => this.generate();
+    document.getElementById('btnFullPageGenerate').onclick = () => this.generate();
 
     // Converter type toggle
     const typeToggle = document.getElementById('converterTypeToggle');
@@ -7486,6 +7545,9 @@ class HeroConverterView {
   parse() {
     if (this._converterType === 'serviceCards') {
       return this.parseServiceCards();
+    }
+    if (this._converterType === 'fullPage') {
+      return this.parseFullPage();
     }
     const input = document.getElementById('converterInput').value.trim();
     if (!input) return;
@@ -7895,6 +7957,9 @@ class HeroConverterView {
   }
 
   generate() {
+    if (this._converterType === 'fullPage') {
+      return this.generateFullPage();
+    }
     if (this._converterType === 'serviceCards') {
       return this.generateServiceCards();
     }
@@ -8338,6 +8403,11 @@ class HeroConverterView {
       if (parseBtn) parseBtn.textContent = 'Parse Service Cards';
       if (stepDesc) stepDesc.innerHTML = 'In WordPress, open the page &rarr; Code Editor. Select all (<kbd>Ctrl+A</kbd>), copy, and paste below. The converter will detect the services grid automatically.';
       if (ws5) ws5.style.display = 'none';
+    } else if (this._converterType === 'fullPage') {
+      if (title) title.textContent = 'Full Page Converter';
+      if (parseBtn) parseBtn.textContent = 'Parse Sections';
+      if (stepDesc) stepDesc.innerHTML = 'In WordPress, open the page &rarr; Code Editor. Select all (<kbd>Ctrl+A</kbd>), copy, and paste below. The converter will detect all sections and convert the entire page to GB v2.';
+      if (ws5) ws5.style.display = '';
     } else {
       if (title) title.textContent = 'Hero Converter';
       if (parseBtn) parseBtn.textContent = 'Parse Hero';
@@ -8612,12 +8682,923 @@ class HeroConverterView {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  // =========================================================================
+  // FULL PAGE CONVERTER — PARSING
+  // =========================================================================
+  parseFullPage() {
+    const raw = document.getElementById('converterInput').value;
+    if (!raw.trim()) {
+      document.getElementById('converterParseStatus').textContent = 'Paste code first';
+      return;
+    }
+
+    this._fullLines = raw.split('\n');
+    this._fpSections = [];
+
+    // Split into top-level sections (wp:group, wp:cover, wp:generateblocks/element with section tag)
+    const sections = this._fpSplitSections(this._fullLines);
+
+    if (sections.length === 0) {
+      document.getElementById('converterParseStatus').textContent = 'No sections detected. Check the pasted code.';
+      return;
+    }
+
+    // Classify each section and extract content
+    sections.forEach((sec, idx) => {
+      const classified = this._fpClassifySection(sec.lines, sec.commentLabel);
+      this._fpSections.push({
+        idx,
+        startLine: sec.startIdx,
+        endLine: sec.endIdx,
+        lines: sec.lines,
+        type: classified.type,
+        label: classified.label,
+        data: classified.data,
+        convert: true
+      });
+    });
+
+    // Merge trust bar into hero if adjacent
+    for (let i = 0; i < this._fpSections.length; i++) {
+      if (this._fpSections[i].type === 'trustBar' && i > 0 && this._fpSections[i - 1].type === 'hero') {
+        this._fpSections[i - 1].data.trustBarText = this._fpSections[i].data.text;
+        this._fpSections.splice(i, 1);
+        i--;
+      }
+    }
+
+    // Show review UI
+    document.getElementById('converterStep2').style.display = 'none';
+    document.getElementById('converterStep2Svc').style.display = 'none';
+    document.getElementById('converterStep2Full').style.display = 'block';
+    this._fpRenderSections();
+
+    const statusEl = document.getElementById('converterParseStatus');
+    statusEl.textContent = `Found ${this._fpSections.length} section${this._fpSections.length !== 1 ? 's' : ''}`;
+    statusEl.className = 'converter-status success';
+
+    document.getElementById('stepNum1').classList.add('done');
+    document.getElementById('stepNum1').textContent = '\u2713';
+    this._parsed = true;
+    this._setWorkflowStep(2);
+  }
+
+  _fpSplitSections(lines) {
+    const sections = [];
+    let i = 0;
+    let lastComment = '';
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      // Capture HTML comment labels like <!-- HERO --> <!-- PRICING -->
+      const commentMatch = line.match(/^<!--\s*([A-Z][A-Z\s]+?)\s*-->$/);
+      if (commentMatch) {
+        lastComment = commentMatch[1].trim();
+        i++;
+        continue;
+      }
+
+      // Detect top-level block starts
+      const isGroupStart = line.includes('<!-- wp:group ') || line.includes('<!-- wp:group{');
+      const isCoverStart = line.includes('<!-- wp:cover ');
+      const isGBSectionStart = line.includes('<!-- wp:generateblocks/element') && (line.includes('"tagName":"section"') || line.includes('"tagName": "section"'));
+
+      if (isGroupStart || isCoverStart || isGBSectionStart) {
+        const startIdx = i;
+        const blockType = isCoverStart ? 'wp:cover' : isGBSectionStart ? 'wp:generateblocks/element' : 'wp:group';
+        const closeTag = isCoverStart ? '<!-- /wp:cover -->' : isGBSectionStart ? '<!-- /wp:generateblocks/element -->' : '<!-- /wp:group -->';
+
+        // Find matching close by depth tracking
+        let depth = 0;
+        let endIdx = i;
+        for (let j = i; j < lines.length; j++) {
+          const l = lines[j];
+          // Count opens of the same block type
+          if (blockType === 'wp:group') {
+            depth += (l.match(/<!-- wp:group[\s{]/g) || []).length;
+            depth -= (l.match(/<!-- \/wp:group -->/g) || []).length;
+          } else if (blockType === 'wp:cover') {
+            depth += (l.match(/<!-- wp:cover[\s{]/g) || []).length;
+            depth -= (l.match(/<!-- \/wp:cover -->/g) || []).length;
+          } else {
+            depth += (l.match(/<!-- wp:generateblocks\/element[\s{]/g) || []).length;
+            depth -= (l.match(/<!-- \/wp:generateblocks\/element -->/g) || []).length;
+          }
+          if (depth <= 0) {
+            endIdx = j;
+            break;
+          }
+        }
+
+        sections.push({
+          startIdx,
+          endIdx,
+          lines: lines.slice(startIdx, endIdx + 1),
+          commentLabel: lastComment
+        });
+        lastComment = '';
+        i = endIdx + 1;
+      } else {
+        i++;
+      }
+    }
+    return sections;
+  }
+
+  _fpClassifySection(lines, commentLabel) {
+    const joined = lines.join('\n');
+    const parser = new DOMParser();
+    const doc = parser.parseFromString('<div>' + joined.replace(/<!-- [\/]?wp:[^\n]*-->/g, '') + '</div>', 'text/html');
+
+    const headings = doc.querySelectorAll('h1, h2, h3, h4');
+    const paragraphs = doc.querySelectorAll('p');
+    const buttons = doc.querySelectorAll('a.wp-block-button__link, a.wp-element-button');
+    const hasH1 = doc.querySelector('h1');
+    const hasColumns = joined.includes('wp:columns');
+
+    // Comment-based hints
+    const cl = commentLabel.toUpperCase();
+
+    // Hero detection
+    if (hasH1 || cl.includes('HERO')) {
+      return this._fpExtractHero(doc, joined);
+    }
+
+    // Trust bar
+    if (cl.includes('TRUST') || joined.includes('trust-bar') || joined.includes('trust_bar')) {
+      const trustText = Array.from(paragraphs).map(p => p.textContent.trim()).join(' | ');
+      return { type: 'trustBar', label: 'Trust Bar', data: { text: trustText } };
+    }
+
+    // Pricing cards — look for price patterns ($XX) inside cards
+    if (cl.includes('PRICING') || cl.includes('PACKAGE')) {
+      return this._fpExtractPricingCards(doc, joined);
+    }
+    // Auto-detect pricing by content: cards with $ amounts
+    const priceMatches = joined.match(/\$\d+/g);
+    if (priceMatches && priceMatches.length >= 2 && hasColumns) {
+      return this._fpExtractPricingCards(doc, joined);
+    }
+
+    // CTA banner — dark bg or cta-section
+    if (cl.includes('CTA') || joined.includes('hero-dark cta') || joined.includes('cta-section') || joined.includes('"backgroundColor":"#151413"')) {
+      return this._fpExtractCtaBanner(doc, joined);
+    }
+
+    // Service areas
+    if (cl.includes('SERVICE AREA') || cl.includes('AREAS WE SERVE') || joined.includes('service-areas')) {
+      return this._fpExtractServiceAreas(doc, joined);
+    }
+
+    // Card grid (columns with card class groups)
+    if (hasColumns && (joined.includes('card') || joined.includes('link-card') || joined.includes('solution-card'))) {
+      return this._fpExtractCardGrid(doc, joined, cl);
+    }
+
+    // Generic section with headings
+    if (doc.querySelector('h2')) {
+      return this._fpExtractGenericSection(doc, joined);
+    }
+
+    // Fallback — pass through
+    return { type: 'generic', label: commentLabel || 'Unknown Section', data: { raw: lines.join('\n') } };
+  }
+
+  _fpExtractHero(doc, joined) {
+    const h1 = doc.querySelector('h1');
+    const data = {
+      h1: h1 ? h1.textContent.trim() : '',
+      subtitle: '',
+      tagline: '',
+      checklistItems: [],
+      ctaLabel: '',
+      ctaUrl: '',
+      phone: '',
+      phoneHref: '',
+      iframeUrl: '',
+      trustBarText: ''
+    };
+
+    // Extract paragraphs
+    const paras = doc.querySelectorAll('p');
+    paras.forEach(p => {
+      const text = p.textContent.trim();
+      if (!text) return;
+      if (text.startsWith('✓') || text.startsWith('✔')) {
+        // Checklist — may have multiple items separated by <br>
+        text.split(/\n/).forEach(item => {
+          const clean = item.replace(/^[✓✔]\s*/, '').trim();
+          if (clean) data.checklistItems.push(clean);
+        });
+      } else if (p.style && p.style.color && p.style.color.includes('cf9c27')) {
+        data.tagline = text;
+      } else if (!data.subtitle && text.length > 30) {
+        data.subtitle = text;
+      }
+    });
+
+    // Extract buttons
+    const btns = doc.querySelectorAll('a.wp-block-button__link, a.wp-element-button');
+    btns.forEach(btn => {
+      const href = btn.getAttribute('href') || '';
+      const label = btn.textContent.trim();
+      if (href.startsWith('tel:')) {
+        data.phone = label;
+        data.phoneHref = href;
+      } else if (!data.ctaLabel) {
+        data.ctaLabel = label;
+        data.ctaUrl = href;
+      }
+    });
+
+    // Check for iframe
+    const iframeMatch = joined.match(/src="([^"]*paskepestcontrol[^"]*form[^"]*)"/);
+    if (iframeMatch) data.iframeUrl = iframeMatch[1];
+
+    return { type: 'hero', label: data.h1 || 'Hero', data };
+  }
+
+  _fpExtractPricingCards(doc, joined) {
+    const data = { sectionH2: '', sectionSub: '', cards: [], disclaimer: '' };
+
+    // Section heading
+    const h2 = doc.querySelector('h2');
+    if (h2) data.sectionH2 = h2.textContent.trim();
+
+    // Look for columns
+    const columns = joined.split(/<!-- wp:column[\s{]/).slice(1); // skip first empty
+    columns.forEach(colBlock => {
+      const colDoc = new DOMParser().parseFromString('<div>' + colBlock.replace(/<!-- [\/]?wp:[^\n]*-->/g, '') + '</div>', 'text/html');
+      const h3 = colDoc.querySelector('h3');
+      if (!h3) return;
+
+      const card = { title: h3.textContent.trim(), subtitle: '', price: '', period: '', initialFee: '', features: '', ctaLabel: '', ctaUrl: '' };
+
+      const paras = colDoc.querySelectorAll('p');
+      paras.forEach(p => {
+        const text = p.textContent.trim();
+        const cls = p.className || '';
+        if (cls.includes('package-subtitle') || cls.includes('subtitle')) card.subtitle = text;
+        else if (cls.includes('price') && text.startsWith('$')) card.price = text;
+        else if (cls.includes('price-period') || text === 'per month') card.period = text;
+        else if (cls.includes('price-note') || text.includes('initial fee') || text.includes('initial installation')) card.initialFee = text;
+        else if (cls.includes('pricing-disclaimer') || cls.includes('disclaimer')) data.disclaimer = text;
+        else if (text.includes('✓') || text.includes('✔') || cls.includes('list-header')) {
+          if (card.features) card.features += '\n';
+          card.features += text;
+        }
+      });
+
+      // H4 price
+      const h4 = colDoc.querySelector('h4');
+      if (h4 && !card.price) card.price = h4.textContent.trim();
+
+      // Button
+      const btn = colDoc.querySelector('a.wp-block-button__link, a.wp-element-button');
+      if (btn) { card.ctaLabel = btn.textContent.trim(); card.ctaUrl = btn.getAttribute('href') || ''; }
+
+      if (card.title) data.cards.push(card);
+    });
+
+    // Subtitle paragraph
+    const allParas = doc.querySelectorAll('p');
+    allParas.forEach(p => {
+      const text = p.textContent.trim();
+      if (!data.sectionSub && text.length > 20 && !text.includes('$') && !text.includes('✓') && text !== data.sectionH2 && !text.includes('*')) {
+        data.sectionSub = text;
+      }
+    });
+
+    return { type: 'pricingCards', label: data.sectionH2 || 'Pricing', data };
+  }
+
+  _fpExtractCardGrid(doc, joined, commentLabel) {
+    const data = { sectionH2: '', sectionSub: '', cards: [] };
+
+    const h2 = doc.querySelector('h2');
+    if (h2) data.sectionH2 = h2.textContent.trim();
+
+    // Subtitle — first paragraph that's not inside a card
+    const topParas = doc.querySelectorAll('p');
+    for (const p of topParas) {
+      const text = p.textContent.trim();
+      if (text.length > 20 && text !== data.sectionH2 && !(p.className || '').includes('card-icon')) {
+        data.sectionSub = text;
+        break;
+      }
+    }
+
+    // Extract cards from columns
+    const columns = joined.split(/<!-- wp:column[\s{]/).slice(1);
+    columns.forEach(colBlock => {
+      const colDoc = new DOMParser().parseFromString('<div>' + colBlock.replace(/<!-- [\/]?wp:[^\n]*-->/g, '') + '</div>', 'text/html');
+      const h3 = colDoc.querySelector('h3');
+      if (!h3) return;
+
+      const card = { emoji: '', title: h3.textContent.trim(), description: '', linkUrl: '', linkText: '' };
+
+      const paras = colDoc.querySelectorAll('p');
+      paras.forEach(p => {
+        const text = p.textContent.trim();
+        const cls = p.className || '';
+        if (cls.includes('card-icon') || (text.length <= 3 && /[\u{1F300}-\u{1FAD6}]/u.test(text))) {
+          card.emoji = text;
+        } else if (cls.includes('card-link')) {
+          const a = p.querySelector('a');
+          if (a) { card.linkText = a.textContent.trim(); card.linkUrl = a.getAttribute('href') || ''; }
+        } else if (!card.description && text.length > 10) {
+          card.description = text;
+        }
+      });
+
+      if (card.title) data.cards.push(card);
+    });
+
+    const hasLinks = data.cards.some(c => c.linkUrl);
+    return {
+      type: hasLinks ? 'specialtyCards' : 'cardGrid',
+      label: data.sectionH2 || (commentLabel || 'Card Section'),
+      data
+    };
+  }
+
+  _fpExtractCtaBanner(doc, joined) {
+    const data = { heading: '', body: '', primaryLabel: '', primaryUrl: '', secondaryLabel: '', secondaryUrl: '' };
+    const h2 = doc.querySelector('h2');
+    if (h2) data.heading = h2.textContent.trim();
+
+    const paras = doc.querySelectorAll('p');
+    paras.forEach(p => {
+      const text = p.textContent.trim();
+      if (text && text !== data.heading && text.length > 10 && !data.body) data.body = text;
+    });
+
+    const btns = doc.querySelectorAll('a.wp-block-button__link, a.wp-element-button');
+    btns.forEach((btn, i) => {
+      const label = btn.textContent.trim();
+      const url = btn.getAttribute('href') || '';
+      if (i === 0) { data.primaryLabel = label; data.primaryUrl = url; }
+      else if (i === 1) { data.secondaryLabel = label; data.secondaryUrl = url; }
+    });
+
+    return { type: 'ctaBanner', label: data.heading || 'CTA Banner', data };
+  }
+
+  _fpExtractServiceAreas(doc, joined) {
+    const data = { heading: '', subtitle: '', areasList: '', ctaLabel: '', ctaUrl: '' };
+    const h2 = doc.querySelector('h2');
+    if (h2) data.heading = h2.textContent.trim();
+
+    const paras = doc.querySelectorAll('p');
+    paras.forEach(p => {
+      const text = p.textContent.trim();
+      const cls = p.className || '';
+      if (cls.includes('service-areas-list') || (text.includes('•') && text.split('•').length > 2)) {
+        data.areasList = text;
+      } else if (text && text !== data.heading && !data.subtitle && text.length > 10) {
+        data.subtitle = text;
+      }
+    });
+
+    const btn = doc.querySelector('a.wp-block-button__link, a.wp-element-button');
+    if (btn) { data.ctaLabel = btn.textContent.trim(); data.ctaUrl = btn.getAttribute('href') || ''; }
+
+    return { type: 'serviceAreas', label: data.heading || 'Service Areas', data };
+  }
+
+  _fpExtractGenericSection(doc, joined) {
+    const data = { heading: '', paragraphs: [] };
+    const h2 = doc.querySelector('h2');
+    if (h2) data.heading = h2.textContent.trim();
+
+    const paras = doc.querySelectorAll('p');
+    paras.forEach(p => {
+      const text = p.textContent.trim();
+      if (text && text !== data.heading) data.paragraphs.push(text);
+    });
+
+    return { type: 'generic', label: data.heading || 'Content Section', data: { raw: joined } };
+  }
+
+  // =========================================================================
+  // FULL PAGE CONVERTER — REVIEW UI
+  // =========================================================================
+  _fpRenderSections() {
+    const container = document.getElementById('fullPageSectionsContainer');
+    const badgeClass = { hero: 'hero', trustBar: 'hero', pricingCards: 'pricing', cardGrid: 'cards', specialtyCards: 'cards', ctaBanner: 'cta', serviceAreas: 'areas', generic: 'generic' };
+    const badgeLabel = { hero: 'Hero', trustBar: 'Trust', pricingCards: 'Pricing', cardGrid: 'Cards', specialtyCards: 'Cards', ctaBanner: 'CTA', serviceAreas: 'Areas', generic: 'Pass-through' };
+
+    let html = '';
+    this._fpSections.forEach((sec, i) => {
+      const bc = badgeClass[sec.type] || 'generic';
+      const bl = badgeLabel[sec.type] || 'Section';
+      const expanded = i === 0 ? ' expanded' : '';
+
+      html += `<div class="fp-section-card${expanded}" data-idx="${i}">`;
+      html += `<div class="fp-section-header" data-idx="${i}">`;
+      html += `<span class="fp-section-badge ${bc}">${bl}</span>`;
+      html += `<span class="fp-section-title">${this._escHtml(sec.label)}</span>`;
+      html += `<label class="fp-section-convert"><input type="checkbox" data-idx="${i}" ${sec.convert ? 'checked' : ''}> Convert</label>`;
+      html += `<span class="fp-section-toggle">&#9660;</span>`;
+      html += `</div>`;
+
+      html += `<div class="fp-section-body">`;
+      html += this._fpRenderSectionFields(sec, i);
+      html += `</div>`;
+      html += `</div>`;
+    });
+
+    container.innerHTML = html;
+
+    // Wire expand/collapse
+    container.querySelectorAll('.fp-section-header').forEach(hdr => {
+      hdr.addEventListener('click', (e) => {
+        if (e.target.type === 'checkbox') return; // don't toggle on checkbox click
+        const card = hdr.closest('.fp-section-card');
+        card.classList.toggle('expanded');
+      });
+    });
+
+    // Wire convert checkboxes
+    container.querySelectorAll('.fp-section-convert input').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const idx = parseInt(cb.dataset.idx);
+        if (this._fpSections[idx]) this._fpSections[idx].convert = cb.checked;
+      });
+    });
+  }
+
+  _fpRenderSectionFields(sec, idx) {
+    const d = sec.data;
+    let html = '';
+
+    if (sec.type === 'hero') {
+      html += this._fpField(idx, 'h1', 'H1 Heading', d.h1);
+      html += this._fpField(idx, 'subtitle', 'Subtitle', d.subtitle, true);
+      html += this._fpField(idx, 'tagline', 'Gold Tagline', d.tagline);
+      html += this._fpField(idx, 'ctaLabel', 'Primary CTA Label', d.ctaLabel);
+      html += this._fpField(idx, 'ctaUrl', 'Primary CTA URL', d.ctaUrl);
+      html += this._fpField(idx, 'phone', 'Phone', d.phone);
+      if (d.checklistItems.length) {
+        html += this._fpField(idx, 'checklist', 'Checklist Items (one per line)', d.checklistItems.join('\n'), true);
+      }
+      if (d.iframeUrl) {
+        html += `<div class="fp-section-iframe-note">&#9888; Iframe form detected: <code>${this._escHtml(d.iframeUrl)}</code><br>Add this manually after conversion via Custom HTML block.</div>`;
+      }
+    } else if (sec.type === 'pricingCards') {
+      html += this._fpField(idx, 'sectionH2', 'Section Heading', d.sectionH2);
+      html += this._fpField(idx, 'sectionSub', 'Section Subtitle', d.sectionSub);
+      d.cards.forEach((card, ci) => {
+        html += `<div class="fp-field"><label>Card ${ci + 1}: ${this._escHtml(card.title)}</label>`;
+        html += `<div style="display:grid;grid-template-columns:1fr 80px;gap:4px;margin-bottom:4px">`;
+        html += `<input data-idx="${idx}" data-card="${ci}" data-field="title" value="${this._escAttr(card.title)}">`;
+        html += `<input data-idx="${idx}" data-card="${ci}" data-field="price" value="${this._escAttr(card.price)}" placeholder="$XX">`;
+        html += `</div>`;
+        html += `<input data-idx="${idx}" data-card="${ci}" data-field="subtitle" value="${this._escAttr(card.subtitle)}" placeholder="Subtitle" style="margin-bottom:4px">`;
+        html += `<textarea data-idx="${idx}" data-card="${ci}" data-field="features" rows="3" style="font-size:11px">${this._escHtml(card.features)}</textarea>`;
+        html += `</div>`;
+      });
+      if (d.disclaimer) html += this._fpField(idx, 'disclaimer', 'Disclaimer', d.disclaimer);
+    } else if (sec.type === 'cardGrid' || sec.type === 'specialtyCards') {
+      html += this._fpField(idx, 'sectionH2', 'Section Heading', d.sectionH2);
+      html += this._fpField(idx, 'sectionSub', 'Subtitle', d.sectionSub);
+      html += `<div class="fp-field"><label>Cards</label><div class="fp-card-repeater">`;
+      d.cards.forEach((card, ci) => {
+        html += `<div class="fp-card-item">`;
+        html += `<input class="fp-card-emoji" data-idx="${idx}" data-card="${ci}" data-field="emoji" value="${this._escAttr(card.emoji)}">`;
+        html += `<input data-idx="${idx}" data-card="${ci}" data-field="title" value="${this._escAttr(card.title)}" placeholder="Title">`;
+        html += `<input data-idx="${idx}" data-card="${ci}" data-field="description" value="${this._escAttr(card.description)}" placeholder="Description">`;
+        html += `</div>`;
+      });
+      html += `</div></div>`;
+    } else if (sec.type === 'ctaBanner') {
+      html += this._fpField(idx, 'heading', 'Heading', d.heading);
+      html += this._fpField(idx, 'body', 'Body Text', d.body, true);
+      html += this._fpField(idx, 'primaryLabel', 'Primary Button', d.primaryLabel);
+      html += this._fpField(idx, 'primaryUrl', 'Primary URL', d.primaryUrl);
+      html += this._fpField(idx, 'secondaryLabel', 'Secondary Button', d.secondaryLabel);
+      html += this._fpField(idx, 'secondaryUrl', 'Secondary URL', d.secondaryUrl);
+    } else if (sec.type === 'serviceAreas') {
+      html += this._fpField(idx, 'heading', 'Heading', d.heading);
+      html += this._fpField(idx, 'subtitle', 'Subtitle', d.subtitle);
+      html += this._fpField(idx, 'areasList', 'Areas List', d.areasList, true);
+      html += this._fpField(idx, 'ctaLabel', 'CTA Label', d.ctaLabel);
+      html += this._fpField(idx, 'ctaUrl', 'CTA URL', d.ctaUrl);
+    } else {
+      html += `<p style="font-size:11px;color:var(--text-muted)">This section will be passed through unchanged.</p>`;
+    }
+
+    return html;
+  }
+
+  _fpField(idx, field, label, value, isTextarea) {
+    const tag = isTextarea ? 'textarea' : 'input';
+    const val = isTextarea ? `>${this._escHtml(value || '')}` : ` value="${this._escAttr(value || '')}">`;
+    return `<div class="fp-field"><label>${label}</label><${tag} data-idx="${idx}" data-field="${field}"${val}${isTextarea ? '</textarea>' : ''}</div>`;
+  }
+
+  // =========================================================================
+  // FULL PAGE CONVERTER — GENERATION
+  // =========================================================================
+  generateFullPage() {
+    if (!this._parsed || this._fpSections.length === 0) return;
+
+    // Read current values from UI
+    document.querySelectorAll('#fullPageSectionsContainer input, #fullPageSectionsContainer textarea').forEach(el => {
+      const idx = parseInt(el.dataset.idx);
+      const field = el.dataset.field;
+      const cardIdx = el.dataset.card;
+      if (isNaN(idx) || !field) return;
+      const sec = this._fpSections[idx];
+      if (!sec) return;
+      if (cardIdx !== undefined && cardIdx !== '') {
+        const ci = parseInt(cardIdx);
+        if (sec.data.cards && sec.data.cards[ci]) sec.data.cards[ci][field] = el.value;
+      } else if (field === 'checklist') {
+        sec.data.checklistItems = el.value.split('\n').map(s => s.trim()).filter(Boolean);
+      } else {
+        sec.data[field] = el.value;
+      }
+    });
+
+    // Get config
+    let config;
+    if (window.app && window.app.clientManager) config = window.app.clientManager.getActive();
+    if (!config || !config.colors) {
+      config = {
+        colors: { primary: '#C4282D', dark_text: '#151413', body_text: '#3A3937', secondary_text: '#6B6966', muted_text: '#6B6966', star_gold: '#D4A843', card_border: '#E5E2DD', section_light: '#FAF8F5', section_white: '#ffffff' },
+        typography: { h1_size: 'clamp(32px, 5vw, 48px)', h1_weight: '800', h2_size: 'clamp(26px, 3.5vw, 36px)', h2_weight: '800', h2_line_height: '1.15', h2_letter_spacing: '-0.02em' },
+        buttons: { primary: { bg_color: '#C4282D', text_color: '#ffffff', border_radius: '7px' }, outline: { text_color: '#C4282D', border_color: '#C4282D' } },
+        spacing: { section_padding_x: 'clamp(20px, 5vw, 60px)' },
+        cta_url: '/contact/', phone: '(239) 475-5393', phone_href: 'tel:2394755393',
+        trust_badges: [{ isStars: true, emoji: '\u2605\u2605\u2605\u2605\u2605', text: '4.8 Google Rating' }, { text: '970+ Reviews' }, { emoji: '\ud83c\udf96\ufe0f', text: 'Veteran-Owned' }, { emoji: '\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66', text: 'Family Operated' }, { emoji: '\u2714', text: '100% Guarantee' }]
+      };
+    }
+
+    const prefix = document.getElementById('pagePrefix') ? document.getElementById('pagePrefix').value || 'pg' : 'pg';
+    let idCounter = 1;
+    const id = () => prefix + 'Fp' + String(idCounter++).padStart(2, '0');
+
+    const c = config.colors || {};
+    const t = config.typography || {};
+    const sp = config.spacing || {};
+    const primary = c.primary || '#C4282D';
+    const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937';
+    const mutedText = c.muted_text || '#6B6966';
+    const cardBorder = c.card_border || '#E5E2DD';
+    const sectionLight = c.section_light || '#FAF8F5';
+    const padX = sp.section_padding_x || 'clamp(20px, 5vw, 60px)';
+
+    let output = '';
+    let bgAlternate = true; // true = light, false = white
+
+    this._fpSections.forEach((sec) => {
+      if (!sec.convert) {
+        // Pass through unchanged
+        output += sec.lines.join('\n') + '\n';
+        return;
+      }
+
+      const d = sec.data;
+
+      switch (sec.type) {
+        case 'hero':
+          output += this._fpGenHero(d, config, prefix);
+          break;
+
+        case 'pricingCards':
+          output += this._fpGenPricingSection(d, id, c, t, padX, bgAlternate ? sectionLight : '#ffffff');
+          bgAlternate = !bgAlternate;
+          break;
+
+        case 'cardGrid':
+        case 'specialtyCards':
+          output += this._fpGenCardGridSection(d, id, c, t, padX, bgAlternate ? sectionLight : '#ffffff', sec.type === 'specialtyCards');
+          bgAlternate = !bgAlternate;
+          break;
+
+        case 'serviceAreas':
+          output += this._fpGenServiceAreas(d, id, c, t, padX, bgAlternate ? sectionLight : '#ffffff');
+          bgAlternate = !bgAlternate;
+          break;
+
+        case 'ctaBanner':
+          output += this._fpGenCtaBanner(d, id, c, t, padX);
+          bgAlternate = true; // reset after dark section
+          break;
+
+        default:
+          output += sec.lines.join('\n') + '\n';
+          break;
+      }
+    });
+
+    this._outputCode = output;
+    this._updatePreview(output);
+
+    document.getElementById('fullPageOutputStatus').textContent = `Converted ${this._fpSections.filter(s => s.convert).length} sections`;
+    document.getElementById('stepNum2Full').classList.add('done');
+    document.getElementById('stepNum2Full').textContent = '\u2713';
+    document.getElementById('fullPageNextSteps').style.display = 'block';
+    this._setWorkflowStep(3);
+
+    if (typeof showToast === 'function') showToast('Full page converted to GB v2', 'success');
+  }
+
+  // --- Hero generator (reuse buildHeroConverterSection if available) ---
+  _fpGenHero(d, config, prefix) {
+    const idEngine = new UniqueIdEngine(prefix, 'conv');
+
+    // Override config with user-edited values
+    config.cta_url = d.ctaUrl || config.cta_url;
+    config.phone = d.phone || config.phone;
+    config.phone_href = d.phoneHref || config.phone_href;
+
+    const data = {
+      h1: d.h1, subtitle: d.subtitle, serviceArea: d.tagline,
+      checklistItems: (d.checklistItems || []).map(t => ({ text: t })),
+      ctaLabel: d.ctaLabel || 'Schedule Service \u2192',
+      ctaUrl: d.ctaUrl || config.cta_url || '/contact/',
+      phone: d.phone || config.phone,
+      phoneHref: d.phoneHref || config.phone_href,
+      bodyParas: [],
+      overlayColor: '#151413'
+    };
+
+    if (typeof buildHeroConverterSection === 'function') {
+      return buildHeroConverterSection(config, data, idEngine);
+    }
+
+    // Fallback: manual hero build
+    return this._fpGenHeroFallback(d, config, prefix);
+  }
+
+  _fpGenHeroFallback(d, config, prefix) {
+    // Simplified hero if buildHeroConverterSection is not available
+    const c = config.colors || {};
+    const primary = c.primary || '#C4282D';
+    let out = '';
+    out += `<!-- wp:cover {"useFeaturedImage":true,"customOverlayColor":"#151413","isUserOverlayColor":true,"minHeight":650,"minHeightUnit":"px","customGradient":"linear-gradient(180deg,rgba(21,20,19,0.55) 0%,rgba(21,20,19,0.7) 100%)","isDark":false,"align":"full","className":"is-light","style":{"color":{"text":"#ffffff"},"spacing":{"padding":{"top":"100px","bottom":"100px"}}}} -->\n`;
+    out += `<div class="wp-block-cover alignfull is-light has-text-color" style="color:#ffffff;padding-top:100px;padding-bottom:100px;min-height:650px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim has-background-gradient" style="background-color:#151413;background:linear-gradient(180deg,rgba(21,20,19,0.55) 0%,rgba(21,20,19,0.7) 100%)"></span><div class="wp-block-cover__inner-container">\n`;
+    out += `<!-- wp:heading {"level":1} -->\n<h1 class="wp-block-heading">${this._escHtml(d.h1)}</h1>\n<!-- /wp:heading -->\n`;
+    out += `</div></div>\n<!-- /wp:cover -->\n`;
+    return out;
+  }
+
+  // --- Pricing section generator ---
+  _fpGenPricingSection(d, id, c, t, padX, bg) {
+    const primary = c.primary || '#C4282D';
+    const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937';
+    const mutedText = c.muted_text || '#6B6966';
+    const cardBorder = c.card_border || '#E5E2DD';
+    const h2Size = t.h2_size || 'clamp(26px, 3.5vw, 36px)';
+    const h2Weight = t.h2_weight || '800';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"package-section"} -->\n`;
+    out += `<section class="gb-element-${sId} package-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    // Heading
+    if (d.sectionH2) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${h2Size}","fontWeight":"${h2Weight}","lineHeight":"1.15","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:12px;font-size:${h2Size};font-style:normal;font-weight:${h2Weight};letter-spacing:-0.02em;line-height:1.15">${this._escHtml(d.sectionH2)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+    if (d.sectionSub) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"40px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${bodyText};margin-bottom:40px;font-size:16px;line-height:1.7">${this._escHtml(d.sectionSub)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Card grid
+    const cardCount = d.cards.length;
+    const maxW = cardCount === 1 ? '600px' : '1120px';
+    const cols = cardCount === 1 ? '1fr' : `repeat(${cardCount}, 1fr)`;
+
+    if (cardCount === 1) {
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${id()}","tagName":"div","styles":{"marginLeft":"auto","marginRight":"auto","maxWidth":"${maxW}"},"css":".gb-element-${id()}{margin-left:auto;margin-right:auto;max-width:${maxW}}"} -->\n<div class="gb-element-${id()}">\n`;
+    }
+
+    const gId = id();
+    if (cardCount > 1) {
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${gId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"${cols}","gap":"24px"},"css":".gb-element-${gId}{display:grid;gap:24px;grid-template-columns:${cols}} @media(max-width:768px){.gb-element-${gId}{grid-template-columns:1fr}}","className":"pricing-grid"} -->\n`;
+      out += `<div class="gb-element-${gId} pricing-grid">\n`;
+    }
+
+    d.cards.forEach(card => {
+      const cId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${cId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"14px","paddingTop":"32px","paddingBottom":"32px","paddingLeft":"32px","paddingRight":"32px"},"css":".gb-element-${cId}{background-color:#fff;border:1px solid ${cardBorder};border-radius:14px;padding:32px}","className":"package-card"} -->\n`;
+      out += `<div class="gb-element-${cId} package-card">\n`;
+
+      // Title
+      out += `<!-- wp:heading {"textAlign":"center","level":3,"style":{"typography":{"fontSize":"22px","fontWeight":"800","lineHeight":"1.2","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"6px"}}}} -->\n`;
+      out += `<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:6px;font-size:22px;font-style:normal;font-weight:800;letter-spacing:-0.02em;line-height:1.2">${this._escHtml(card.title)}</h3>\n<!-- /wp:heading -->\n`;
+
+      // Subtitle
+      if (card.subtitle) {
+        out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"14px","lineHeight":"1.6"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"20px"}}}} -->\n`;
+        out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:20px;font-size:14px;line-height:1.6">${this._escHtml(card.subtitle)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      // Price
+      if (card.price) {
+        out += `<!-- wp:heading {"textAlign":"center","level":3,"style":{"typography":{"fontSize":"48px","fontWeight":"900","lineHeight":"1.1","fontStyle":"normal"},"color":{"text":"${primary}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<h3 class="wp-block-heading has-text-align-center has-text-color" style="color:${primary};margin-bottom:0px;font-size:48px;font-style:normal;font-weight:900;line-height:1.1">${this._escHtml(card.price)}</h3>\n<!-- /wp:heading -->\n`;
+      }
+
+      if (card.period) {
+        out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.6"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"6px"}}}} -->\n`;
+        out += `<p class="has-text-align-center has-text-color" style="color:${bodyText};margin-bottom:6px;font-size:16px;line-height:1.6">${this._escHtml(card.period)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      if (card.initialFee) {
+        out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"13px","lineHeight":"1.6"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"20px"}}}} -->\n`;
+        out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:20px;font-size:13px;line-height:1.6">${this._escHtml(card.initialFee)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      // Separator
+      out += `<!-- wp:separator {"className":"has-css-opacity","style":{"spacing":{"margin":{"top":"20px","bottom":"20px"}}}} -->\n`;
+      out += `<hr class="wp-block-separator has-alpha-channel-opacity has-css-opacity" style="margin-top:20px;margin-bottom:20px"/>\n<!-- /wp:separator -->\n`;
+
+      // Features
+      if (card.features) {
+        out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"14px","lineHeight":"1.8"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"24px"}}}} -->\n`;
+        const featuresHtml = this._escHtml(card.features).replace(/\n/g, '<br>');
+        out += `<p class="has-text-align-center has-text-color" style="color:${bodyText};margin-bottom:24px;font-size:14px;line-height:1.8">${featuresHtml}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      // CTA
+      if (card.ctaLabel) {
+        out += `<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"0px"}}},"layout":{"type":"flex","justifyContent":"center"}} -->\n`;
+        out += `<div class="wp-block-buttons" style="margin-top:0px"><!-- wp:button {"style":{"color":{"background":"${primary}","text":"#ffffff"},"border":{"radius":"7px"},"spacing":{"padding":{"top":"15px","bottom":"15px","left":"32px","right":"32px"}},"typography":{"fontSize":"15px","fontWeight":"600","fontStyle":"normal"}}} -->\n`;
+        out += `<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-custom-font-size wp-element-button" href="${this._escAttr(card.ctaUrl)}" style="border-radius:7px;color:#ffffff;background-color:${primary};padding-top:15px;padding-right:32px;padding-bottom:15px;padding-left:32px;font-size:15px;font-style:normal;font-weight:600">${this._escHtml(card.ctaLabel)}</a></div>\n`;
+        out += `<!-- /wp:button --></div>\n<!-- /wp:buttons -->\n`;
+      }
+
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    });
+
+    if (cardCount > 1) out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    if (cardCount === 1) out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+
+    // Disclaimer
+    if (d.disclaimer) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"12px","lineHeight":"1.6"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"top":"24px","bottom":"0px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-top:24px;margin-bottom:0px;font-size:12px;line-height:1.6">${this._escHtml(d.disclaimer)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  // --- Card grid section generator ---
+  _fpGenCardGridSection(d, id, c, t, padX, bg, hasLinks) {
+    const primary = c.primary || '#C4282D';
+    const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937';
+    const mutedText = c.muted_text || '#6B6966';
+    const cardBorder = c.card_border || '#E5E2DD';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"cards-section"} -->\n`;
+    out += `<section class="gb-element-${sId} cards-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"1120px","marginLeft":"auto","marginRight":"auto"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:1120px}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    if (d.sectionH2) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"1.15","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:12px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:-0.02em;line-height:1.15">${this._escHtml(d.sectionH2)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    if (d.sectionSub) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${bodyText};margin-bottom:32px;font-size:16px;line-height:1.7">${this._escHtml(d.sectionSub)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Grid
+    const cols = d.cards.length <= 2 ? d.cards.length : (d.cards.length <= 4 ? d.cards.length : 4);
+    const gId = id();
+    out += `<!-- wp:generateblocks/element {"uniqueId":"${gId}","tagName":"div","styles":{"display":"grid","gridTemplateColumns":"repeat(${cols}, 1fr)","gap":"24px"},"css":".gb-element-${gId}{display:grid;gap:24px;grid-template-columns:repeat(${cols},1fr)} @media(max-width:768px){.gb-element-${gId}{grid-template-columns:1fr}}","className":"cards-grid"} -->\n`;
+    out += `<div class="gb-element-${gId} cards-grid">\n`;
+
+    d.cards.forEach(card => {
+      const cId = id(); const icId = id();
+      out += `<!-- wp:generateblocks/element {"uniqueId":"${cId}","tagName":"div","styles":{"backgroundColor":"#ffffff","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"14px","paddingTop":"24px","paddingBottom":"24px","paddingLeft":"24px","paddingRight":"24px","borderTopColor":"${primary}","borderTopWidth":"3px"},"css":".gb-element-${cId}{background-color:#fff;border:1px solid ${cardBorder};border-radius:14px;border-top:3px solid ${primary};padding:24px}","className":"solution-card"} -->\n`;
+      out += `<div class="gb-element-${cId} solution-card">\n`;
+
+      // Icon
+      if (card.emoji) {
+        out += `<!-- wp:generateblocks/element {"uniqueId":"${icId}","tagName":"div","styles":{"width":"44px","height":"44px","display":"flex","alignItems":"center","justifyContent":"center","backgroundColor":"rgba(196, 40, 45, 0.06)","borderRadius":"10px","marginBottom":"12px"},"css":".gb-element-${icId}{align-items:center;background-color:rgba(196,40,45,0.06);border-radius:10px;display:flex;height:44px;justify-content:center;margin-bottom:12px;width:44px}","className":"sol-icon"} -->\n`;
+        out += `<div class="gb-element-${icId} sol-icon"><!-- wp:paragraph {"style":{"typography":{"fontSize":"22px"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<p style="margin-bottom:0px;font-size:22px">${card.emoji}</p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:generateblocks/element -->\n`;
+      }
+
+      // Title
+      const titleContent = (hasLinks && card.linkUrl)
+        ? `<a href="${this._escAttr(card.linkUrl)}" class="card-link">${this._escHtml(card.title)}</a>`
+        : this._escHtml(card.title);
+      out += `<!-- wp:heading {"level":3,"style":{"typography":{"fontSize":"16px","fontWeight":"800","lineHeight":"1.2","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"8px"}}}} -->\n`;
+      out += `<h3 class="wp-block-heading has-text-color" style="color:${darkText};margin-bottom:8px;font-size:16px;font-style:normal;font-weight:800;letter-spacing:-0.02em;line-height:1.2">${titleContent}</h3>\n<!-- /wp:heading -->\n`;
+
+      // Description
+      if (card.description) {
+        out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","lineHeight":"1.7"},"color":{"text":"${bodyText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        out += `<p class="has-text-color" style="color:${bodyText};margin-bottom:0px;font-size:14px;line-height:1.7">${this._escHtml(card.description)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      // Link
+      if (hasLinks && card.linkUrl && card.linkText) {
+        out += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"13px","fontWeight":"600"},"color":{"text":"${primary}"},"spacing":{"margin":{"top":"12px","bottom":"0px"}}}} -->\n`;
+        out += `<p class="has-text-color" style="color:${primary};margin-top:12px;margin-bottom:0px;font-size:13px;font-weight:600"><a href="${this._escAttr(card.linkUrl)}">${this._escHtml(card.linkText)}</a></p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    });
+
+    out += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  // --- Service areas generator ---
+  _fpGenServiceAreas(d, id, c, t, padX, bg) {
+    const darkText = c.dark_text || '#151413';
+    const bodyText = c.body_text || '#3A3937';
+    const mutedText = c.muted_text || '#6B6966';
+    const primary = c.primary || '#C4282D';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"${bg}","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:${bg};padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"service-areas-section"} -->\n`;
+    out += `<section class="gb-element-${sId} service-areas-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"960px","marginLeft":"auto","marginRight":"auto","textAlign":"center"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:960px;text-align:center}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    if (d.heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"1.15","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"12px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:${darkText};margin-bottom:12px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:-0.02em;line-height:1.15">${this._escHtml(d.heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    if (d.subtitle) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.7"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"24px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${mutedText};margin-bottom:24px;font-size:16px;line-height:1.7">${this._escHtml(d.subtitle)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    if (d.areasList) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"15px","lineHeight":"1.8","fontWeight":"500"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:${darkText};margin-bottom:32px;font-size:15px;font-weight:500;line-height:1.8">${this._escHtml(d.areasList)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    if (d.ctaLabel) {
+      out += `<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->\n`;
+      out += `<div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"${primary}","text":"#ffffff"},"border":{"radius":"7px"},"spacing":{"padding":{"top":"15px","bottom":"15px","left":"32px","right":"32px"}},"typography":{"fontSize":"15px","fontWeight":"600","fontStyle":"normal"}}} -->\n`;
+      out += `<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-custom-font-size wp-element-button" href="${this._escAttr(d.ctaUrl)}" style="border-radius:7px;color:#ffffff;background-color:${primary};padding-top:15px;padding-right:32px;padding-bottom:15px;padding-left:32px;font-size:15px;font-style:normal;font-weight:600">${this._escHtml(d.ctaLabel)}</a></div>\n`;
+      out += `<!-- /wp:button --></div>\n<!-- /wp:buttons -->\n`;
+    }
+
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
+  // --- CTA banner generator ---
+  _fpGenCtaBanner(d, id, c, t, padX) {
+    const primary = c.primary || '#C4282D';
+    const starGold = c.star_gold || '#D4A843';
+
+    const sId = id(); const siId = id();
+    let out = `<!-- wp:generateblocks/element {"uniqueId":"${sId}","tagName":"section","styles":{"backgroundColor":"#151413","paddingTop":"clamp(56px, 8vw, 100px)","paddingBottom":"clamp(56px, 8vw, 100px)","paddingLeft":"${padX}","paddingRight":"${padX}"},"css":".gb-element-${sId}{background-color:#151413;padding:clamp(56px,8vw,100px) ${padX.replace(/ /g,'')}}","className":"cta-section"} -->\n`;
+    out += `<section class="gb-element-${sId} cta-section"><!-- wp:generateblocks/element {"uniqueId":"${siId}","tagName":"div","styles":{"maxWidth":"760px","marginLeft":"auto","marginRight":"auto","textAlign":"center"},"css":".gb-element-${siId}{margin-left:auto;margin-right:auto;max-width:760px;text-align:center}"} -->\n<div class="gb-element-${siId}">\n`;
+
+    if (d.heading) {
+      out += `<!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"${t.h2_size || 'clamp(26px, 3.5vw, 36px)'}","fontWeight":"${t.h2_weight || '800'}","lineHeight":"1.15","letterSpacing":"-0.02em","fontStyle":"normal"},"color":{"text":"#ffffff"},"spacing":{"margin":{"bottom":"16px"}}}} -->\n`;
+      out += `<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#ffffff;margin-bottom:16px;font-size:${t.h2_size || 'clamp(26px, 3.5vw, 36px)'};font-style:normal;font-weight:${t.h2_weight || '800'};letter-spacing:-0.02em;line-height:1.15">${this._escHtml(d.heading)}</h2>\n<!-- /wp:heading -->\n`;
+    }
+
+    if (d.body) {
+      out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px","lineHeight":"1.8"},"color":{"text":"rgba(255,255,255,0.55)"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
+      out += `<p class="has-text-align-center has-text-color" style="color:rgba(255,255,255,0.55);margin-bottom:32px;font-size:16px;line-height:1.8">${this._escHtml(d.body)}</p>\n<!-- /wp:paragraph -->\n`;
+    }
+
+    // Buttons
+    out += `<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->\n<div class="wp-block-buttons">\n`;
+    if (d.primaryLabel) {
+      out += `<!-- wp:button {"style":{"color":{"background":"${primary}","text":"#ffffff"},"border":{"radius":"7px"},"spacing":{"padding":{"top":"15px","bottom":"15px","left":"32px","right":"32px"}},"typography":{"fontSize":"15px","fontWeight":"600","fontStyle":"normal"}}} -->\n`;
+      out += `<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-custom-font-size wp-element-button" href="${this._escAttr(d.primaryUrl)}" style="border-radius:7px;color:#ffffff;background-color:${primary};padding-top:15px;padding-right:32px;padding-bottom:15px;padding-left:32px;font-size:15px;font-style:normal;font-weight:600">${this._escHtml(d.primaryLabel)}</a></div>\n<!-- /wp:button -->\n`;
+    }
+    if (d.secondaryLabel) {
+      out += `<!-- wp:button {"style":{"color":{"text":"#ffffff","background":"transparent"},"border":{"radius":"7px","color":"rgba(255,255,255,0.25)","width":"1px"},"spacing":{"padding":{"top":"15px","bottom":"15px","left":"32px","right":"32px"}},"typography":{"fontSize":"15px","fontWeight":"600","fontStyle":"normal"}}} -->\n`;
+      out += `<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-border-color has-custom-font-size wp-element-button" href="${this._escAttr(d.secondaryUrl)}" style="border-color:rgba(255,255,255,0.25);border-width:1px;border-radius:7px;color:#ffffff;background-color:transparent;padding-top:15px;padding-right:32px;padding-bottom:15px;padding-left:32px;font-size:15px;font-style:normal;font-weight:600">${this._escHtml(d.secondaryLabel)}</a></div>\n<!-- /wp:button -->\n`;
+    }
+    out += `</div>\n<!-- /wp:buttons -->\n`;
+
+    out += `</div>\n<!-- /wp:generateblocks/element --></section>\n<!-- /wp:generateblocks/element -->\n`;
+    return out;
+  }
+
   reset() {
     document.getElementById('converterInput').value = '';
     document.getElementById('converterStep2').style.display = 'none';
     document.getElementById('converterStep2Svc').style.display = 'none';
+    document.getElementById('converterStep2Full').style.display = 'none';
     document.getElementById('converterNextSteps').style.display = 'none';
     document.getElementById('svcNextSteps').style.display = 'none';
+    document.getElementById('fullPageNextSteps').style.display = 'none';
     const fixesEl = document.getElementById('converterFixesCallout');
     if (fixesEl) { fixesEl.style.display = 'none'; fixesEl.innerHTML = ''; }
     document.getElementById('stepNum1').classList.remove('done');
@@ -8630,6 +9611,11 @@ class HeroConverterView {
     document.getElementById('converterOutputStatus').textContent = '';
     const svcStatus = document.getElementById('svcOutputStatus');
     if (svcStatus) svcStatus.textContent = '';
+    const fpStatus = document.getElementById('fullPageOutputStatus');
+    if (fpStatus) fpStatus.textContent = '';
+    const stepNum2Full = document.getElementById('stepNum2Full');
+    if (stepNum2Full) { stepNum2Full.classList.remove('done'); stepNum2Full.textContent = '2'; }
+    this._fpSections = [];
     this._parsed = false;
     this._heroStartIdx = -1;
     this._heroEndIdx = -1;
