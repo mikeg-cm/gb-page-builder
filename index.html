@@ -4127,14 +4127,17 @@ function buildHeroConverterSection(config, data, idEngine) {
     marginBottom: '18px'
   });
 
-  // --- Gold tagline ---
-  var taglineBlock = buildParagraph(data.serviceArea || '', {
-    align: 'left',
-    color: '#cf9c27',
-    fontSize: '14px',
-    fontWeight: '600',
-    marginBottom: '20px'
-  });
+  // --- Tagline (only if serviceArea text exists) ---
+  var taglineBlock = '';
+  if (data.serviceArea) {
+    taglineBlock = buildParagraph(data.serviceArea, {
+      align: 'left',
+      color: primary,
+      fontSize: '14px',
+      fontWeight: '600',
+      marginBottom: '20px'
+    });
+  }
 
   // --- Primary button ---
   var primaryBtn = btns.primary || {};
@@ -4164,7 +4167,7 @@ function buildHeroConverterSection(config, data, idEngine) {
   });
 
   var buttonsBlock = buildButtons([btn1, btn2], {
-    justify: 'left',
+    justify: 'center',
     margin: { bottom: '18px' }
   });
 
@@ -8938,13 +8941,18 @@ class HeroConverterView {
       return { type: 'trustBar', label: 'Trust Bar', data: { text: trustText } };
     }
 
+    // Card grid with links (BEFORE pricing, so "Specialized Packages" with card-link is caught first)
+    if (hasColumns && (joined.includes('card-link') || joined.includes('link-card') || joined.includes('Learn More'))) {
+      return this._fpExtractCardGrid(doc, joined, cl);
+    }
+
     // Pricing cards — look for price patterns ($XX) inside cards
-    if (cl.includes('PRICING') || cl.includes('PACKAGE')) {
+    if (cl.includes('PRICING') || (cl.includes('PACKAGE') && !cl.includes('SPECIALIZED'))) {
       return this._fpExtractPricingCards(doc, joined);
     }
-    // Auto-detect pricing by content: cards with $ amounts
+    // Auto-detect pricing by content: cards with $ amounts AND price-related classes
     const priceMatches = joined.match(/\$\d+/g);
-    if (priceMatches && priceMatches.length >= 2 && hasColumns) {
+    if (priceMatches && priceMatches.length >= 2 && hasColumns && (joined.includes('price') || joined.includes('pricing'))) {
       return this._fpExtractPricingCards(doc, joined);
     }
 
@@ -8992,9 +9000,11 @@ class HeroConverterView {
     paras.forEach(p => {
       const text = p.textContent.trim();
       if (!text) return;
-      if (text.startsWith('✓') || text.startsWith('✔')) {
+      if (text.startsWith('✓') || text.startsWith('✔') || text.includes('✓') || text.includes('✔')) {
         // Checklist — may have multiple items separated by <br>
-        text.split(/\n/).forEach(item => {
+        const htmlContent = p.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+        const plainText = htmlContent.replace(/<[^>]+>/g, '');
+        plainText.split(/\n/).forEach(item => {
           const clean = item.replace(/^[✓✔]\s*/, '').trim();
           if (clean) data.checklistItems.push(clean);
         });
@@ -9042,24 +9052,29 @@ class HeroConverterView {
 
       const card = { title: h3.textContent.trim(), subtitle: '', price: '', period: '', initialFee: '', features: '', ctaLabel: '', ctaUrl: '' };
 
+      // H4 price — check FIRST (legacy pages use H4 for the price amount)
+      const h4 = colDoc.querySelector('h4');
+      if (h4) card.price = h4.textContent.trim();
+
       const paras = colDoc.querySelectorAll('p');
       paras.forEach(p => {
         const text = p.textContent.trim();
         const cls = p.className || '';
         if (cls.includes('package-subtitle') || cls.includes('subtitle')) card.subtitle = text;
-        else if (cls.includes('price') && text.startsWith('$')) card.price = text;
+        else if (cls.includes('price') && text.startsWith('$') && !card.price) card.price = text;
         else if (cls.includes('price-period') || text === 'per month') card.period = text;
         else if (cls.includes('price-note') || text.includes('initial fee') || text.includes('initial installation')) card.initialFee = text;
         else if (cls.includes('pricing-disclaimer') || cls.includes('disclaimer')) data.disclaimer = text;
         else if (text.includes('✓') || text.includes('✔') || cls.includes('list-header')) {
           if (card.features) card.features += '\n';
-          card.features += text;
+          // Preserve <br> as newlines in features
+          card.features += p.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim();
+        } else if (text.includes('•') || text.includes('services per year') || text.includes('Interior')) {
+          // Catch bullet-point service details
+          if (card.features) card.features += '\n';
+          card.features += p.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').trim();
         }
       });
-
-      // H4 price
-      const h4 = colDoc.querySelector('h4');
-      if (h4 && !card.price) card.price = h4.textContent.trim();
 
       // Button
       const btn = colDoc.querySelector('a.wp-block-button__link, a.wp-element-button');
@@ -9086,13 +9101,18 @@ class HeroConverterView {
     const h2 = doc.querySelector('h2');
     if (h2) data.sectionH2 = h2.textContent.trim();
 
-    // Subtitle — first paragraph that's not inside a card
-    const topParas = doc.querySelectorAll('p');
-    for (const p of topParas) {
-      const text = p.textContent.trim();
-      if (text.length > 20 && text !== data.sectionH2 && !(p.className || '').includes('card-icon')) {
-        data.sectionSub = text;
-        break;
+    // Subtitle — find paragraph BEFORE the first column starts
+    const columnStart = joined.indexOf('<!-- wp:column');
+    if (columnStart > 0) {
+      const topContent = joined.substring(0, columnStart).replace(/<!-- [\/]?wp:[^\n]*-->/g, '');
+      const topDoc = new DOMParser().parseFromString('<div>' + topContent + '</div>', 'text/html');
+      const topParas = topDoc.querySelectorAll('p');
+      for (const p of topParas) {
+        const text = p.textContent.trim();
+        if (text.length > 10 && text !== data.sectionH2) {
+          data.sectionSub = text;
+          break;
+        }
       }
     }
 
@@ -9109,9 +9129,13 @@ class HeroConverterView {
       paras.forEach(p => {
         const text = p.textContent.trim();
         const cls = p.className || '';
-        if (cls.includes('card-icon') || (text.length <= 3 && /[\u{1F300}-\u{1FAD6}]/u.test(text))) {
+        // Emoji detection: card-icon class, or short text with emoji characters, or single character
+        if (cls.includes('card-icon') || (text.length <= 4 && text.length > 0 && !/[a-zA-Z0-9]/.test(text))) {
           card.emoji = text;
         } else if (cls.includes('card-link')) {
+          const a = p.querySelector('a');
+          if (a) { card.linkText = a.textContent.trim(); card.linkUrl = a.getAttribute('href') || ''; }
+        } else if (!card.linkText && p.querySelector('a') && text.includes('→') || text.includes('Learn More') || text.includes('&#8594;')) {
           const a = p.querySelector('a');
           if (a) { card.linkText = a.textContent.trim(); card.linkUrl = a.getAttribute('href') || ''; }
         } else if (!card.description && text.length > 10) {
@@ -9161,8 +9185,9 @@ class HeroConverterView {
     paras.forEach(p => {
       const text = p.textContent.trim();
       const cls = p.className || '';
-      if (cls.includes('service-areas-list') || (text.includes('•') && text.split('•').length > 2)) {
-        data.areasList = text;
+      if (cls.includes('service-areas-list') || (text.includes('•') && text.split('•').length > 2) || (text.includes('&#8226;') && text.split('&#8226;').length > 2)) {
+        // Preserve <br> tags in area lists
+        data.areasList = p.innerHTML.replace(/<[^>]*>/g, (match) => match.startsWith('<br') ? '<br>' : '').replace(/<(?!br)[^>]+>/g, '').trim();
       } else if (text && text !== data.heading && !data.subtitle && text.length > 10) {
         data.subtitle = text;
       }
@@ -9653,7 +9678,9 @@ class HeroConverterView {
 
     if (d.areasList) {
       out += `<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"15px","lineHeight":"1.8","fontWeight":"500"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"32px"}}}} -->\n`;
-      out += `<p class="has-text-align-center has-text-color" style="color:${darkText};margin-bottom:32px;font-size:15px;font-weight:500;line-height:1.8">${this._escHtml(d.areasList)}</p>\n<!-- /wp:paragraph -->\n`;
+      // Preserve <br> tags in the areas list (don't escape them)
+      const areasHtml = d.areasList.replace(/<br>/g, '%%BR%%');
+      out += `<p class="has-text-align-center has-text-color" style="color:${darkText};margin-bottom:32px;font-size:15px;font-weight:500;line-height:1.8">${this._escHtml(areasHtml).replace(/%%BR%%/g, '<br>')}</p>\n<!-- /wp:paragraph -->\n`;
     }
 
     if (d.ctaLabel) {
