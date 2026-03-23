@@ -361,6 +361,24 @@ textarea{resize:vertical;min-height:64px}
 .btn-add-sm{padding:5px 12px;border:1px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;transition:all var(--transition)}
 .btn-add-sm:hover{background:var(--accent-light);border-color:var(--accent)}
 
+/* Converter type toggle */
+.converter-type-toggle{display:flex;gap:4px;margin-bottom:20px;padding:3px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);width:fit-content}
+.conv-type-btn{padding:6px 16px;border:none;border-radius:6px;font-family:var(--font);font-size:12px;font-weight:600;color:var(--text-secondary);background:transparent;cursor:pointer;transition:all var(--transition)}
+.conv-type-btn:hover{color:var(--text-primary);background:rgba(0,0,0,0.03)}
+.conv-type-btn.active{background:var(--accent);color:#fff;box-shadow:0 1px 3px rgba(0,122,255,0.3)}
+
+/* Service card review rows */
+.svc-cards-review{display:grid;gap:10px}
+.svc-card-row{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);padding:14px 16px;display:grid;grid-template-columns:50px 1fr 1fr 2fr 28px;gap:8px;align-items:center}
+.svc-card-row input,.svc-card-row textarea{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:12px;background:#fff;color:var(--text-primary)}
+.svc-card-row input:focus,.svc-card-row textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);outline:none}
+.svc-card-row .svc-emoji-input{text-align:center;font-size:18px;padding:4px}
+.svc-card-row .svc-remove{width:24px;height:24px;border:none;background:rgba(255,59,48,0.08);color:#ff3b30;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.svc-card-row .svc-remove:hover{background:rgba(255,59,48,0.15)}
+.svc-cards-header{display:grid;grid-template-columns:50px 1fr 1fr 2fr 28px;gap:8px;padding:0 16px;margin-bottom:4px}
+.svc-cards-header span{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px}
+@media(max-width:900px){.svc-card-row,.svc-cards-header{grid-template-columns:1fr}.svc-cards-header{display:none}}
+
 /* Converter toolbar */
 .converter-toolbar{position:sticky;top:0;z-index:10;background:rgba(242,242,247,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);padding:12px 24px;display:flex;align-items:center;gap:12px}
 .converter-toolbar h2{font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em}
@@ -649,7 +667,7 @@ textarea{resize:vertical;min-height:64px}
   <!-- HERO CONVERTER (standalone view) -->
   <div class="converter-panel" id="converterPanel">
     <div class="converter-toolbar">
-      <h2>Hero Converter</h2>
+      <h2 id="converterTitle">Hero Converter</h2>
       <div class="converter-toolbar-actions">
         <button class="sidebar-toggle-btn" id="btnToggleSidebar" title="Show client settings">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="14" height="12" rx="1.5"/><path d="M5 2v12"/></svg>
@@ -659,6 +677,12 @@ textarea{resize:vertical;min-height:64px}
       </div>
     </div>
     <div class="converter-body">
+      <!-- Converter type toggle -->
+      <div class="converter-type-toggle" id="converterTypeToggle">
+        <button class="conv-type-btn active" data-type="hero">Hero</button>
+        <button class="conv-type-btn" data-type="serviceCards">Service Cards</button>
+      </div>
+
       <!-- Workflow steps overview -->
       <div class="converter-workflow">
         <div class="workflow-step" id="ws1"><span class="ws-num active">1</span><span class="ws-label">Paste full code</span></div>
@@ -753,6 +777,29 @@ textarea{resize:vertical;min-height:64px}
             <div>
               <strong>Upload a featured image</strong>
               <p>The new hero uses the page's Featured Image. Set one in the page sidebar under "Featured Image."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Service Cards Review (hidden until parsed) -->
+      <div class="converter-step" id="converterStep2Svc" style="display:none">
+        <div class="converter-step-header">
+          <span class="converter-step-num" id="stepNum2Svc">2</span>
+          <span class="converter-step-title">Review extracted service cards</span>
+        </div>
+        <p class="converter-step-desc">Each card below was extracted from the legacy code. Edit if needed, then convert.</p>
+        <div id="svcCardsContainer" class="svc-cards-review"></div>
+        <div class="converter-actions">
+          <button class="btn btn-primary" id="btnSvcGenerate">Convert &rarr;</button>
+          <span class="converter-status success" id="svcOutputStatus"></span>
+        </div>
+        <div class="converter-next-steps" id="svcNextSteps" style="display:none">
+          <div class="next-step-card">
+            <span class="next-step-num">3</span>
+            <div>
+              <strong>Replace page code</strong>
+              <p>Copy the output from the right panel. In WordPress Code Editor, find the services section and replace it.</p>
             </div>
           </div>
         </div>
@@ -7317,6 +7364,11 @@ class HeroConverterView {
     this._utilityBlocks = [];
     this._contentStartIdx = -1;
     this._fullLines = [];
+    // Service card converter state
+    this._converterType = 'hero';
+    this._parsedCards = [];
+    this._svcGridStartIdx = -1;
+    this._svcGridEndIdx = -1;
   }
 
   init() {
@@ -7335,6 +7387,21 @@ class HeroConverterView {
     document.getElementById('btnConverterCopy').onclick = () => this.copy();
     document.getElementById('btnAddCheckItem').onclick = () => this.addCheckItem('');
     document.getElementById('btnAddTrustItem').onclick = () => this.addTrustItem('', '');
+    document.getElementById('btnSvcGenerate').onclick = () => this.generate();
+
+    // Converter type toggle
+    const typeToggle = document.getElementById('converterTypeToggle');
+    if (typeToggle) {
+      typeToggle.addEventListener('click', (e) => {
+        const btn = e.target.closest('.conv-type-btn');
+        if (!btn) return;
+        typeToggle.querySelectorAll('.conv-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this._converterType = btn.dataset.type;
+        this._updateConverterUI();
+        this.reset();
+      });
+    }
 
     // CTA URL red highlight when not /contact/
     const ctaUrlInput = document.getElementById('convCtaUrl');
@@ -7417,6 +7484,9 @@ class HeroConverterView {
   }
 
   parse() {
+    if (this._converterType === 'serviceCards') {
+      return this.parseServiceCards();
+    }
     const input = document.getElementById('converterInput').value.trim();
     if (!input) return;
 
@@ -7825,6 +7895,9 @@ class HeroConverterView {
   }
 
   generate() {
+    if (this._converterType === 'serviceCards') {
+      return this.generateServiceCards();
+    }
     if (!this._parsed) return;
 
     // Gather edited values
@@ -8252,18 +8325,311 @@ class HeroConverterView {
     });
   }
 
+  // =========================================================================
+  // CONVERTER TYPE UI
+  // =========================================================================
+  _updateConverterUI() {
+    const title = document.getElementById('converterTitle');
+    const parseBtn = document.getElementById('btnConverterParse');
+    const stepDesc = document.querySelector('#converterStep1 .converter-step-desc');
+    const ws5 = document.getElementById('ws5');
+    if (this._converterType === 'serviceCards') {
+      if (title) title.textContent = 'Service Card Converter';
+      if (parseBtn) parseBtn.textContent = 'Parse Service Cards';
+      if (stepDesc) stepDesc.innerHTML = 'In WordPress, open the page &rarr; Code Editor. Select all (<kbd>Ctrl+A</kbd>), copy, and paste below. The converter will detect the services grid automatically.';
+      if (ws5) ws5.style.display = 'none';
+    } else {
+      if (title) title.textContent = 'Hero Converter';
+      if (parseBtn) parseBtn.textContent = 'Parse Hero';
+      if (stepDesc) stepDesc.innerHTML = 'In WordPress, open the page &rarr; Code Editor. Select all (<kbd>Ctrl+A</kbd>), copy, and paste below. The converter will detect the hero section automatically.';
+      if (ws5) ws5.style.display = '';
+    }
+  }
+
+  // =========================================================================
+  // SERVICE CARD PARSING
+  // =========================================================================
+  parseServiceCards() {
+    const raw = document.getElementById('converterInput').value;
+    if (!raw.trim()) {
+      document.getElementById('converterParseStatus').textContent = 'Paste code first';
+      return;
+    }
+
+    this._fullLines = raw.split('\n');
+    this._parsedCards = [];
+
+    // Find all service-card blocks
+    const cardStarts = [];
+    for (let i = 0; i < this._fullLines.length; i++) {
+      const line = this._fullLines[i];
+      if (line.includes('"className":"service-card"') || line.includes('"className": "service-card"')) {
+        cardStarts.push(i);
+      }
+    }
+
+    if (cardStarts.length === 0) {
+      document.getElementById('converterParseStatus').textContent = 'No service cards found. Look for blocks with className "service-card".';
+      return;
+    }
+
+    // Also find the services-grid wrapper for replacement boundaries
+    this._svcGridStartIdx = -1;
+    this._svcGridEndIdx = -1;
+    for (let i = 0; i < this._fullLines.length; i++) {
+      if (this._fullLines[i].includes('"className":"services-grid"') || this._fullLines[i].includes('"className": "services-grid"')) {
+        this._svcGridStartIdx = i;
+        break;
+      }
+    }
+
+    // Find the end of the services-grid block
+    if (this._svcGridStartIdx >= 0) {
+      let depth = 0;
+      for (let i = this._svcGridStartIdx; i < this._fullLines.length; i++) {
+        const line = this._fullLines[i];
+        const opens = (line.match(/<!-- wp:generateblocks\//g) || []).length;
+        const closes = (line.match(/<!-- \/wp:generateblocks\//g) || []).length;
+        depth += opens - closes;
+        if (depth <= 0 && i > this._svcGridStartIdx) {
+          this._svcGridEndIdx = i;
+          break;
+        }
+      }
+    }
+
+    // Parse each card
+    cardStarts.forEach((startIdx, cardIdx) => {
+      // Find end of this card block
+      let depth = 0;
+      let endIdx = startIdx;
+      for (let i = startIdx; i < this._fullLines.length; i++) {
+        const line = this._fullLines[i];
+        const opens = (line.match(/<!-- wp:generateblocks\//g) || []).length;
+        const closes = (line.match(/<!-- \/wp:generateblocks\//g) || []).length;
+        depth += opens - closes;
+        if (depth <= 0 && i > startIdx) {
+          endIdx = i;
+          break;
+        }
+      }
+
+      const cardLines = this._fullLines.slice(startIdx, endIdx + 1).join('\n');
+
+      // Extract uniqueId
+      const idMatch = cardLines.match(/"uniqueId":"([^"]+)"/);
+      const uniqueId = idMatch ? idMatch[1] : 'svc' + String(cardIdx + 1).padStart(2, '0');
+
+      // Check if already updated (has svc-icon child)
+      const isUpdated = cardLines.includes('svc-icon');
+
+      // Parse inner HTML to extract emoji, title, link, description
+      const htmlContent = cardLines.replace(/<!-- [\/]?wp:[^\n]*-->/g, '').replace(/<(section|div)[^>]*class="gb-element[^"]*"[^>]*>/g, '').replace(/<\/(section|div)>/g, '');
+      const parser = new DOMParser();
+      const doc = parser.parseFromString('<div>' + htmlContent + '</div>', 'text/html');
+
+      const paragraphs = doc.querySelectorAll('p');
+      let emoji = '', title = '', linkUrl = '', description = '';
+
+      if (paragraphs.length >= 1) {
+        const firstP = paragraphs[0];
+        const firstA = firstP.querySelector('a');
+        emoji = (firstA ? firstA.textContent : firstP.textContent).trim();
+        if (firstA) linkUrl = firstA.getAttribute('href') || '';
+      }
+      if (paragraphs.length >= 2) {
+        const secondP = paragraphs[1];
+        const secondA = secondP.querySelector('a');
+        title = (secondA ? secondA.textContent : secondP.textContent).trim();
+        if (secondA && !linkUrl) linkUrl = secondA.getAttribute('href') || '';
+        // For updated cards, the title link has card-link class
+        if (secondA && secondA.classList.contains('card-link')) linkUrl = secondA.getAttribute('href') || '';
+      }
+      if (paragraphs.length >= 3) {
+        description = paragraphs[2].textContent.trim();
+      }
+
+      this._parsedCards.push({ uniqueId, emoji, title, linkUrl, description, isUpdated, startIdx, endIdx });
+    });
+
+    // Show Step 2 for service cards
+    document.getElementById('converterStep2').style.display = 'none';
+    document.getElementById('converterStep2Svc').style.display = 'block';
+    this._renderParsedCards();
+
+    // Update status
+    const statusEl = document.getElementById('converterParseStatus');
+    const count = this._parsedCards.length;
+    const updatedCount = this._parsedCards.filter(c => c.isUpdated).length;
+    let msg = `Found ${count} service card${count !== 1 ? 's' : ''}`;
+    if (updatedCount > 0) msg += ` (${updatedCount} already updated)`;
+    statusEl.textContent = msg;
+    statusEl.className = 'converter-status success';
+
+    document.getElementById('stepNum1').classList.add('done');
+    document.getElementById('stepNum1').textContent = '\u2713';
+    this._parsed = true;
+    this._setWorkflowStep(2);
+  }
+
+  _renderParsedCards() {
+    const container = document.getElementById('svcCardsContainer');
+    let html = '<div class="svc-cards-header"><span>Emoji</span><span>Title</span><span>Link URL</span><span>Description</span><span></span></div>';
+    this._parsedCards.forEach((card, i) => {
+      const badge = card.isUpdated ? ' style="border-left:3px solid #34c759"' : '';
+      html += `<div class="svc-card-row"${badge}>`;
+      html += `<input class="svc-emoji-input" data-idx="${i}" data-field="emoji" value="${this._escAttr(card.emoji)}">`;
+      html += `<input data-idx="${i}" data-field="title" value="${this._escAttr(card.title)}">`;
+      html += `<input data-idx="${i}" data-field="linkUrl" value="${this._escAttr(card.linkUrl)}" placeholder="(no link)">`;
+      html += `<input data-idx="${i}" data-field="description" value="${this._escAttr(card.description)}">`;
+      html += `<button class="svc-remove" data-idx="${i}" title="Remove">&times;</button>`;
+      html += '</div>';
+    });
+    container.innerHTML = html;
+
+    // Wire remove buttons
+    container.querySelectorAll('.svc-remove').forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.dataset.idx);
+        this._parsedCards.splice(idx, 1);
+        this._renderParsedCards();
+      };
+    });
+
+    // Wire input changes
+    container.querySelectorAll('input').forEach(inp => {
+      inp.oninput = () => {
+        const idx = parseInt(inp.dataset.idx);
+        const field = inp.dataset.field;
+        if (idx >= 0 && field && this._parsedCards[idx]) {
+          this._parsedCards[idx][field] = inp.value;
+        }
+      };
+    });
+  }
+
+  _escAttr(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // =========================================================================
+  // SERVICE CARD GENERATION
+  // =========================================================================
+  generateServiceCards() {
+    if (!this._parsed || this._parsedCards.length === 0) return;
+
+    // Read current values from inputs
+    document.querySelectorAll('#svcCardsContainer input').forEach(inp => {
+      const idx = parseInt(inp.dataset.idx);
+      const field = inp.dataset.field;
+      if (idx >= 0 && field && this._parsedCards[idx]) {
+        this._parsedCards[idx][field] = inp.value;
+      }
+    });
+
+    // Get config
+    let config;
+    if (window.app && window.app.clientManager) {
+      config = window.app.clientManager.getActive();
+    }
+    const c = (config && config.colors) || {};
+    const sectionLight = c.section_light || '#FAF8F5';
+    const cardBorder = c.card_border || '#E5E2DD';
+    const darkText = c.dark_text || '#151413';
+    const mutedText = c.muted_text || '#6B6966';
+    const primary = c.primary || '#C4282D';
+
+    const prefix = document.getElementById('pagePrefix') ? document.getElementById('pagePrefix').value || 'pg' : 'pg';
+    let idCounter = 1;
+    const nextId = () => prefix + 'Svc' + String(idCounter++).padStart(2, '0');
+
+    // Build each card
+    let cardsOut = '';
+    this._parsedCards.forEach(card => {
+      const scId = nextId();
+      const icId = nextId();
+
+      // Card wrapper with position:relative
+      cardsOut += `<!-- wp:generateblocks/element {"uniqueId":"${scId}","tagName":"div","styles":{"backgroundColor":"${sectionLight}","borderColor":"${cardBorder}","borderStyle":"solid","borderWidth":"1px","borderRadius":"10px","paddingTop":"28px","paddingBottom":"28px","paddingLeft":"20px","paddingRight":"20px","textAlign":"center","position":"relative"},"css":".gb-element-${scId}{background-color:${sectionLight};border-color:${cardBorder};border-radius:10px;border-style:solid;border-width:1px;padding:28px 20px;position:relative;text-align:center}","className":"service-card"} -->\n`;
+      cardsOut += `<div class="gb-element-${scId} service-card">\n`;
+
+      // Icon wrapper
+      cardsOut += `<!-- wp:generateblocks/element {"uniqueId":"${icId}","tagName":"div","styles":{"width":"56px","height":"56px","marginLeft":"auto","marginRight":"auto","marginBottom":"14px","display":"flex","alignItems":"center","justifyContent":"center","backgroundColor":"rgba(196, 40, 45, 0.06)","borderRadius":"14px"},"css":".gb-element-${icId}{align-items:center;background-color:rgba(196,40,45,0.06);border-radius:14px;display:flex;height:56px;justify-content:center;margin:0 auto 14px;width:56px}","className":"svc-icon"} -->\n`;
+      cardsOut += `<div class="gb-element-${icId} svc-icon"><!-- wp:paragraph {"style":{"typography":{"fontSize":"28px"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+      cardsOut += `<p style="margin-bottom:0px;font-size:28px">${card.emoji}</p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:generateblocks/element -->\n`;
+
+      // Title (with optional card-link)
+      const titleContent = card.linkUrl
+        ? `<a href="${this._escAttr(card.linkUrl)}" class="card-link">${this._escHtml(card.title)}</a>`
+        : this._escHtml(card.title);
+      cardsOut += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontWeight":"700"},"color":{"text":"${darkText}"},"spacing":{"margin":{"bottom":"4px"}}}} -->\n`;
+      cardsOut += `<p class="has-text-color" style="color:${darkText};margin-bottom:4px;font-size:14px;font-weight:700">${titleContent}</p>\n<!-- /wp:paragraph -->\n`;
+
+      // Description
+      if (card.description) {
+        cardsOut += `<!-- wp:paragraph {"style":{"typography":{"fontSize":"12px","lineHeight":"1.4"},"color":{"text":"${mutedText}"},"spacing":{"margin":{"bottom":"0px"}}}} -->\n`;
+        cardsOut += `<p class="has-text-color" style="color:${mutedText};margin-bottom:0px;font-size:12px;line-height:1.4">${this._escHtml(card.description)}</p>\n<!-- /wp:paragraph -->\n`;
+      }
+
+      cardsOut += `</div>\n<!-- /wp:generateblocks/element -->\n`;
+    });
+
+    // Build full output — replace within page or output cards only
+    let output;
+    if (this._svcGridStartIdx >= 0 && this._svcGridEndIdx >= 0) {
+      // Replace just the cards inside the grid (keep grid wrapper)
+      // Find where the first card starts and last card ends inside the grid
+      const gridOpenEnd = this._svcGridStartIdx;
+      // Find the inner div line after the grid comment
+      let gridInnerStart = gridOpenEnd + 1;
+      // Find the closing of the grid div
+      let gridCloseStart = this._svcGridEndIdx;
+
+      // Rebuild: grid open lines + new cards + grid close lines
+      const before = this._fullLines.slice(0, gridInnerStart + 1); // includes grid open div
+      const after = this._fullLines.slice(gridCloseStart); // includes grid close div + rest
+
+      output = before.join('\n') + '\n' + cardsOut + after.join('\n');
+    } else {
+      // Just output the cards
+      output = cardsOut;
+    }
+
+    this._outputCode = output;
+    this._updatePreview(output);
+
+    // Status
+    document.getElementById('svcOutputStatus').textContent = `Converted ${this._parsedCards.length} cards to updated style`;
+    document.getElementById('stepNum2Svc').classList.add('done');
+    document.getElementById('stepNum2Svc').textContent = '\u2713';
+    document.getElementById('svcNextSteps').style.display = 'block';
+    this._setWorkflowStep(3);
+
+    if (typeof showToast === 'function') showToast(`${this._parsedCards.length} service cards converted`, 'success');
+  }
+
+  _escHtml(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   reset() {
     document.getElementById('converterInput').value = '';
     document.getElementById('converterStep2').style.display = 'none';
+    document.getElementById('converterStep2Svc').style.display = 'none';
     document.getElementById('converterNextSteps').style.display = 'none';
+    document.getElementById('svcNextSteps').style.display = 'none';
     const fixesEl = document.getElementById('converterFixesCallout');
     if (fixesEl) { fixesEl.style.display = 'none'; fixesEl.innerHTML = ''; }
     document.getElementById('stepNum1').classList.remove('done');
     document.getElementById('stepNum1').textContent = '1';
     document.getElementById('stepNum2').classList.remove('done');
     document.getElementById('stepNum2').textContent = '2';
+    const stepNum2Svc = document.getElementById('stepNum2Svc');
+    if (stepNum2Svc) { stepNum2Svc.classList.remove('done'); stepNum2Svc.textContent = '2'; }
     document.getElementById('converterParseStatus').textContent = '';
     document.getElementById('converterOutputStatus').textContent = '';
+    const svcStatus = document.getElementById('svcOutputStatus');
+    if (svcStatus) svcStatus.textContent = '';
     this._parsed = false;
     this._heroStartIdx = -1;
     this._heroEndIdx = -1;
@@ -8271,6 +8637,9 @@ class HeroConverterView {
     this._utilityBlocks = [];
     this._contentStartIdx = -1;
     this._fullLines = [];
+    this._parsedCards = [];
+    this._svcGridStartIdx = -1;
+    this._svcGridEndIdx = -1;
     this._updatePreview('');
     this._setWorkflowStep(1);
     // Reset preview back to code mode
