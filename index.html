@@ -8700,6 +8700,9 @@ class HeroConverterView {
       output = cardsOut;
     }
 
+    // Fix missing paragraph closes in passthrough sections
+    output = this._fixMissingParagraphCloses(output);
+
     this._outputCode = output;
     this._updatePreview(output);
 
@@ -8715,6 +8718,74 @@ class HeroConverterView {
 
   _escHtml(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /**
+   * Fix missing <!-- /wp:paragraph --> closing comments in WP block code.
+   * WordPress does byte-for-byte validation — every opening <!-- wp:paragraph -->
+   * MUST have a matching <!-- /wp:paragraph --> or all subsequent blocks break
+   * with "Resolve Block" errors.
+   *
+   * Strategy: scan line by line. When we see a <!-- wp:paragraph opening,
+   * track that it's open. When we see the </p> that closes it, check if
+   * <!-- /wp:paragraph --> follows. If not, insert it.
+   */
+  _fixMissingParagraphCloses(code) {
+    const lines = code.split('\n');
+    const fixed = [];
+    let inParagraph = false;
+    let sawClosingP = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Check if this line has a paragraph opening comment
+      if (trimmed.includes('<!-- wp:paragraph')) {
+        // If we were already in an unclosed paragraph, close it first
+        if (inParagraph && !trimmed.includes('<!-- /wp:paragraph')) {
+          fixed.push('<!-- /wp:paragraph -->');
+        }
+        inParagraph = true;
+        sawClosingP = false;
+      }
+
+      // Check if this line has the paragraph close comment
+      if (trimmed.includes('<!-- /wp:paragraph -->')) {
+        inParagraph = false;
+        sawClosingP = false;
+      }
+
+      // Check if we see a </p> which is the HTML close of the paragraph
+      if (inParagraph && trimmed.includes('</p>')) {
+        sawClosingP = true;
+      }
+
+      // If we're in an open paragraph, saw the </p>, and the next meaningful content
+      // is a new block opening (not the /wp:paragraph close), insert the close
+      if (inParagraph && sawClosingP && i + 1 < lines.length) {
+        const nextLine = lines[i + 1].trim();
+        if (nextLine && !nextLine.includes('<!-- /wp:paragraph') &&
+            (nextLine.includes('<!-- wp:') || nextLine.includes('<!-- /wp:') ||
+             nextLine.startsWith('<div') || nextLine.startsWith('</div') ||
+             nextLine.startsWith('<section') || nextLine.startsWith('</section'))) {
+          fixed.push(line);
+          fixed.push('<!-- /wp:paragraph -->');
+          inParagraph = false;
+          sawClosingP = false;
+          continue;
+        }
+      }
+
+      fixed.push(line);
+    }
+
+    // If we end with an unclosed paragraph
+    if (inParagraph) {
+      fixed.push('<!-- /wp:paragraph -->');
+    }
+
+    return fixed.join('\n');
   }
 
   // =========================================================================
@@ -9329,6 +9400,9 @@ class HeroConverterView {
           break;
       }
     });
+
+    // Fix missing paragraph closes in passthrough sections
+    output = this._fixMissingParagraphCloses(output);
 
     this._outputCode = output;
     this._updatePreview(output);
