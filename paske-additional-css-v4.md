@@ -82,7 +82,7 @@ Replaces the entire existing Additional CSS.
 .cm-topbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10001;
 }
 .sticky-enabled .main-navigation.is_stuck,
 .sticky-enabled #mobile-header.is_stuck {
