@@ -73,7 +73,21 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: NAVIGATION + MENU CTA
+   SECTION 2: STICKY TOPBAR (MOBILE ONLY)
+   On mobile the topbar stays visible for quick
+   phone access. On desktop it scrolls away and
+   GP's native sticky nav handles everything.
+   ================================================ */
+@media (max-width: 768px) {
+  .cm-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10001;
+  }
+}
+
+/* ================================================
+   SECTION 3: NAVIGATION + MENU CTA
    ================================================ */
 #site-navigation .main-nav ul li.menu-cta > a,
 #site-navigation .main-nav ul li.menu-cta > a:visited,
