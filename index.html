@@ -10225,12 +10225,8 @@ class ThemeCSSBuilder {
   }
 }
 
-/* Transition block styles */
-.cm-transition { margin: 0; padding: 0; }
-.cm-transition--line { padding: 32px 0; text-align: center; }
-.cm-transition--line hr { border: none; height: 2px; width: 80px; background: var(--pk-brand); margin: 0 auto; }
-.cm-transition--fade { height: 60px; }
-.cm-transition--stripe { height: 4px; background: var(--pk-brand); }
+/* Transition block — universal section separator */
+.cm-transition { margin: 0; }
 
 /* === SECTION 3: NAVIGATION + MENU CTA === */
 #site-navigation .main-nav ul li.${ctaClass} > a,
@@ -10412,12 +10408,14 @@ class ThemeCSSBuilder {
   .solution-grid.solution-grid { grid-template-columns: 1fr; gap: 20px; }
   .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; }
   .cards-grid.cards-grid { grid-template-columns: 1fr; }
+  .problem-content-grid.problem-content-grid { grid-template-columns: 1fr; gap: 32px; }
+  .why-grid.why-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) { .services-grid.services-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) {
   .community-text-grid.community-text-grid { grid-template-columns: 1fr; }
   .community-intro-grid.community-intro-grid { grid-template-columns: 1fr; }
-  .timeline-grid.timeline-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; }
   .stats-strip .gb-element-lcS02 { border-right: none; }
 }
 @media (max-width: 1024px) { .svc-cards-grid.svc-cards-grid, .pkg-cards-grid.pkg-cards-grid { grid-template-columns: repeat(2, 1fr); } }
