@@ -89,19 +89,24 @@ Replaces the entire existing Additional CSS.
 
 /* ================================================
    SECTION 2: FIXED TOP BAR + BODY OFFSET
+   These 3 rules use !important because GP's sticky
+   nav JS sets inline styles (position, top, margin)
+   that CSS cannot override without it. This is the
+   only place !important appears in this file.
    ================================================ */
 .gb-element-ff8c003b {
-  position: fixed;
-  top: 0;
+  position: fixed !important;
+  top: 0 !important;
   left: 0;
   width: 100%;
   z-index: 10001;
-  margin: 0;
+  margin: 0 !important;
 }
 nav.navigation-clone.is_stuck,
-nav#mobile-header.navigation-stick {
-  top: 43px;
-  margin-top: 0;
+nav#mobile-header.navigation-stick,
+#sticky-navigation.is_stuck {
+  top: 43px !important;
+  margin-top: 0 !important;
 }
 body {
   padding-top: 43px;
@@ -111,16 +116,13 @@ body {
 /* ================================================
    SECTION 3: NAVIGATION + MENU CTA
    ================================================ */
-/* Tighter nav items */
-.main-navigation .main-nav > ul > li > a {
-  font-size: 14px;
-  padding: 12px 16px;
-  font-weight: 500;
-}
-
-/* CTA button — "Free Estimate" red pill */
+/* CTA button — "Free Estimate" red pill
+   Targets both #site-navigation (default) and
+   #sticky-navigation (cloned sticky nav) */
 #site-navigation .main-nav ul li.menu-cta > a,
-#site-navigation .main-nav ul li.menu-cta > a:visited {
+#site-navigation .main-nav ul li.menu-cta > a:visited,
+#sticky-navigation .main-nav ul li.menu-cta > a,
+#sticky-navigation .main-nav ul li.menu-cta > a:visited {
   background-color: var(--pk-brand);
   color: #fff;
   padding: 10px 22px;
@@ -130,7 +132,8 @@ body {
   line-height: 1;
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
-#site-navigation .main-nav ul li.menu-cta > a:hover {
+#site-navigation .main-nav ul li.menu-cta > a:hover,
+#sticky-navigation .main-nav ul li.menu-cta > a:hover {
   background-color: var(--pk-brand-dark);
   color: #fff;
   transform: translateY(-1px);
