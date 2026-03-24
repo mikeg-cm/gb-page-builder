@@ -73,18 +73,7 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: STICKY HEADER
-   Single wrapper makes topbar + nav sticky as one
-   unit. No separate offsets or admin bar hacks.
-   ================================================ */
-.cm-header {
-  position: sticky;
-  top: 0;
-  z-index: 10001;
-}
-
-/* ================================================
-   SECTION 3: NAVIGATION + MENU CTA
+   SECTION 2: NAVIGATION + MENU CTA
    ================================================ */
 #site-navigation .main-nav ul li.menu-cta > a,
 #site-navigation .main-nav ul li.menu-cta > a:visited,
