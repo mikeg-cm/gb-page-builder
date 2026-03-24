@@ -339,6 +339,37 @@ textarea{resize:vertical;min-height:64px}
 .app.templates-mode.sidebar-open{grid-template-columns:var(--sidebar-w) 1fr var(--preview-w)}
 @media(max-width:1100px){.app.templates-mode{grid-template-columns:1fr}.app.templates-mode .templates-preview{display:none}}
 
+/* === THEME CSS BUILDER VIEW === */
+.themecss-panel{display:none;overflow-y:auto;background:var(--bg-editor)}
+.themecss-preview{display:none;background:var(--bg-preview);flex-direction:column;border-left:1px solid rgba(255,255,255,0.06)}
+
+.app.themecss-mode .editor-panel,
+.app.themecss-mode .preview-panel,
+.app.themecss-mode .converter-panel,
+.app.themecss-mode .converter-preview,
+.app.themecss-mode .templates-panel,
+.app.themecss-mode .templates-preview{display:none!important}
+.app.themecss-mode .themecss-panel{display:block}
+.app.themecss-mode .themecss-preview{display:flex}
+.app.themecss-mode .sidebar{display:none}
+.app.themecss-mode{grid-template-columns:1fr var(--preview-w)}
+@media(max-width:1100px){.app.themecss-mode{grid-template-columns:1fr}.app.themecss-mode .themecss-preview{display:none}}
+
+.themecss-body{padding:28px 32px 80px;max-width:580px;margin:0 auto}
+.tc-group{margin-bottom:28px}
+.tc-group-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08);font-weight:600}
+.tc-field{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tc-field label{flex:0 0 140px;font-size:13px;color:rgba(255,255,255,0.7);text-align:right}
+.tc-field input[type="text"],.tc-field input[type="number"]{flex:1;padding:7px 10px;border:1px solid rgba(255,255,255,0.12);border-radius:6px;background:rgba(255,255,255,0.06);color:#fff;font-size:13px;font-family:inherit}
+.tc-field input[type="color"]{width:32px;height:32px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;background:none;cursor:pointer;padding:2px}
+.tc-field .tc-auto{font-size:11px;color:rgba(255,255,255,0.35);margin-left:4px}
+.tc-presets{display:flex;gap:8px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.tc-presets select{padding:7px 10px;border:1px solid rgba(255,255,255,0.12);border-radius:6px;background:rgba(255,255,255,0.06);color:#fff;font-size:13px;flex:1}
+.tc-presets .btn{font-size:12px;padding:7px 14px}
+.tc-import{margin-top:16px}
+.tc-import textarea{width:100%;height:80px;padding:8px 10px;border:1px solid rgba(255,255,255,0.12);border-radius:6px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);font-size:11px;font-family:'SF Mono',monospace;resize:vertical}
+.tc-stats{padding:12px 16px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:12px;color:rgba(255,255,255,0.45);display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+
 .templates-body{padding:28px 32px 80px;max-width:720px;margin:0 auto}
 .templates-selector{margin-bottom:24px}
 .template-fields{display:grid;gap:16px}
@@ -513,6 +544,7 @@ textarea{resize:vertical;min-height:64px}
         <button class="mode-btn active" data-mode="builder">Builder</button>
         <button class="mode-btn" data-mode="converter">Converter</button>
         <button class="mode-btn" data-mode="templates">Page Maker</button>
+        <button class="mode-btn" data-mode="themecss">Theme CSS</button>
       </div>
     </div>
     <div class="sidebar-body">
@@ -934,6 +966,148 @@ textarea{resize:vertical;min-height:64px}
     </div>
   </aside>
 </div>
+  <!-- THEME CSS BUILDER (editor panel) -->
+  <div class="themecss-panel" id="themecssPanel">
+    <div class="converter-toolbar">
+      <h2>Theme CSS Builder</h2>
+    </div>
+    <div class="themecss-body">
+      <!-- Presets -->
+      <div class="tc-presets">
+        <select id="tcPresetSelect">
+          <option value="">Load preset...</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" id="btnTcSave">Save</button>
+        <button class="btn btn-secondary btn-sm" id="btnTcDelete" style="display:none">Delete</button>
+      </div>
+
+      <!-- Brand Colors -->
+      <div class="tc-group">
+        <div class="tc-group-title">Brand Colors</div>
+        <div class="tc-field">
+          <label>Primary</label>
+          <input type="color" id="tcBrand" value="#C4282D">
+          <input type="text" id="tcBrandHex" value="#C4282D" style="width:90px;flex:none">
+        </div>
+        <div class="tc-field">
+          <label>Hover / Dark</label>
+          <input type="color" id="tcBrandDark" value="#A12025">
+          <input type="text" id="tcBrandDarkHex" value="#A12025" style="width:90px;flex:none">
+          <span class="tc-auto" id="tcBrandDarkAuto">auto</span>
+        </div>
+        <div class="tc-field">
+          <label>Gold / Accent</label>
+          <input type="color" id="tcGold" value="#D4A843">
+          <input type="text" id="tcGoldHex" value="#D4A843" style="width:90px;flex:none">
+        </div>
+      </div>
+
+      <!-- Text Colors -->
+      <div class="tc-group">
+        <div class="tc-group-title">Text Colors</div>
+        <div class="tc-field">
+          <label>Headings / Dark</label>
+          <input type="color" id="tcDark" value="#151413">
+          <input type="text" id="tcDarkHex" value="#151413" style="width:90px;flex:none">
+        </div>
+        <div class="tc-field">
+          <label>Body</label>
+          <input type="color" id="tcBody" value="#3A3937">
+          <input type="text" id="tcBodyHex" value="#3A3937" style="width:90px;flex:none">
+        </div>
+        <div class="tc-field">
+          <label>Muted</label>
+          <input type="color" id="tcMuted" value="#6B6966">
+          <input type="text" id="tcMutedHex" value="#6B6966" style="width:90px;flex:none">
+        </div>
+      </div>
+
+      <!-- Backgrounds -->
+      <div class="tc-group">
+        <div class="tc-group-title">Backgrounds &amp; Borders</div>
+        <div class="tc-field">
+          <label>Light section</label>
+          <input type="color" id="tcBgLight" value="#FAF8F5">
+          <input type="text" id="tcBgLightHex" value="#FAF8F5" style="width:90px;flex:none">
+        </div>
+        <div class="tc-field">
+          <label>Lighter section</label>
+          <input type="color" id="tcBgLighter" value="#F5F3F0">
+          <input type="text" id="tcBgLighterHex" value="#F5F3F0" style="width:90px;flex:none">
+        </div>
+        <div class="tc-field">
+          <label>Border</label>
+          <input type="color" id="tcBorder" value="#E5E2DD">
+          <input type="text" id="tcBorderHex" value="#E5E2DD" style="width:90px;flex:none">
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="tc-group">
+        <div class="tc-group-title">Navigation</div>
+        <div class="tc-field">
+          <label>CTA button text</label>
+          <input type="text" id="tcCtaText" value="Free Estimate">
+        </div>
+        <div class="tc-field">
+          <label>CTA class name</label>
+          <input type="text" id="tcCtaClass" value="menu-cta">
+        </div>
+        <div class="tc-field">
+          <label>Top bar GB ID</label>
+          <input type="text" id="tcTopBarId" value="ff8c003b">
+        </div>
+        <div class="tc-field">
+          <label>Top bar height</label>
+          <input type="number" id="tcTopBarHeight" value="43" style="width:70px;flex:none">
+          <span class="tc-auto">px</span>
+        </div>
+      </div>
+
+      <!-- Hero Popover -->
+      <div class="tc-group">
+        <div class="tc-group-title">Hero Popover</div>
+        <div class="tc-field">
+          <label>Badge text</label>
+          <input type="text" id="tcPopoverText" value="Included With Every Plan">
+        </div>
+      </div>
+
+      <!-- Import -->
+      <div class="tc-group">
+        <div class="tc-group-title">Import Existing CSS</div>
+        <div class="tc-import">
+          <textarea id="tcImportCss" placeholder="Paste existing Additional CSS to extract values..."></textarea>
+          <button class="btn btn-secondary btn-sm" id="btnTcParse" style="margin-top:8px">Parse &amp; Fill Form</button>
+        </div>
+      </div>
+
+      <!-- Generate -->
+      <div style="margin-top:24px">
+        <button class="btn btn-primary" id="btnTcGenerate" style="width:100%">Generate CSS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- THEME CSS PREVIEW (right panel) -->
+  <aside class="themecss-preview" id="themecssPreview">
+    <div class="converter-preview-toolbar">
+      <div class="preview-tabs" role="tablist" aria-label="Theme CSS output">
+        <button class="preview-tab active" role="tab" id="tcTabCode" data-mode="code">CSS Output</button>
+      </div>
+      <div class="preview-toolbar-actions">
+        <button class="btn btn-secondary btn-sm" id="btnTcCopy" style="display:none">Copy All</button>
+        <button class="btn btn-secondary btn-sm" id="btnTcDownload" style="display:none">Download</button>
+      </div>
+    </div>
+    <div class="converter-preview-body" id="themecssPreviewBody">
+      <div class="converter-preview-empty">
+        <p>Configure your theme settings and click Generate CSS.</p>
+      </div>
+    </div>
+    <div class="tc-stats" id="tcStats" style="display:none"></div>
+  </aside>
+
 <div class="toast-container" id="toastContainer"></div>
 <script>
 // === MODULE: _module1_constants.js ===
@@ -7504,13 +7678,16 @@ class HeroConverterView {
     }
     const app = document.querySelector('.app');
     // Remove all mode classes first
-    app.classList.remove('converter-mode', 'templates-mode', 'sidebar-open');
+    app.classList.remove('converter-mode', 'templates-mode', 'themecss-mode', 'sidebar-open');
     if (mode === 'converter') {
       app.classList.add('converter-mode');
       if (window.location.hash !== '#converter') window.history.replaceState(null, '', '#converter');
     } else if (mode === 'templates') {
       app.classList.add('templates-mode');
       if (window.location.hash !== '#templates') window.history.replaceState(null, '', '#templates');
+    } else if (mode === 'themecss') {
+      app.classList.add('themecss-mode');
+      if (window.location.hash !== '#themecss') window.history.replaceState(null, '', '#themecss');
     } else {
       if (window.location.hash) window.history.replaceState(null, '', window.location.pathname);
     }
@@ -7521,6 +7698,8 @@ class HeroConverterView {
       this.setMode('converter');
     } else if (window.location.hash === '#templates') {
       this.setMode('templates');
+    } else if (window.location.hash === '#themecss') {
+      this.setMode('themecss');
     }
   }
 
@@ -9775,7 +9954,520 @@ class HeroConverterView {
 
 
 // ---------------------------------------------------------------------------
-// Class 6: TemplateManager — Page Maker templates
+// Class 7: ThemeCSSBuilder — Additional CSS generator with presets
+// ---------------------------------------------------------------------------
+class ThemeCSSBuilder {
+  constructor() {
+    this._fields = [
+      { id: 'tcBrand', key: '--pk-brand', label: 'Primary' },
+      { id: 'tcBrandDark', key: '--pk-brand-dark', label: 'Hover' },
+      { id: 'tcGold', key: '--pk-gold', label: 'Gold' },
+      { id: 'tcDark', key: '--pk-dark', label: 'Dark' },
+      { id: 'tcBody', key: '--pk-body', label: 'Body' },
+      { id: 'tcMuted', key: '--pk-muted', label: 'Muted' },
+      { id: 'tcBgLight', key: '--pk-bg-light', label: 'Light bg' },
+      { id: 'tcBgLighter', key: '--pk-bg-lighter', label: 'Lighter bg' },
+      { id: 'tcBorder', key: '--pk-border', label: 'Border' }
+    ];
+    this._STORAGE_KEY = 'tc_presets';
+    this._output = '';
+  }
+
+  init() {
+    // Sync color pickers with hex inputs
+    this._fields.forEach(f => {
+      const picker = document.getElementById(f.id);
+      const hex = document.getElementById(f.id + 'Hex');
+      if (picker && hex) {
+        picker.addEventListener('input', () => { hex.value = picker.value; this._autoDark(); });
+        hex.addEventListener('input', () => { if (/^#[0-9a-f]{6}$/i.test(hex.value)) { picker.value = hex.value; this._autoDark(); } });
+      }
+    });
+
+    // Auto-calculate dark variant
+    this._autoDark();
+
+    // Buttons
+    const btnGen = document.getElementById('btnTcGenerate');
+    if (btnGen) btnGen.addEventListener('click', () => this.generate());
+
+    const btnCopy = document.getElementById('btnTcCopy');
+    if (btnCopy) btnCopy.addEventListener('click', () => this._copy());
+
+    const btnDownload = document.getElementById('btnTcDownload');
+    if (btnDownload) btnDownload.addEventListener('click', () => this._download());
+
+    const btnParse = document.getElementById('btnTcParse');
+    if (btnParse) btnParse.addEventListener('click', () => this._parseExisting());
+
+    const btnSave = document.getElementById('btnTcSave');
+    if (btnSave) btnSave.addEventListener('click', () => this._savePreset());
+
+    const btnDel = document.getElementById('btnTcDelete');
+    if (btnDel) btnDel.addEventListener('click', () => this._deletePreset());
+
+    const sel = document.getElementById('tcPresetSelect');
+    if (sel) sel.addEventListener('change', () => this._loadPreset(sel.value));
+
+    this._refreshPresetList();
+  }
+
+  // --- Auto-calculate brand-dark (15% darker) ---
+  _autoDark() {
+    const brand = document.getElementById('tcBrandHex').value;
+    if (!/^#[0-9a-f]{6}$/i.test(brand)) return;
+    const dark = this._darken(brand, 0.15);
+    const el = document.getElementById('tcBrandDarkAuto');
+    if (el && el.textContent === 'auto') {
+      document.getElementById('tcBrandDark').value = dark;
+      document.getElementById('tcBrandDarkHex').value = dark;
+    }
+  }
+
+  _darken(hex, amount) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    r = Math.max(0, Math.round(r * (1 - amount)));
+    g = Math.max(0, Math.round(g * (1 - amount)));
+    b = Math.max(0, Math.round(b * (1 - amount)));
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+  _hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  // --- Presets (localStorage) ---
+  _getPresets() {
+    try { return JSON.parse(localStorage.getItem(this._STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+
+  _refreshPresetList() {
+    const sel = document.getElementById('tcPresetSelect');
+    if (!sel) return;
+    const presets = this._getPresets();
+    sel.innerHTML = '<option value="">Load preset...</option>';
+    Object.keys(presets).sort().forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  }
+
+  _savePreset() {
+    const name = prompt('Preset name:', document.getElementById('tcPresetSelect').value || 'Paske');
+    if (!name) return;
+    const data = {};
+    this._fields.forEach(f => { data[f.key] = document.getElementById(f.id + 'Hex').value; });
+    data['ctaText'] = document.getElementById('tcCtaText').value;
+    data['ctaClass'] = document.getElementById('tcCtaClass').value;
+    data['topBarId'] = document.getElementById('tcTopBarId').value;
+    data['topBarHeight'] = document.getElementById('tcTopBarHeight').value;
+    data['popoverText'] = document.getElementById('tcPopoverText').value;
+    const presets = this._getPresets();
+    presets[name] = data;
+    localStorage.setItem(this._STORAGE_KEY, JSON.stringify(presets));
+    this._refreshPresetList();
+    document.getElementById('tcPresetSelect').value = name;
+    document.getElementById('btnTcDelete').style.display = '';
+    this._toast('Preset "' + name + '" saved');
+  }
+
+  _loadPreset(name) {
+    if (!name) { document.getElementById('btnTcDelete').style.display = 'none'; return; }
+    const presets = this._getPresets();
+    const data = presets[name];
+    if (!data) return;
+    this._fields.forEach(f => {
+      if (data[f.key]) {
+        const picker = document.getElementById(f.id);
+        const hex = document.getElementById(f.id + 'Hex');
+        if (picker) picker.value = data[f.key];
+        if (hex) hex.value = data[f.key];
+      }
+    });
+    if (data.ctaText) document.getElementById('tcCtaText').value = data.ctaText;
+    if (data.ctaClass) document.getElementById('tcCtaClass').value = data.ctaClass;
+    if (data.topBarId) document.getElementById('tcTopBarId').value = data.topBarId;
+    if (data.topBarHeight) document.getElementById('tcTopBarHeight').value = data.topBarHeight;
+    if (data.popoverText) document.getElementById('tcPopoverText').value = data.popoverText;
+    document.getElementById('btnTcDelete').style.display = '';
+    // Stop auto-dark when loading preset (it has its own dark value)
+    const autoEl = document.getElementById('tcBrandDarkAuto');
+    if (autoEl) autoEl.textContent = '';
+    this._toast('Loaded "' + name + '"');
+  }
+
+  _deletePreset() {
+    const sel = document.getElementById('tcPresetSelect');
+    const name = sel.value;
+    if (!name || !confirm('Delete preset "' + name + '"?')) return;
+    const presets = this._getPresets();
+    delete presets[name];
+    localStorage.setItem(this._STORAGE_KEY, JSON.stringify(presets));
+    this._refreshPresetList();
+    document.getElementById('btnTcDelete').style.display = 'none';
+    this._toast('Deleted "' + name + '"');
+  }
+
+  // --- Parse existing CSS ---
+  _parseExisting() {
+    const css = document.getElementById('tcImportCss').value;
+    if (!css.trim()) return;
+    // Extract :root variables
+    const rootMatch = css.match(/:root\s*\{([^}]+)\}/);
+    if (rootMatch) {
+      const vars = rootMatch[1];
+      this._fields.forEach(f => {
+        const re = new RegExp(f.key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*:\\s*([^;]+)');
+        const m = vars.match(re);
+        if (m) {
+          const val = m[1].trim();
+          const picker = document.getElementById(f.id);
+          const hex = document.getElementById(f.id + 'Hex');
+          if (picker && /^#[0-9a-f]{6}$/i.test(val)) picker.value = val;
+          if (hex) hex.value = val;
+        }
+      });
+    }
+    // Extract popover text
+    const popM = css.match(/content:\s*'([^']+)'/);
+    if (popM) document.getElementById('tcPopoverText').value = popM[1];
+    // Extract top bar ID
+    const barM = css.match(/\.gb-element-([a-f0-9]{8})/);
+    if (barM) document.getElementById('tcTopBarId').value = barM[1];
+    // Extract top bar height from --pk-topbar-h or padding-top
+    const barH = css.match(/--pk-topbar-h:\s*(\d+)px/) || css.match(/padding-top:\s*(\d+)px/);
+    if (barH) document.getElementById('tcTopBarHeight').value = barH[1];
+
+    const autoEl = document.getElementById('tcBrandDarkAuto');
+    if (autoEl) autoEl.textContent = '';
+    this._toast('Parsed CSS — form fields updated');
+  }
+
+  // --- Generate CSS ---
+  generate() {
+    const v = {};
+    this._fields.forEach(f => { v[f.key] = document.getElementById(f.id + 'Hex').value; });
+    const brandLight = this._hexToRgba(v['--pk-brand'], 0.06);
+    const ctaClass = document.getElementById('tcCtaClass').value || 'menu-cta';
+    const topBarId = document.getElementById('tcTopBarId').value || 'ff8c003b';
+    const topBarH = document.getElementById('tcTopBarHeight').value || '43';
+    const popoverText = document.getElementById('tcPopoverText').value || 'Included With Every Plan';
+
+    this._output = this._buildCSS(v, brandLight, ctaClass, topBarId, topBarH, popoverText);
+
+    // Show output
+    const body = document.getElementById('themecssPreviewBody');
+    if (body) {
+      body.innerHTML = '<pre style="white-space:pre-wrap;word-break:break-all;padding:20px;font-size:12px;line-height:1.6;color:rgba(255,255,255,0.85);font-family:\'SF Mono\',\'Fira Code\',monospace">' + this._esc(this._output) + '</pre>';
+    }
+    document.getElementById('btnTcCopy').style.display = '';
+    document.getElementById('btnTcDownload').style.display = '';
+
+    // Stats
+    const lines = this._output.split('\n').length;
+    const selectors = (this._output.match(/\{/g) || []).length;
+    const impCount = (this._output.match(/!important/g) || []).length;
+    const stats = document.getElementById('tcStats');
+    if (stats) {
+      stats.style.display = '';
+      stats.innerHTML = `<span>${lines} lines</span><span>${selectors} selectors</span><span>${impCount} !important</span>`;
+    }
+  }
+
+  _buildCSS(v, brandLight, ctaClass, topBarId, topBarH, popoverText) {
+    return `/* ================================================
+   ADDITIONAL CSS — Generated by GB Page Builder
+   Updated: ${new Date().toISOString().slice(0, 10)}
+   ================================================ */
+
+/* === SECTION 1: DESIGN TOKENS === */
+:root {
+  --pk-brand: ${v['--pk-brand']};
+  --pk-brand-dark: ${v['--pk-brand-dark']};
+  --pk-brand-light: ${brandLight};
+  --pk-dark: ${v['--pk-dark']};
+  --pk-body: ${v['--pk-body']};
+  --pk-muted: ${v['--pk-muted']};
+  --pk-gold: ${v['--pk-gold']};
+  --pk-bg-light: ${v['--pk-bg-light']};
+  --pk-bg-lighter: ${v['--pk-bg-lighter']};
+  --pk-bg-dark: ${v['--pk-dark']};
+  --pk-border: ${v['--pk-border']};
+  --pk-section-y: clamp(56px, 8vw, 100px);
+  --pk-section-x: clamp(20px, 5vw, 60px);
+  --pk-gap: 24px;
+  --pk-radius: 14px;
+  --pk-radius-sm: 10px;
+  --pk-radius-btn: 7px;
+  --pk-radius-hero: 16px;
+  --pk-font-h1: clamp(32px, 5vw, 46px);
+  --pk-font-h2: clamp(26px, 3.5vw, 36px);
+  --pk-font-h3: 16px;
+  --pk-font-body: 16px;
+  --pk-font-small: 14px;
+  --pk-font-proof: 13px;
+  --pk-font-caption: 12px;
+  --pk-font-eyebrow: 11px;
+}
+
+/* === SECTION 2: FIXED TOP BAR (uncomment if using announcement bar) === */
+/*
+:root { --pk-topbar-h: ${topBarH}px; }
+.gb-element-${topBarId} {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  width: 100%;
+  z-index: 10001;
+  margin: 0 !important;
+}
+nav.navigation-clone.is_stuck,
+nav#mobile-header.navigation-stick,
+#sticky-navigation.is_stuck {
+  top: var(--pk-topbar-h) !important;
+  margin-top: 0 !important;
+}
+body {
+  padding-top: var(--pk-topbar-h);
+  padding-top: calc(var(--pk-topbar-h) + env(safe-area-inset-top, 0px));
+}
+*/
+
+/* === SECTION 3: NAVIGATION + MENU CTA === */
+#site-navigation .main-nav ul li.${ctaClass} > a,
+#site-navigation .main-nav ul li.${ctaClass} > a:visited,
+#sticky-navigation .main-nav ul li.${ctaClass} > a,
+#sticky-navigation .main-nav ul li.${ctaClass} > a:visited {
+  background-color: var(--pk-brand);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: var(--pk-radius-btn);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+#site-navigation .main-nav ul li.${ctaClass} > a:hover,
+#sticky-navigation .main-nav ul li.${ctaClass} > a:hover {
+  background-color: var(--pk-brand-dark);
+  color: #fff;
+  transform: translateY(-1px);
+}
+@media (max-width: 768px) {
+  #site-navigation .main-nav ul li.${ctaClass} > a,
+  #site-navigation .main-nav ul li.${ctaClass} > a:visited {
+    background-color: transparent;
+    color: inherit;
+    padding: inherit;
+    border-radius: 0;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+}
+
+/* === SECTION 4: SEMANTIC CLASSES === */
+.pk-section { padding: var(--pk-section-y) var(--pk-section-x); }
+.pk-section--light { background-color: var(--pk-bg-light); }
+.pk-section--lighter { background-color: var(--pk-bg-lighter); }
+.pk-section--white { background-color: #fff; }
+.pk-section--dark { background-color: var(--pk-bg-dark); }
+.pk-inner { max-width: 1120px; margin-left: auto; margin-right: auto; }
+.pk-inner--narrow { max-width: 960px; margin-left: auto; margin-right: auto; }
+.pk-inner--hero { max-width: 900px; margin-left: auto; margin-right: auto; text-align: center; }
+.pk-h1 { font-size: var(--pk-font-h1); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; color: var(--pk-dark); }
+.pk-h2 { font-size: var(--pk-font-h2); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; color: var(--pk-dark); text-align: center; }
+.pk-h3 { font-size: var(--pk-font-h3); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; color: var(--pk-dark); }
+.pk-subtitle { font-size: clamp(16px, 1.5vw, 18px); line-height: 1.65; color: var(--pk-body); }
+.pk-body { font-size: var(--pk-font-body); line-height: 1.7; color: var(--pk-body); }
+.pk-small { font-size: var(--pk-font-small); line-height: 1.7; color: var(--pk-body); }
+.pk-muted { font-size: clamp(15px, 1.2vw, 17px); line-height: 1.7; color: var(--pk-muted); }
+.pk-proof { font-size: var(--pk-font-proof); font-weight: 600; color: var(--pk-muted); }
+.pk-eyebrow { font-size: var(--pk-font-eyebrow); font-weight: 700; text-transform: uppercase; letter-spacing: 2.5px; color: var(--pk-brand); }
+.pk-price { font-size: 48px; font-weight: 900; line-height: 1.1; color: var(--pk-brand); }
+.pk-section--dark .pk-h2, .pk-section--dark .pk-h1 { color: #fff; }
+.pk-section--dark .pk-muted { color: rgba(255,255,255,0.55); }
+.pk-section--dark .pk-body { color: rgba(255,255,255,0.7); }
+.pk-card { background-color: #fff; border: 1px solid var(--pk-border); border-radius: var(--pk-radius); padding: 24px; }
+.pk-card--accent { border-top: 3px solid var(--pk-brand); }
+.pk-card--pricing { padding: 32px; text-align: center; }
+.pk-card--review { background-color: var(--pk-bg-light); }
+.pk-card--link { position: relative; }
+.pk-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background-color: var(--pk-brand-light); border-radius: var(--pk-radius-sm); margin-bottom: 12px; }
+.pk-icon--large { width: 56px; height: 56px; border-radius: var(--pk-radius); margin-left: auto; margin-right: auto; margin-bottom: 14px; }
+.pk-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pk-gap); }
+.pk-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--pk-gap); }
+.pk-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pk-gap); }
+@media (max-width: 1024px) { .pk-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) { .pk-grid-4, .pk-grid-3, .pk-grid-2 { grid-template-columns: 1fr; } }
+
+/* === SECTION 5: HERO ENHANCEMENTS === */
+.hero-card a[href^="tel"].wp-block-button__link { color: var(--pk-brand); background-color: transparent; }
+.hero-card a[href^="tel"].wp-block-button__link:hover {
+  background-color: var(--pk-brand-light);
+  color: var(--pk-brand-dark);
+  border-color: var(--pk-brand-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px ${this._hexToRgba(v['--pk-brand'], 0.15)};
+}
+.hero-popover { transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; }
+.hero-popover::before {
+  content: '${popoverText}';
+  position: absolute; top: -12px; left: 20px;
+  background: var(--pk-brand); color: #fff;
+  font-size: var(--pk-font-eyebrow); font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px; line-height: 1.4;
+}
+.hero-popover h3 { padding-bottom: 12px; border-bottom: 2px solid #F0EDEA; }
+@media (min-width: 901px) {
+  .hero-popover:hover { transform: translateY(-4px); box-shadow: 0 28px 70px rgba(0,0,0,0.22), 0 6px 16px ${this._hexToRgba(v['--pk-brand'], 0.08)}; }
+}
+@media (max-width: 900px) {
+  .hero-layout { grid-template-columns: 1fr; max-width: 680px; }
+  .hero-popover { border-left-width: 3px; box-shadow: 0 8px 32px rgba(0,0,0,0.10); }
+  .hero-popover::before { display: none; }
+}
+
+/* === SECTION 6: COMPONENT HOVERS === */
+.wp-block-button__link { transition: all 0.25s ease; }
+.problem-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.problem-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.10); }
+.service-card { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.svc-icon { transition: background-color 0.25s ease, transform 0.25s ease; }
+.service-card:hover .svc-icon { background-color: var(--pk-brand); transform: scale(1.05); }
+.service-card:hover .svc-icon p { filter: grayscale(1) brightness(10); }
+.review-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.review-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.blog-card { transition: all 0.3s ease; cursor: pointer; }
+.blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.07); }
+.benefit-card { transition: all 0.3s ease; }
+.benefit-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.05); }
+.solution-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.solution-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.package-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.package-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.pest-row { transition: background-color 0.2s ease, box-shadow 0.2s ease; }
+.concerns-box { transition: box-shadow 0.3s ease; }
+.concerns-box:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+.svc-card { transition: all 0.25s ease; }
+.svc-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+
+/* === SECTION 7: STRETCHED CARD LINKS === */
+.card-link { color: inherit; text-decoration: none; }
+.card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; cursor: pointer; }
+.service-card:has(.card-link) { cursor: pointer; }
+.service-card:has(.card-link):hover { border-color: var(--pk-brand); }
+.pest-row:has(.card-link) { cursor: pointer; }
+.pest-row:has(.card-link):hover { background-color: var(--pk-bg-light); }
+.pest-row:has(.card-link):hover .pest-icon { background-color: ${this._hexToRgba(v['--pk-brand'], 0.12)}; }
+.pest-row:has(.card-link):hover h3 .card-link { color: var(--pk-brand); }
+
+/* === SECTION 8: PSEUDO-ELEMENT DECORATIONS === */
+.how-section .step-card { position: relative; }
+.how-section .step-card:not(:last-child)::after { content: ''; position: absolute; left: 51px; bottom: -16px; width: 2px; height: 16px; background: var(--pk-border); }
+.timeline-grid { position: relative; }
+.timeline-grid::before { content: ''; position: absolute; top: 28px; left: calc(12.5% + 28px); right: calc(12.5% + 28px); height: 2px; background: var(--pk-border); z-index: 0; }
+@media (max-width: 768px) { .timeline-grid::before { display: none; } }
+.step-num { position: relative; }
+.step-num::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid ${this._hexToRgba(v['--pk-brand'], 0.15)}; pointer-events: none; }
+.proof-strip > p:not(:last-child)::after { content: '|'; margin-left: 28px; color: var(--pk-border); font-weight: 400; }
+@media (max-width: 768px) { .proof-strip > p:not(:last-child)::after { display: none; } }
+.hero-proof-strip > p:not(:last-child)::after { content: '|'; margin-left: clamp(12px, 2vw, 28px); color: var(--pk-border); font-weight: 400; }
+@media (max-width: 768px) { .hero-proof-strip > p:not(:last-child)::after { display: none; } }
+.trust-bar .gb-element-lc07lc07 > p { position: relative; padding: 4px 0; }
+.trust-bar .gb-element-lc07lc07 > p:not(:last-child)::after { content: ''; position: absolute; right: calc(-0.5 * clamp(12px, 2vw, 24px)); top: 15%; height: 70%; width: 1px; background: var(--pk-border); }
+@media (max-width: 768px) { .trust-bar .gb-element-lc07lc07 > p:nth-child(3n)::after { display: none; } }
+@media (max-width: 480px) { .trust-bar .gb-element-lc07lc07 > p:nth-child(even)::after { display: none; } }
+.map-band { min-height: 420px; }
+.map-band iframe { filter: saturate(0.85) contrast(1.05); }
+
+/* === SECTION 9: FAQ ACCORDION === */
+.faq-section .wp-block-details { border: 1px solid var(--pk-border); border-radius: var(--pk-radius-sm); padding: 18px 24px; margin-bottom: 10px; transition: border-color 0.25s ease; background: #fff; }
+.faq-section .wp-block-details:hover, .faq-section .wp-block-details[open] { border-color: var(--pk-brand); }
+.faq-section .wp-block-details[open] { background: var(--pk-bg-light); }
+.faq-section .wp-block-details summary { font-weight: 700; font-size: var(--pk-font-body); color: var(--pk-dark); cursor: pointer; list-style: none; }
+.faq-section .wp-block-details summary::-webkit-details-marker { display: none; }
+.faq-section .wp-block-details p { margin-top: 12px; font-size: 15px; line-height: 1.7; color: var(--pk-body); }
+
+/* === SECTION 10: RESPONSIVE OVERRIDES === */
+.trust-bar p { margin-bottom: 0; }
+@media (max-width: 480px) { .trust-bar .gb-element-lc07lc07.gb-element-lc07lc07 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 767px) {
+  .problems-grid.problems-grid { grid-template-columns: 1fr; }
+  .services-grid.services-grid { grid-template-columns: 1fr 1fr; }
+  .results-box.results-box { grid-template-columns: 1fr; }
+  .step-card.step-card { grid-template-columns: 40px 1fr; gap: 14px; padding: 20px; }
+  .step-card .step-num { width: 40px; height: 40px; }
+  .stats-bar-inner.stats-bar-inner { grid-template-columns: 1fr 1fr; }
+  .reviews-grid.reviews-grid { grid-template-columns: 1fr; }
+  .blog-grid.blog-grid { grid-template-columns: 1fr; }
+  .benefits-grid.benefits-grid { grid-template-columns: 1fr; }
+  .final-cta-section .wp-block-buttons, .cta-section .wp-block-buttons { flex-direction: column; }
+  .hero-columns.hero-columns { grid-template-columns: 1fr; gap: 32px; }
+  .areas-grid.areas-grid { grid-template-columns: 1fr; }
+  .history-grid.history-grid { grid-template-columns: 1fr; }
+  .svc-cards-grid.svc-cards-grid, .pkg-cards-grid.pkg-cards-grid { grid-template-columns: 1fr; }
+  .ipm-grid.ipm-grid { grid-template-columns: 1fr; gap: 24px; }
+  .pricing-grid.pricing-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) { .services-grid.services-grid { grid-template-columns: 1fr; } .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; } }
+@media (max-width: 768px) {
+  .community-text-grid.community-text-grid { grid-template-columns: 1fr; }
+  .community-intro-grid.community-intro-grid { grid-template-columns: 1fr; }
+  .timeline-grid.timeline-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .stats-strip .gb-element-lcS02 { border-right: none; }
+}
+@media (max-width: 1024px) { .svc-cards-grid.svc-cards-grid, .pkg-cards-grid.pkg-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* === SECTION 11: PAGE-SPECIFIC === */
+.wyg-section .wp-block-group__inner-container { padding-top: 32px; padding-bottom: 32px; }
+@media (max-width: 768px) { .map-overlay-card { position: relative; bottom: auto; left: auto; max-width: 100%; border-radius: 0; box-shadow: none; } }
+.reviews-carousel { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--pk-border) transparent; }
+.reviews-carousel .review-card { scroll-snap-align: start; }`;
+  }
+
+  // --- Utilities ---
+  _copy() {
+    if (!this._output) return;
+    navigator.clipboard.writeText(this._output).then(() => this._toast('CSS copied to clipboard'));
+  }
+
+  _download() {
+    if (!this._output) return;
+    const blob = new Blob([this._output], { type: 'text/css' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'additional-css.css';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  _esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  _toast(msg) {
+    const c = document.getElementById('toastContainer');
+    if (!c) return;
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    c.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2500);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// Class 8: TemplateManager — Page Maker templates
 // ---------------------------------------------------------------------------
 class TemplateManager {
   constructor() {
@@ -11006,8 +11698,12 @@ function initApp() {
   const templateManager = new TemplateManager();
   templateManager.init();
 
+  // Theme CSS builder
+  const themeCSSBuilder = new ThemeCSSBuilder();
+  themeCSSBuilder.init();
+
   // Wire up global references
-  window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView, templateManager };
+  window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView, templateManager, themeCSSBuilder };
 
   // --- Sidebar buttons ---
   const btnSaveClient = document.getElementById('btnSaveClient');
