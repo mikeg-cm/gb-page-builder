@@ -129,10 +129,11 @@ body {
   top: calc(var(--pk-topbar-h) + 32px) !important;
 }
 @media (max-width: 782px) {
-  .admin-bar .cm-topbar { top: 46px !important; }
+  .admin-bar .cm-topbar { display: none !important; }
   .admin-bar #site-navigation.is_stuck,
   .admin-bar #sticky-navigation.is_stuck,
-  .admin-bar nav#mobile-header { top: calc(var(--pk-topbar-h) + 46px) !important; }
+  .admin-bar nav#mobile-header { top: 46px !important; }
+  .admin-bar { padding-top: 0; }
 }
 
 /* ================================================
