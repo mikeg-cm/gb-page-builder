@@ -317,6 +317,8 @@ Replaces the entire existing Additional CSS.
   .solution-grid.solution-grid { grid-template-columns: 1fr; gap: 20px; }
   .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; }
   .cards-grid.cards-grid { grid-template-columns: 1fr; }
+  .problem-content-grid.problem-content-grid { grid-template-columns: 1fr; gap: 32px; }
+  .why-grid.why-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .services-grid.services-grid { grid-template-columns: 1fr; }
