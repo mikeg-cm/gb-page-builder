@@ -1078,6 +1078,17 @@ textarea{resize:vertical;min-height:64px}
         </div>
       </div>
 
+      <!-- Block Snippets -->
+      <div class="tc-group">
+        <div class="tc-group-title">Block Snippets (click to copy)</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-secondary btn-sm" id="btnSnipTransition" style="text-align:left;font-size:12px">&#9646; Transition Separator</button>
+          <button class="btn btn-secondary btn-sm" id="btnSnipTopbar" style="text-align:left;font-size:12px">&#9646; Topbar Hook (cm-topbar)</button>
+          <button class="btn btn-secondary btn-sm" id="btnSnipProofStrip" style="text-align:left;font-size:12px">&#9646; Hero Proof Strip</button>
+          <button class="btn btn-secondary btn-sm" id="btnSnipDualCta" style="text-align:left;font-size:12px">&#9646; Dual CTA Buttons</button>
+        </div>
+      </div>
+
       <!-- Generate -->
       <div style="margin-top:24px">
         <button class="btn btn-primary" id="btnTcGenerate" style="width:100%">Generate CSS</button>
@@ -10006,6 +10017,22 @@ class ThemeCSSBuilder {
     if (sel) sel.addEventListener('change', () => this._loadPreset(sel.value));
 
     this._refreshPresetList();
+
+    // Block snippet buttons
+    this._wireSnippet('btnSnipTransition', '<!-- CM TRANSITION BLOCK -->\n<!-- wp:generateblocks/element {"uniqueId":"cmTrans","tagName":"div","styles":{"borderTopColor":"#E5E2DD","borderTopStyle":"solid","borderTopWidth":"1px"},"css":".gb-element-cmTrans{border-top:1px solid #E5E2DD}","className":"cm-transition"} -->\n<div class="cm-transition gb-element-cmTrans"></div>\n<!-- /wp:generateblocks/element -->');
+
+    this._wireSnippet('btnSnipTopbar', '<!-- CM TOPBAR HOOK - Set hook to before_header, add cm-topbar class -->\n<!-- wp:generateblocks/element {"uniqueId":"ff8c003b","tagName":"div","styles":{"paddingTop":".5rem","paddingLeft":"2rem","paddingBottom":".5rem","paddingRight":"2rem","backgroundColor":"var(--accent)","a":{"color":"var(--base-3)"},"a:hover":{"color":"var(--accent-3)"}},"css":".gb-element-ff8c003b{background-color:var(--accent);padding:.5rem 2rem}.gb-element-ff8c003b a{color:var(--base-3)}.gb-element-ff8c003b a:hover{color:var(--accent-3)}","className":"cm-topbar"} -->\n<div class="cm-topbar gb-element-ff8c003b">\n  <!-- Add phone, links, social icons here -->\n</div>\n<!-- /wp:generateblocks/element -->');
+
+    this._wireSnippet('btnSnipProofStrip', '<!-- HERO PROOF STRIP -->\n<!-- wp:generateblocks/element {"uniqueId":"pgHeroProof","tagName":"div","styles":{"borderTopColor":"#E5E2DD","borderTopStyle":"solid","borderTopWidth":"1px","paddingTop":"14px","marginTop":"12px","display":"flex","gap":"clamp(16px, 2.5vw, 32px)","flexWrap":"wrap","alignItems":"center"},"css":".gb-element-pgHeroProof{border-top-color:#E5E2DD;border-top-style:solid;border-top-width:1px;padding-top:14px;margin-top:12px;display:flex;gap:clamp(16px, 2.5vw, 32px);flex-wrap:wrap;align-items:center}","className":"hero-proof-strip"} -->\n<div class="gb-element-pgHeroProof hero-proof-strip">\n  <!-- Add proof items as wp:paragraph blocks -->\n</div>\n<!-- /wp:generateblocks/element -->');
+
+    this._wireSnippet('btnSnipDualCta', '<!-- DUAL CTA BUTTONS -->\n<!-- wp:buttons {"style":{"spacing":{"margin":{"bottom":"18px"}}},"layout":{"type":"flex","justifyContent":"center","orientation":"horizontal","flexWrap":"wrap"}} -->\n<div class="wp-block-buttons" style="margin-bottom:18px"><!-- wp:button {"style":{"color":{"background":"#C4282D","text":"#ffffff"},"border":{"radius":"7px"},"spacing":{"padding":{"top":"15px","bottom":"15px","left":"32px","right":"32px"}},"typography":{"fontSize":"15px","fontWeight":"600"}}} -->\n<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-custom-font-size wp-element-button" href="/contact/" style="border-radius:7px;color:#ffffff;background-color:#C4282D;padding-top:15px;padding-right:32px;padding-bottom:15px;padding-left:32px;font-size:15px;font-weight:600">Schedule Service &#8594;</a></div>\n<!-- /wp:button -->\n<!-- wp:button {"style":{"color":{"background":"#ffffff","text":"#C4282D"},"border":{"radius":"7px","color":"#C4282D","width":"2px"},"spacing":{"padding":{"top":"15px","bottom":"15px","left":"32px","right":"32px"}},"typography":{"fontSize":"15px","fontWeight":"600"}}} -->\n<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-border-color has-custom-font-size wp-element-button" href="tel:2394755393" style="border-color:#C4282D;border-width:2px;border-radius:7px;color:#C4282D;background-color:#ffffff;padding-top:15px;padding-right:32px;padding-bottom:15px;padding-left:32px;font-size:15px;font-weight:600">Call (239) 475-5393</a></div>\n<!-- /wp:button --></div>\n<!-- /wp:buttons -->');
+  }
+
+  _wireSnippet(btnId, code) {
+    const btn = document.getElementById(btnId);
+    if (btn) btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(code).then(() => this._toast('Snippet copied to clipboard'));
+    });
   }
 
   // --- Auto-calculate brand-dark (15% darker) ---
