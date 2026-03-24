@@ -1054,10 +1054,6 @@ textarea{resize:vertical;min-height:64px}
           <input type="text" id="tcCtaClass" value="menu-cta">
         </div>
         <div class="tc-field">
-          <label>Top bar GB ID</label>
-          <input type="text" id="tcTopBarId" value="ff8c003b">
-        </div>
-        <div class="tc-field">
           <label>Top bar height</label>
           <input type="number" id="tcTopBarHeight" value="43" style="width:70px;flex:none">
           <span class="tc-auto">px</span>
@@ -10217,24 +10213,24 @@ class ThemeCSSBuilder {
   --pk-font-eyebrow: 11px;
 }
 
-/* === SECTION 2: STICKY NAV === */
+/* === SECTION 2: FIXED TOP BAR + STICKY NAV === */
+:root { --pk-topbar-h: ${topBarH}px; }
+.cm-topbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  width: 100%;
+  z-index: 10001;
+  margin: 0 !important;
+}
 #site-navigation.is_stuck,
 #sticky-navigation.is_stuck {
-  top: 0 !important;
+  top: var(--pk-topbar-h) !important;
   margin-top: 0 !important;
 }
-
-/* Uncomment if using a fixed announcement bar above nav:
-:root { --pk-topbar-h: ${topBarH}px; }
-.gb-element-${topBarId} {
-  position: fixed !important; top: 0 !important;
-  left: 0; width: 100%; z-index: 10001; margin: 0 !important;
+body {
+  padding-top: var(--pk-topbar-h);
 }
-#site-navigation.is_stuck, #sticky-navigation.is_stuck {
-  top: var(--pk-topbar-h) !important;
-}
-body { padding-top: var(--pk-topbar-h); }
-*/
 
 /* === SECTION 3: NAVIGATION + MENU CTA === */
 #site-navigation .main-nav ul li.${ctaClass} > a,

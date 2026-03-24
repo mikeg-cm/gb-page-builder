@@ -88,22 +88,15 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: STICKY NAV
-   GP JS sets inline top/position on the nav when
-   sticky. These rules lock it to top:0 on scroll.
+   SECTION 2: FIXED TOP BAR + STICKY NAV
+   .cm-topbar = universal Content Mender class.
+   Add "cm-topbar" to the Hook Element's
+   Additional CSS Classes field in GP Elements.
+   Adjust --pk-topbar-h if bar height differs.
    ================================================ */
-#site-navigation.is_stuck,
-#sticky-navigation.is_stuck {
-  top: 0 !important;
-  margin-top: 0 !important;
-}
-
-/* --- OPTIONAL: Fixed announcement bar above nav ---
-   Uncomment if using a GB element as a fixed top bar.
-   Set --pk-topbar-h to the bar's rendered height.
-
 :root { --pk-topbar-h: 43px; }
-.gb-element-ff8c003b {
+
+.cm-topbar {
   position: fixed !important;
   top: 0 !important;
   left: 0;
@@ -111,14 +104,16 @@ Replaces the entire existing Additional CSS.
   z-index: 10001;
   margin: 0 !important;
 }
+
 #site-navigation.is_stuck,
 #sticky-navigation.is_stuck {
   top: var(--pk-topbar-h) !important;
+  margin-top: 0 !important;
 }
+
 body {
   padding-top: var(--pk-topbar-h);
 }
-*/
 
 /* ================================================
    SECTION 3: NAVIGATION + MENU CTA
