@@ -107,7 +107,7 @@ Replaces the entire existing Additional CSS.
 
 #site-navigation.is_stuck,
 #sticky-navigation.is_stuck,
-nav#mobile-header {
+#mobile-header.is_stuck {
   top: var(--pk-topbar-h) !important;
   margin-top: 0 !important;
 }
@@ -117,23 +117,23 @@ body {
 }
 
 /* WP admin bar offset (logged-in only)
-   WP adds html { margin-top: 32px } for the admin bar,
-   so body padding stays the same — only the fixed elements
-   need to shift down by 32px to sit below the admin bar. */
+   Desktop (>782px): admin bar is FIXED at top, stays visible.
+   Mobile (<=782px): admin bar is ABSOLUTE, scrolls away.
+   On mobile, topbar goes to top:0 — admin bar covers it
+   initially (z-index 99999) but scrolls away. No gap. */
 .admin-bar .cm-topbar {
-  top: 32px !important;
+  top: 32px;
 }
 .admin-bar #site-navigation.is_stuck,
 .admin-bar #sticky-navigation.is_stuck,
-.admin-bar nav#mobile-header {
-  top: calc(var(--pk-topbar-h) + 32px) !important;
+.admin-bar #mobile-header.is_stuck {
+  top: calc(var(--pk-topbar-h) + 32px);
 }
 @media (max-width: 782px) {
-  .admin-bar .cm-topbar { display: none !important; }
+  .admin-bar .cm-topbar { top: 0; }
   .admin-bar #site-navigation.is_stuck,
   .admin-bar #sticky-navigation.is_stuck,
-  .admin-bar nav#mobile-header { top: 46px !important; }
-  body.admin-bar { padding-top: 0 !important; }
+  .admin-bar #mobile-header.is_stuck { top: var(--pk-topbar-h); }
 }
 
 /* ================================================
