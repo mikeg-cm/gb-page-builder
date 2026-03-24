@@ -133,7 +133,7 @@ body {
   .admin-bar #site-navigation.is_stuck,
   .admin-bar #sticky-navigation.is_stuck,
   .admin-bar nav#mobile-header { top: 46px !important; }
-  .admin-bar { padding-top: 0; }
+  body.admin-bar { padding-top: 0 !important; }
 }
 
 /* ================================================
