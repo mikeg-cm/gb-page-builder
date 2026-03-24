@@ -329,7 +329,7 @@ Replaces the entire existing Additional CSS.
 @media (max-width: 768px) {
   .community-text-grid.community-text-grid { grid-template-columns: 1fr; }
   .community-intro-grid.community-intro-grid { grid-template-columns: 1fr; }
-  .timeline-grid.timeline-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; }
   .stats-strip .gb-element-lcS02 { border-right: none; }
 }
 @media (max-width: 1024px) {
