@@ -660,10 +660,12 @@ body {
   .pkg-cards-grid.pkg-cards-grid { grid-template-columns: 1fr; }
   .ipm-grid.ipm-grid { grid-template-columns: 1fr; gap: 24px; }
   .pricing-grid.pricing-grid { grid-template-columns: 1fr; }
+  .solution-grid.solution-grid { grid-template-columns: 1fr; gap: 20px; }
+  .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; }
+  .cards-grid.cards-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .services-grid.services-grid { grid-template-columns: 1fr; }
-  .timeline-grid.timeline-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 @media (max-width: 768px) {
   .community-text-grid.community-text-grid { grid-template-columns: 1fr; }
