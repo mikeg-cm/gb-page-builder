@@ -1,4 +1,4 @@
-# Paske Additional CSS v3.1
+# Paske Additional CSS v3.2
 
 Paste into: **Appearance → Customize → Additional CSS**
 Replaces the entire existing Additional CSS.
@@ -23,7 +23,7 @@ Replaces the entire existing Additional CSS.
 
 ```css
 /* ================================================
-   PASKE - ADDITIONAL CSS v3.1
+   PASKE - ADDITIONAL CSS v3.2
    Paste into: Appearance -> Customize -> Additional CSS
    Updated: 2026-03-24
 
@@ -88,12 +88,17 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: FIXED TOP BAR + BODY OFFSET
-   These 3 rules use !important because GP's sticky
-   nav JS sets inline styles (position, top, margin)
-   that CSS cannot override without it. This is the
-   only place !important appears in this file.
+   SECTION 2: FIXED TOP BAR + STICKY NAV OFFSET
+   Enable these rules ONLY if using a fixed GB
+   announcement bar above the header. If the header
+   uses "display menu as header" with no top bar,
+   leave this section commented out.
+
+   To enable: uncomment the 3 blocks below and set
+   --pk-topbar-h to the bar's rendered height.
    ================================================ */
+/*
+:root { --pk-topbar-h: 43px; }
 .gb-element-ff8c003b {
   position: fixed !important;
   top: 0 !important;
@@ -105,13 +110,14 @@ Replaces the entire existing Additional CSS.
 nav.navigation-clone.is_stuck,
 nav#mobile-header.navigation-stick,
 #sticky-navigation.is_stuck {
-  top: 43px !important;
+  top: var(--pk-topbar-h) !important;
   margin-top: 0 !important;
 }
 body {
-  padding-top: 43px;
-  padding-top: calc(43px + env(safe-area-inset-top, 0px));
+  padding-top: var(--pk-topbar-h);
+  padding-top: calc(var(--pk-topbar-h) + env(safe-area-inset-top, 0px));
 }
+*/
 
 /* ================================================
    SECTION 3: NAVIGATION + MENU CTA
