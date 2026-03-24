@@ -80,18 +80,13 @@ Replaces the entire existing Additional CSS.
    ================================================ */
 @media (max-width: 768px) {
   .cm-topbar {
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    width: 100%;
     z-index: 10001;
   }
   /* GP JS sets inline top:0 on mobile-header — !important required */
   #mobile-header.is_stuck {
     top: 43px !important;
-  }
-  body {
-    padding-top: 43px;
   }
 }
 
