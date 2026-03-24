@@ -19,15 +19,16 @@ Replaces the entire existing Additional CSS.
    Updated: 2026-03-24
 
    SECTION 1: Design tokens (CSS custom properties)
-   SECTION 2: Navigation + Menu CTA
-   SECTION 3: Semantic classes (sections, typography, cards, grids, icons, buttons)
-   SECTION 4: Hero enhancements (cards, popovers, buttons)
-   SECTION 5: Component hovers + transitions
-   SECTION 6: Stretched card links
-   SECTION 7: Pseudo-elements (connectors, dividers, badges)
-   SECTION 8: FAQ accordion
-   SECTION 9: Responsive overrides
-   SECTION 10: Page-specific scoped rules
+   SECTION 2: Sticky top bar + nav offset
+   SECTION 3: Navigation + Menu CTA
+   SECTION 4: Semantic classes (sections, typography, cards, grids, icons, buttons)
+   SECTION 5: Hero enhancements (cards, popovers, buttons)
+   SECTION 6: Component hovers + transitions
+   SECTION 7: Stretched card links
+   SECTION 8: Pseudo-elements (connectors, dividers, badges)
+   SECTION 9: FAQ accordion
+   SECTION 10: Responsive overrides
+   SECTION 11: Page-specific scoped rules
    ================================================ */
 
 /* ================================================
@@ -72,7 +73,24 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: NAVIGATION + MENU CTA
+   SECTION 2: STICKY TOP BAR + NAV OFFSET
+   Top bar uses position:sticky (not fixed) so it
+   respects document flow — no body padding needed,
+   no admin bar conflicts. GP sticky nav is offset
+   by the top bar height so it sits below.
+   ================================================ */
+.cm-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.sticky-enabled .main-navigation.is_stuck,
+.sticky-enabled #mobile-header.is_stuck {
+  top: 43px;
+}
+
+/* ================================================
+   SECTION 3: NAVIGATION + MENU CTA
    ================================================ */
 #site-navigation .main-nav ul li.menu-cta > a,
 #site-navigation .main-nav ul li.menu-cta > a:visited,
