@@ -90,6 +90,9 @@ Replaces the entire existing Additional CSS.
   }
 }
 
+/* Transition block — universal section separator */
+.cm-transition { margin: 0; }
+
 /* ================================================
    SECTION 3: NAVIGATION + MENU CTA
    ================================================ */
