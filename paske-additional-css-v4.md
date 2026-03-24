@@ -73,20 +73,14 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: STICKY TOP BAR + NAV OFFSET
-   Top bar uses position:sticky (not fixed) so it
-   respects document flow — no body padding needed,
-   no admin bar conflicts. GP sticky nav is offset
-   by the top bar height so it sits below.
+   SECTION 2: STICKY HEADER
+   Single wrapper makes topbar + nav sticky as one
+   unit. No separate offsets or admin bar hacks.
    ================================================ */
-.cm-topbar {
+.cm-header {
   position: sticky;
   top: 0;
   z-index: 10001;
-}
-.sticky-enabled .main-navigation.is_stuck,
-.sticky-enabled #mobile-header.is_stuck {
-  top: 43px;
 }
 
 /* ================================================
