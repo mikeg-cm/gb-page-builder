@@ -106,7 +106,8 @@ Replaces the entire existing Additional CSS.
 }
 
 #site-navigation.is_stuck,
-#sticky-navigation.is_stuck {
+#sticky-navigation.is_stuck,
+nav#mobile-header {
   top: var(--pk-topbar-h) !important;
   margin-top: 0 !important;
 }
@@ -123,13 +124,15 @@ body {
   top: 32px !important;
 }
 .admin-bar #site-navigation.is_stuck,
-.admin-bar #sticky-navigation.is_stuck {
+.admin-bar #sticky-navigation.is_stuck,
+.admin-bar nav#mobile-header {
   top: calc(var(--pk-topbar-h) + 32px) !important;
 }
 @media (max-width: 782px) {
   .admin-bar .cm-topbar { top: 46px !important; }
   .admin-bar #site-navigation.is_stuck,
-  .admin-bar #sticky-navigation.is_stuck { top: calc(var(--pk-topbar-h) + 46px) !important; }
+  .admin-bar #sticky-navigation.is_stuck,
+  .admin-bar nav#mobile-header { top: calc(var(--pk-topbar-h) + 46px) !important; }
 }
 
 /* ================================================
