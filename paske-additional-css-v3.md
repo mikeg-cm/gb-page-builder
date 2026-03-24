@@ -115,6 +115,24 @@ body {
   padding-top: var(--pk-topbar-h);
 }
 
+/* WP admin bar offset (logged-in only) */
+.admin-bar .cm-topbar {
+  top: 32px !important;
+}
+.admin-bar #site-navigation.is_stuck,
+.admin-bar #sticky-navigation.is_stuck {
+  top: calc(var(--pk-topbar-h) + 32px) !important;
+}
+.admin-bar {
+  padding-top: calc(var(--pk-topbar-h) + 32px);
+}
+@media (max-width: 782px) {
+  .admin-bar .cm-topbar { top: 46px !important; }
+  .admin-bar #site-navigation.is_stuck,
+  .admin-bar #sticky-navigation.is_stuck { top: calc(var(--pk-topbar-h) + 46px) !important; }
+  .admin-bar { padding-top: calc(var(--pk-topbar-h) + 46px); }
+}
+
 /* ================================================
    SECTION 3: NAVIGATION + MENU CTA
    ================================================ */
