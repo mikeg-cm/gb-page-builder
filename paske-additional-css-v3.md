@@ -88,16 +88,20 @@ Replaces the entire existing Additional CSS.
 }
 
 /* ================================================
-   SECTION 2: FIXED TOP BAR + STICKY NAV OFFSET
-   Enable these rules ONLY if using a fixed GB
-   announcement bar above the header. If the header
-   uses "display menu as header" with no top bar,
-   leave this section commented out.
-
-   To enable: uncomment the 3 blocks below and set
-   --pk-topbar-h to the bar's rendered height.
+   SECTION 2: STICKY NAV
+   GP JS sets inline top/position on the nav when
+   sticky. These rules lock it to top:0 on scroll.
    ================================================ */
-/*
+#site-navigation.is_stuck,
+#sticky-navigation.is_stuck {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* --- OPTIONAL: Fixed announcement bar above nav ---
+   Uncomment if using a GB element as a fixed top bar.
+   Set --pk-topbar-h to the bar's rendered height.
+
 :root { --pk-topbar-h: 43px; }
 .gb-element-ff8c003b {
   position: fixed !important;
@@ -107,15 +111,12 @@ Replaces the entire existing Additional CSS.
   z-index: 10001;
   margin: 0 !important;
 }
-nav.navigation-clone.is_stuck,
-nav#mobile-header.navigation-stick,
+#site-navigation.is_stuck,
 #sticky-navigation.is_stuck {
   top: var(--pk-topbar-h) !important;
-  margin-top: 0 !important;
 }
 body {
   padding-top: var(--pk-topbar-h);
-  padding-top: calc(var(--pk-topbar-h) + env(safe-area-inset-top, 0px));
 }
 */
 
