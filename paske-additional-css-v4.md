@@ -84,6 +84,9 @@ Replaces the entire existing Additional CSS.
     top: 0;
     z-index: 10001;
   }
+  #mobile-header.is_stuck {
+    top: 43px;
+  }
 }
 
 /* ================================================
