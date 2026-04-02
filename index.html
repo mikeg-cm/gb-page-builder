@@ -188,6 +188,61 @@ textarea{resize:vertical;min-height:64px}
 .empty-state .icon{font-size:48px;margin-bottom:16px;opacity:0.25}
 .empty-state h3{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-0.02em}
 .empty-state p{font-size:13px;line-height:1.5;max-width:240px}
+
+/* === WELCOME SCREEN (empty state redesign) === */
+.welcome-screen{padding:40px 24px;display:flex;flex-direction:column;align-items:center;gap:32px}
+.welcome-header{text-align:center}
+.welcome-header h3{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.02em}
+.welcome-header p{font-size:13px;color:var(--text-muted);line-height:1.5}
+.welcome-divider{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:12px;width:100%;max-width:400px}
+.welcome-divider::before,.welcome-divider::after{content:'';flex:1;height:1px;background:var(--border-light)}
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:440px}
+.template-card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.2s ease;text-align:left}
+.template-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+.template-card-icon{font-size:24px;margin-bottom:8px}
+.template-card h4{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:2px;letter-spacing:-0.01em}
+.template-card .tpl-meta{font-size:11px;color:var(--text-muted)}
+.template-card .tpl-desc{font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4}
+
+/* === SECTION PICKER MODAL === */
+.section-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;animation:fade-in 0.15s ease}
+.section-picker-overlay.open{display:flex}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+.section-picker{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);box-shadow:0 24px 80px rgba(0,0,0,0.2);width:90%;max-width:640px;max-height:80vh;display:flex;flex-direction:column;animation:picker-in 0.2s ease}
+@keyframes picker-in{from{opacity:0;transform:scale(0.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.picker-header{padding:20px 24px 12px;border-bottom:1px solid var(--border-light)}
+.picker-header h3{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:10px;letter-spacing:-0.02em}
+.picker-search{width:100%;padding:8px 12px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--bg-editor);color:var(--text-primary);font-size:13px;font-family:var(--font)}
+.picker-search:focus{border-color:var(--accent);outline:none}
+.picker-body{overflow-y:auto;padding:16px 24px;flex:1}
+.picker-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin:16px 0 8px;padding:0}
+.picker-group-label:first-child{margin-top:0}
+.picker-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.picker-tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border:1px solid var(--border-light);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s ease;background:transparent;text-align:center}
+.picker-tile:hover{border-color:var(--accent);background:rgba(99,102,241,0.06);transform:translateY(-1px)}
+.picker-tile svg{width:48px;height:36px;opacity:0.5;transition:opacity 0.2s}
+.picker-tile:hover svg{opacity:0.9}
+.picker-tile-label{font-size:11px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em}
+.picker-tile.hidden{display:none}
+
+/* === QUICK-ADD BAR === */
+.quick-add-bar{position:sticky;bottom:0;background:var(--bg-editor);border-top:1px solid var(--border-light);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:8px 16px;display:flex;gap:6px;align-items:center;justify-content:center;z-index:10}
+.quick-add-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:transparent;cursor:pointer;transition:all 0.2s ease;color:var(--text-muted);min-width:60px}
+.quick-add-btn:hover{border-color:var(--accent);color:var(--text-primary);background:rgba(99,102,241,0.06)}
+.quick-add-btn svg{width:20px;height:16px;opacity:0.5}
+.quick-add-btn:hover svg{opacity:0.9}
+.quick-add-btn span{font-size:9px;font-weight:600;letter-spacing:0.02em}
+.quick-add-more{padding:6px 12px;border:1px dashed var(--border-light);border-radius:var(--radius-sm);background:transparent;cursor:pointer;color:var(--text-muted);font-size:11px;font-weight:600;transition:all 0.2s}
+.quick-add-more:hover{border-color:var(--accent);color:var(--accent)}
+
+/* === SECTION CARD POLISH === */
+.section-card-header .sec-icon{width:20px;height:16px;opacity:0.4;flex-shrink:0;margin-right:6px}
+.section-count-badge{background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:8px}
+.completeness-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-left:auto;margin-right:8px}
+.completeness-dot.filled{background:#34c759}
+.completeness-dot.empty{background:rgba(255,255,255,0.15)}
+.collapse-all-btn{padding:4px 10px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:transparent;color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.collapse-all-btn:hover{border-color:var(--accent);color:var(--text-primary)}
 .preview-empty-state{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);text-align:center;padding:48px}
 .preview-empty-state p{font-size:13px;line-height:1.5;max-width:280px;opacity:0.5}
 
@@ -666,12 +721,10 @@ textarea{resize:vertical;min-height:64px}
   <!-- EDITOR -->
   <main class="editor-panel" id="editorPanel">
     <div class="editor-toolbar">
-      <h2>Page Sections</h2>
+      <h2>Page Sections<span class="section-count-badge" id="sectionCountBadge" style="display:none"></span></h2>
       <div class="editor-toolbar-actions">
-        <div class="dropdown" id="addSectionDropdown">
-          <button class="btn btn-primary btn-sm" id="btnAddSection">+ Add Section</button>
-          <div class="dropdown-menu" id="sectionMenu"></div>
-        </div>
+        <button class="collapse-all-btn" id="btnCollapseAll" title="Collapse/Expand all">Collapse All</button>
+        <button class="btn btn-primary btn-sm" id="btnAddSection">+ Add Section</button>
       </div>
     </div>
     <div class="page-config">
@@ -693,13 +746,29 @@ textarea{resize:vertical;min-height:64px}
       </div>
     </div>
     <div class="sections-list" id="sectionsList">
-      <div class="empty-state" id="editorEmptyState">
-        <div class="icon">+</div>
-        <h3>No sections yet</h3>
-        <p>Click "Add Section" to start building your page</p>
+      <div class="welcome-screen" id="editorEmptyState">
+        <div class="welcome-header">
+          <h3>Build Your Page</h3>
+          <p>Start from a template or add sections one at a time</p>
+        </div>
+        <div class="template-grid" id="templateGrid"></div>
+        <div class="welcome-divider">or</div>
+        <button class="btn btn-secondary btn-sm" id="btnBuildScratch">+ Add First Section</button>
       </div>
     </div>
+    <div class="quick-add-bar" id="quickAddBar" style="display:none"></div>
   </main>
+
+  <!-- SECTION PICKER MODAL -->
+  <div class="section-picker-overlay" id="sectionPickerOverlay">
+    <div class="section-picker">
+      <div class="picker-header">
+        <h3>Add Section</h3>
+        <input type="text" class="picker-search" id="pickerSearch" placeholder="Search sections...">
+      </div>
+      <div class="picker-body" id="pickerBody"></div>
+    </div>
+  </div>
 
   <!-- PREVIEW -->
   <aside class="preview-panel" id="previewPanel">
@@ -1147,7 +1216,8 @@ const SECTION_TYPES = [
   { id: 'sideBySideImage', label: 'Side-by-Side (Image)', desc: 'Image + checkmarks in 58/38 columns' },
   { id: 'sideBySideVideo', label: 'Side-by-Side (Video)', desc: 'Video embed + checkmarks in 58/38 columns' },
   { id: 'problemsChecklist', label: 'Problems Checklist', desc: 'Full-width checklist with heading and CTA' },
-  { id: 'heroConverter', label: 'Hero Converter', desc: 'Convert old hero HTML to CM Featured Hero' }
+  { id: 'heroConverter', label: 'Hero Converter', desc: 'Convert old hero HTML to CM Featured Hero' },
+  { id: 'transitionBlock', label: 'Transition', desc: 'Subtle separator between sections' }
 ];
 
 const SECTION_GROUPS = [
@@ -1156,8 +1226,68 @@ const SECTION_GROUPS = [
   { label: 'Social Proof', items: ['reviews', 'reviewsCarousel', 'formReviews', 'logoCarousel'] },
   { label: 'Pricing', items: ['pricingSingle', 'pricingMulti'] },
   { label: 'FAQ', items: ['faqAccordion', 'faqCards'] },
-  { label: 'Other', items: ['serviceAreas', 'ctaBanner'] }
+  { label: 'Other', items: ['serviceAreas', 'ctaBanner', 'transitionBlock'] }
 ];
+
+// Section Icons — simple SVG wireframes for picker tiles
+const SECTION_ICONS = {
+  hero: '<svg viewBox="0 0 48 36"><rect x="2" y="2" width="44" height="32" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="10" width="24" height="16" rx="2" fill="currentColor" opacity="0.15"/><rect x="16" y="14" width="16" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="18" y="19" width="12" height="2" rx="1" fill="currentColor" opacity="0.3"/></svg>',
+  heroCover: '<svg viewBox="0 0 48 36"><rect x="2" y="2" width="44" height="32" rx="2" fill="currentColor" opacity="0.1"/><rect x="10" y="8" width="28" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="20" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="16" y="17" width="16" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="18" y="22" width="12" height="3" rx="1.5" fill="currentColor" opacity="0.4"/></svg>',
+  heroConverter: '<svg viewBox="0 0 48 36"><path d="M8 18h12M28 18h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M22 14l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="2" y="6" width="16" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/><rect x="30" y="6" width="16" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+  introText: '<svg viewBox="0 0 48 36"><rect x="8" y="10" width="32" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="12" y="15" width="24" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="10" y="19" width="28" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="14" y="23" width="20" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/></svg>',
+  cardGrid: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="17.5" y="4" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="33" y="4" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="20" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="17.5" y="20" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="33" y="20" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
+  textContent: '<svg viewBox="0 0 48 36"><rect x="6" y="4" width="36" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="10" y="9" width="28" height="2" rx="1" fill="currentColor" opacity="0.4"/><rect x="10" y="14" width="24" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="10" y="18" width="26" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="10" y="22" width="20" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/></svg>',
+  sideBySideImage: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="20" height="28" rx="2" fill="currentColor" opacity="0.1"/><rect x="26" y="8" width="18" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="26" y="13" width="16" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="26" y="17" width="14" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="26" y="23" width="12" height="3" rx="1.5" fill="currentColor" opacity="0.4"/></svg>',
+  sideBySideVideo: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="20" height="28" rx="2" fill="currentColor" opacity="0.1"/><polygon points="10,14 10,24 16,19" fill="currentColor" opacity="0.3"/><rect x="26" y="8" width="18" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="26" y="13" width="16" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="26" y="17" width="14" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/></svg>',
+  problemsChecklist: '<svg viewBox="0 0 48 36"><rect x="10" y="6" width="28" height="2" rx="1" fill="currentColor" opacity="0.5"/><g opacity="0.35"><rect x="8" y="12" width="3" height="3" rx="0.5" fill="currentColor"/><rect x="14" y="12.5" width="22" height="2" rx="1" fill="currentColor"/><rect x="8" y="18" width="3" height="3" rx="0.5" fill="currentColor"/><rect x="14" y="18.5" width="20" height="2" rx="1" fill="currentColor"/><rect x="8" y="24" width="3" height="3" rx="0.5" fill="currentColor"/><rect x="14" y="24.5" width="18" height="2" rx="1" fill="currentColor"/></g></svg>',
+  timeline: '<svg viewBox="0 0 48 36"><circle cx="10" cy="10" r="4" fill="currentColor" opacity="0.4"/><circle cx="24" cy="10" r="4" fill="currentColor" opacity="0.4"/><circle cx="38" cy="10" r="4" fill="currentColor" opacity="0.4"/><line x1="14" y1="10" x2="20" y2="10" stroke="currentColor" stroke-width="1" opacity="0.3"/><line x1="28" y1="10" x2="34" y2="10" stroke="currentColor" stroke-width="1" opacity="0.3"/><rect x="4" y="18" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="18" y="18" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="32" y="18" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/></svg>',
+  pricingSingle: '<svg viewBox="0 0 48 36"><rect x="12" y="2" width="24" height="32" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="16" y="7" width="16" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="18" y="12" width="12" height="4" rx="1" fill="currentColor" opacity="0.3"/><rect x="16" y="20" width="16" height="1" rx="0.5" fill="currentColor" opacity="0.2"/><rect x="16" y="23" width="16" height="1" rx="0.5" fill="currentColor" opacity="0.2"/><rect x="18" y="28" width="12" height="3" rx="1.5" fill="currentColor" opacity="0.4"/></svg>',
+  pricingMulti: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="17.5" y="2" width="13" height="32" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="33" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="20" y="6" width="7" height="2" rx="1" fill="currentColor" opacity="0.4"/><rect x="20" y="11" width="7" height="3" rx="1" fill="currentColor" opacity="0.3"/></svg>',
+  faqAccordion: '<svg viewBox="0 0 48 36"><rect x="4" y="4" width="40" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="4" y="14" width="40" height="7" rx="2" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1.2"/><rect x="4" y="24" width="40" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M38 7l2 2 2-2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg>',
+  faqCards: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="26" y="4" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="22" width="20" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><text x="9" y="12" font-size="8" fill="currentColor" opacity="0.4">?</text><text x="33" y="12" font-size="8" fill="currentColor" opacity="0.4">?</text></svg>',
+  serviceAreas: '<svg viewBox="0 0 48 36"><rect x="8" y="6" width="32" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="6" y="12" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="19" y="12" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="32" y="12" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="6" y="16" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="19" y="16" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="32" y="16" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="16" y="24" width="16" height="3" rx="1.5" fill="currentColor" opacity="0.4"/></svg>',
+  reviews: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="17.5" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="33" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><text x="5" y="12" font-size="6" fill="currentColor" opacity="0.4">&#9733;&#9733;&#9733;</text></svg>',
+  reviewsCarousel: '<svg viewBox="0 0 48 36"><rect x="6" y="6" width="36" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M2 18l3-3v6z" fill="currentColor" opacity="0.3"/><path d="M46 18l-3-3v6z" fill="currentColor" opacity="0.3"/><text x="16" y="16" font-size="6" fill="currentColor" opacity="0.3">&#9733;&#9733;&#9733;&#9733;&#9733;</text></svg>',
+  formReviews: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="20" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="5" y="8" width="14" height="2" rx="1" fill="currentColor" opacity="0.2"/><rect x="5" y="13" width="14" height="2" rx="1" fill="currentColor" opacity="0.2"/><rect x="5" y="18" width="14" height="2" rx="1" fill="currentColor" opacity="0.2"/><rect x="5" y="24" width="14" height="3" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="26" y="6" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/><rect x="26" y="20" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/></svg>',
+  logoCarousel: '<svg viewBox="0 0 48 36"><rect x="2" y="12" width="10" height="12" rx="2" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="0.8"/><rect x="14" y="12" width="10" height="12" rx="2" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="0.8"/><rect x="26" y="12" width="10" height="12" rx="2" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="0.8"/><rect x="38" y="12" width="10" height="12" rx="2" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="0.8"/></svg>',
+  ctaBanner: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="44" height="28" rx="2" fill="currentColor" opacity="0.15"/><rect x="12" y="10" width="24" height="2.5" rx="1" fill="currentColor" opacity="0.5"/><rect x="14" y="16" width="20" height="1.5" rx="0.75" fill="currentColor" opacity="0.3"/><rect x="16" y="22" width="16" height="4" rx="2" fill="currentColor" opacity="0.5"/></svg>',
+  transitionBlock: '<svg viewBox="0 0 48 36"><line x1="4" y1="18" x2="44" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></svg>'
+};
+
+// Page Templates — pre-built section sequences
+const PAGE_TEMPLATES = {
+  homepage: {
+    label: 'Homepage',
+    icon: '🏠',
+    count: 9,
+    desc: 'Hero, problems, services, process, reviews, CTA',
+    sections: ['heroCover', 'introText', 'problemsChecklist', 'cardGrid', 'textContent', 'timeline', 'reviews', 'cardGrid', 'ctaBanner']
+  },
+  location: {
+    label: 'Location Page',
+    icon: '📍',
+    count: 8,
+    desc: 'Hero, community, pest challenges, services, FAQ',
+    sections: ['heroCover', 'introText', 'sideBySideImage', 'problemsChecklist', 'cardGrid', 'timeline', 'faqAccordion', 'ctaBanner']
+  },
+  package: {
+    label: 'Package Page',
+    icon: '💰',
+    count: 7,
+    desc: 'Hero, how-it-works, pricing, specialty cards',
+    sections: ['heroCover', 'introText', 'cardGrid', 'pricingMulti', 'cardGrid', 'serviceAreas', 'ctaBanner']
+  },
+  service: {
+    label: 'Service Page',
+    icon: '🛡',
+    count: 9,
+    desc: 'Hero, problems, solutions, process, reviews, FAQ',
+    sections: ['heroCover', 'introText', 'problemsChecklist', 'cardGrid', 'timeline', 'reviews', 'pricingSingle', 'faqAccordion', 'ctaBanner']
+  }
+};
+
+// Quick-add bar — most-used section types
+const QUICK_ADD_SECTIONS = ['heroCover', 'cardGrid', 'ctaBanner', 'reviews', 'faqAccordion', 'timeline'];
 
 // ------------------------------------
 // Default Clients
@@ -5517,57 +5647,164 @@ class SectionManager {
     this.previewManager = previewManager;
     this.sectionCounter = 0;
     this.dragState = { dragging: null, over: null };
-    this.setupDropdown();
+    this.setupSectionPicker();
+    this.setupTemplates();
+    this.setupQuickAddBar();
     this.setupDragDrop();
     this.setupDelegatedEvents();
   }
 
-  /* ---- dropdown for adding sections ----------------------------------- */
+  /* ---- section picker modal ------------------------------------------- */
 
-  setupDropdown() {
-    const menu = document.getElementById('sectionMenu');
-    const btn = document.getElementById('btnAddSection');
-    if (!menu || !btn) return;
+  setupSectionPicker() {
+    const overlay = document.getElementById('sectionPickerOverlay');
+    const body = document.getElementById('pickerBody');
+    const search = document.getElementById('pickerSearch');
+    const btnAdd = document.getElementById('btnAddSection');
+    const btnScratch = document.getElementById('btnBuildScratch');
+    if (!overlay || !body) return;
 
-    menu.innerHTML = '';
-    SECTION_GROUPS.forEach((group, gi) => {
-      if (gi > 0) {
-        const divider = document.createElement('div');
-        divider.className = 'dropdown-divider';
-        menu.appendChild(divider);
-      }
+    // Build picker tiles
+    body.innerHTML = '';
+    SECTION_GROUPS.forEach(group => {
       const lbl = document.createElement('div');
-      lbl.className = 'dropdown-group-label';
+      lbl.className = 'picker-group-label';
       lbl.textContent = group.label;
-      menu.appendChild(lbl);
+      body.appendChild(lbl);
+      const grid = document.createElement('div');
+      grid.className = 'picker-tiles';
       group.items.forEach(itemId => {
         const st = SECTION_TYPES.find(t => t.id === itemId);
         if (!st) return;
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'dropdown-item';
-        item.dataset.sectionType = st.id;
-        item.innerHTML = `<strong>${escapeHTML(st.label)}</strong><span class="dropdown-item-desc">${escapeHTML(st.desc || '')}</span>`;
-        menu.appendChild(item);
+        const tile = document.createElement('button');
+        tile.type = 'button';
+        tile.className = 'picker-tile';
+        tile.dataset.sectionType = st.id;
+        tile.dataset.searchText = (st.label + ' ' + (st.desc || '')).toLowerCase();
+        tile.innerHTML = `${SECTION_ICONS[st.id] || ''}<span class="picker-tile-label">${escapeHTML(st.label)}</span>`;
+        grid.appendChild(tile);
       });
+      body.appendChild(grid);
     });
 
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      menu.classList.toggle('show');
+    // Open picker
+    const openPicker = () => {
+      overlay.classList.add('open');
+      if (search) { search.value = ''; search.focus(); }
+      body.querySelectorAll('.picker-tile').forEach(t => t.classList.remove('hidden'));
+      body.querySelectorAll('.picker-group-label').forEach(l => l.style.display = '');
+    };
+
+    if (btnAdd) btnAdd.addEventListener('click', (e) => { e.stopPropagation(); openPicker(); });
+    if (btnScratch) btnScratch.addEventListener('click', () => openPicker());
+
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('open');
     });
 
-    menu.addEventListener('click', (e) => {
-      const item = e.target.closest('[data-section-type]');
-      if (item) {
-        this.addSection(item.dataset.sectionType);
-        menu.classList.remove('show');
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) overlay.classList.remove('open');
+    });
+
+    // Select tile
+    body.addEventListener('click', (e) => {
+      const tile = e.target.closest('[data-section-type]');
+      if (tile) {
+        this.addSection(tile.dataset.sectionType);
+        overlay.classList.remove('open');
       }
     });
 
-    document.addEventListener('click', (e) => {
-      if (!menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-        menu.classList.remove('show');
+    // Search filter
+    if (search) search.addEventListener('input', () => {
+      const q = search.value.toLowerCase().trim();
+      body.querySelectorAll('.picker-tile').forEach(tile => {
+        const match = !q || tile.dataset.searchText.includes(q);
+        tile.classList.toggle('hidden', !match);
+      });
+      // Hide group labels if all tiles in their grid are hidden
+      body.querySelectorAll('.picker-tiles').forEach(grid => {
+        const anyVisible = [...grid.querySelectorAll('.picker-tile')].some(t => !t.classList.contains('hidden'));
+        const label = grid.previousElementSibling;
+        if (label && label.classList.contains('picker-group-label')) {
+          label.style.display = anyVisible ? '' : 'none';
+        }
+        grid.style.display = anyVisible ? '' : 'none';
+      });
+    });
+  }
+
+  /* ---- page templates ------------------------------------------------- */
+
+  setupTemplates() {
+    const grid = document.getElementById('templateGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    Object.entries(PAGE_TEMPLATES).forEach(([id, tpl]) => {
+      const card = document.createElement('div');
+      card.className = 'template-card';
+      card.dataset.template = id;
+      card.innerHTML = `<div class="template-card-icon">${tpl.icon}</div><h4>${escapeHTML(tpl.label)}</h4><span class="tpl-meta">${tpl.count} sections</span><div class="tpl-desc">${escapeHTML(tpl.desc)}</div>`;
+      grid.appendChild(card);
+    });
+    grid.addEventListener('click', (e) => {
+      const card = e.target.closest('[data-template]');
+      if (card) this.loadTemplate(card.dataset.template);
+    });
+  }
+
+  loadTemplate(templateId) {
+    const tpl = PAGE_TEMPLATES[templateId];
+    if (!tpl) return;
+    this.sections = [];
+    this.sectionCounter = 0;
+    tpl.sections.forEach((typeId, i) => {
+      this.sectionCounter++;
+      this.sections.push({
+        id: 'sec-' + this.sectionCounter + '-' + Date.now() + i,
+        type: typeId,
+        data: this._getDefaultData(typeId),
+        expanded: i === 0
+      });
+    });
+    this.renderAll();
+    showToast(`${tpl.label} template loaded (${tpl.count} sections)`, 'success');
+  }
+
+  /* ---- quick-add bar -------------------------------------------------- */
+
+  setupQuickAddBar() {
+    const bar = document.getElementById('quickAddBar');
+    if (!bar) return;
+    bar.innerHTML = '';
+    QUICK_ADD_SECTIONS.forEach(typeId => {
+      const st = SECTION_TYPES.find(t => t.id === typeId);
+      if (!st) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'quick-add-btn';
+      btn.dataset.sectionType = st.id;
+      btn.innerHTML = `${SECTION_ICONS[st.id] || ''}<span>${escapeHTML(st.label)}</span>`;
+      bar.appendChild(btn);
+    });
+    const moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = 'quick-add-more';
+    moreBtn.textContent = '+ More';
+    bar.appendChild(moreBtn);
+
+    bar.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-section-type]');
+      if (btn) {
+        this.addSection(btn.dataset.sectionType);
+        return;
+      }
+      if (e.target.closest('.quick-add-more')) {
+        document.getElementById('sectionPickerOverlay')?.classList.add('open');
+        const search = document.getElementById('pickerSearch');
+        if (search) { search.value = ''; search.focus(); }
       }
     });
   }
@@ -5771,7 +6008,8 @@ class SectionManager {
         checkItems: [{ label: '', description: '' }],
         closingParas: [''],
         ctaLabel: '', ctaUrl: '', bgColor: ''
-      }
+      },
+      transitionBlock: {}
     };
     return deepClone(defaults[typeId] || {});
   }
@@ -5825,21 +6063,55 @@ class SectionManager {
 
   renderAll() {
     const listEl = document.getElementById('sectionsList');
-    const emptyEl = document.getElementById('editorEmptyState');
+    const quickBar = document.getElementById('quickAddBar');
+    const hasSections = this.sections.length > 0;
 
     if (listEl) {
-      if (this.sections.length === 0) {
-        listEl.innerHTML = '';
+      if (!hasSections) {
+        listEl.innerHTML = this._renderWelcomeScreen();
       } else {
         listEl.innerHTML = this.sections.map(s => this.renderSectionCard(s)).join('');
       }
     }
 
-    if (emptyEl) {
-      emptyEl.style.display = this.sections.length === 0 ? '' : 'none';
+    if (quickBar) quickBar.style.display = hasSections ? '' : 'none';
+
+    // Update section count badge
+    const countBadge = document.getElementById('sectionCountBadge');
+    if (countBadge) {
+      countBadge.textContent = hasSections ? this.sections.length : '';
+      countBadge.style.display = hasSections ? '' : 'none';
+    }
+
+    // Re-wire template grid clicks (recreated via innerHTML)
+    if (!hasSections) {
+      const tg = document.getElementById('templateGrid');
+      if (tg) tg.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-template]');
+        if (card) this.loadTemplate(card.dataset.template);
+      });
+      const btnS = document.getElementById('btnBuildScratch');
+      if (btnS) btnS.addEventListener('click', () => {
+        document.getElementById('sectionPickerOverlay')?.classList.add('open');
+        const search = document.getElementById('pickerSearch');
+        if (search) { search.value = ''; search.focus(); }
+      });
     }
 
     this.previewManager.update();
+  }
+
+  _renderWelcomeScreen() {
+    let tplCards = '';
+    Object.entries(PAGE_TEMPLATES).forEach(([id, tpl]) => {
+      tplCards += `<div class="template-card" data-template="${id}"><div class="template-card-icon">${tpl.icon}</div><h4>${escapeHTML(tpl.label)}</h4><span class="tpl-meta">${tpl.count} sections</span><div class="tpl-desc">${escapeHTML(tpl.desc)}</div></div>`;
+    });
+    return `<div class="welcome-screen" id="editorEmptyState">
+      <div class="welcome-header"><h3>Build Your Page</h3><p>Start from a template or add sections one at a time</p></div>
+      <div class="template-grid" id="templateGrid">${tplCards}</div>
+      <div class="welcome-divider">or</div>
+      <button class="btn btn-secondary btn-sm" id="btnBuildScratch">+ Add First Section</button>
+    </div>`;
   }
 
   renderSectionCard(section) {
@@ -5903,6 +6175,7 @@ class SectionManager {
       case 'sideBySideVideo': return this._fieldsSideBySideVideo(id, d);
       case 'problemsChecklist': return this._fieldsProblemsChecklist(id, d);
       case 'heroConverter': return this._fieldsHeroConverter(id, d);
+      case 'transitionBlock': return '<p style="padding:12px;font-size:12px;color:var(--text-muted)">Subtle 1px separator line. No configuration needed.</p>';
       default: return '<p style="padding:8px;opacity:.5">Unknown section type.</p>';
     }
   }
@@ -7029,6 +7302,8 @@ class PreviewManager {
         return typeof buildProblemsChecklistSection === 'function' ? buildProblemsChecklistSection(cfg, sectionData, ie) : '';
       case 'heroConverter':
         return typeof buildHeroConverterSection === 'function' ? buildHeroConverterSection(cfg, sectionData, ie) : '';
+      case 'transitionBlock':
+        return '<!-- CM TRANSITION BLOCK -->\n<!-- wp:generateblocks/element {"uniqueId":"cmTrans","tagName":"div","styles":{"borderTopColor":"#E5E2DD","borderTopStyle":"solid","borderTopWidth":"1px"},"css":".gb-element-cmTrans{border-top:1px solid #E5E2DD}","className":"cm-transition"} -->\n<div class="cm-transition gb-element-cmTrans"></div>\n<!-- /wp:generateblocks/element -->';
       default:
         return '';
     }
@@ -7129,6 +7404,7 @@ class PreviewManager {
       case 'serviceAreas': inner = this._vizServiceAreas(d, textColor, mutedColor, primary); break;
       case 'ctaBanner': inner = this._vizCtaBanner(d, cfg, primary); break;
       case 'heroConverter': inner = this._vizHeroConverter(d, cfg, primary); break;
+      case 'transitionBlock': inner = `<div style="border-top:1px solid #E5E2DD;margin:4px 0"></div>`; break;
       default: inner = `<p class="visual-text" style="color:${mutedColor};text-align:center">No visual preview for this section type</p>`;
     }
 
@@ -11724,6 +12000,17 @@ function initApp() {
 
   // Wire up global references
   window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView, templateManager, themeCSSBuilder };
+
+  // --- Collapse All button ---
+  const btnCollapseAll = document.getElementById('btnCollapseAll');
+  if (btnCollapseAll) {
+    btnCollapseAll.addEventListener('click', () => {
+      const allCollapsed = sectionManager.sections.every(s => !s.expanded);
+      sectionManager.sections.forEach(s => s.expanded = allCollapsed);
+      btnCollapseAll.textContent = allCollapsed ? 'Collapse All' : 'Expand All';
+      sectionManager.renderAll();
+    });
+  }
 
   // --- Sidebar buttons ---
   const btnSaveClient = document.getElementById('btnSaveClient');
