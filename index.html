@@ -60,12 +60,27 @@
 html,body{height:100%;font-family:var(--font);font-size:14px;color:var(--text-primary);background:var(--bg-editor);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
 /* === LAYOUT === */
-.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr var(--preview-w);grid-template-rows:minmax(0,1fr);height:100vh;overflow:hidden}
-@media(max-width:1100px){.app{grid-template-columns:var(--sidebar-w) 1fr;} .preview-panel{display:none}}
-@media(max-width:768px){.app{grid-template-columns:1fr;} .sidebar{display:none}}
+.app{display:grid;grid-template-columns:48px 1fr var(--preview-w);grid-template-rows:minmax(0,1fr);height:100vh;overflow:hidden}
+.app.config-open{grid-template-columns:48px var(--sidebar-w) 1fr var(--preview-w)}
+@media(max-width:1100px){.app{grid-template-columns:48px 1fr;} .app.config-open{grid-template-columns:48px var(--sidebar-w) 1fr;} .preview-panel{display:none}}
+@media(max-width:768px){.app{grid-template-columns:48px 1fr;} .app.config-open{grid-template-columns:48px 1fr;} .sidebar{display:none !important}}
+
+/* === ICON RAIL === */
+.icon-rail{background:var(--bg-sidebar);border-right:1px solid var(--border-sidebar);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;flex-shrink:0;z-index:5}
+.rail-logo{width:28px;height:28px;margin-bottom:12px;opacity:0.6}
+.rail-btn{width:36px;height:36px;border:none;background:transparent;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);transition:all 0.2s;position:relative;flex-shrink:0}
+.rail-btn svg{width:18px;height:18px}
+.rail-btn:hover{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.06)}
+.rail-btn.active{color:#fff;background:rgba(255,255,255,0.1)}
+.rail-btn.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+.rail-divider{width:24px;height:1px;background:var(--border-sidebar);margin:8px 0}
+.rail-btn .rail-tooltip{display:none;position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.85);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:100}
+.rail-btn:hover .rail-tooltip{display:block}
+.rail-btn .dev-badge{position:absolute;top:2px;right:2px;width:6px;height:6px;border-radius:50%;background:#f59e0b}
 
 /* === SIDEBAR === */
-.sidebar{background:var(--bg-sidebar);color:var(--text-sidebar);overflow-y:auto;border-right:1px solid var(--border-sidebar);display:flex;flex-direction:column}
+.sidebar{background:var(--bg-sidebar);color:var(--text-sidebar);overflow-y:auto;border-right:1px solid var(--border-sidebar);display:none;flex-direction:column}
+.app.config-open .sidebar{display:flex}
 .sidebar::-webkit-scrollbar{width:6px}
 .sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px}
 .sidebar-header{padding:20px 18px 16px;border-bottom:1px solid var(--border-sidebar)}
@@ -205,6 +220,14 @@ textarea{resize:vertical;min-height:64px}
 .template-card .tpl-desc{font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4}
 
 /* === SECTION PICKER MODAL === */
+/* === DEV WARNING MODAL === */
+.dev-warning-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:250;display:none;align-items:center;justify-content:center}
+.dev-warning-overlay.open{display:flex}
+.dev-warning{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:32px;max-width:400px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.3)}
+.dev-warning h3{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.dev-warning p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:20px}
+.dev-warning-actions{display:flex;gap:8px;justify-content:center}
+
 .section-picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;animation:fade-in 0.15s ease}
 .section-picker-overlay.open{display:flex}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
@@ -371,12 +394,9 @@ textarea{resize:vertical;min-height:64px}
 .app.converter-mode .preview-panel{display:none!important}
 .app.converter-mode .converter-panel{display:block}
 .app.converter-mode .converter-preview{display:flex}
-.app.converter-mode .sidebar{display:none}
-.app.converter-mode{grid-template-columns:1fr var(--preview-w)}
-/* Sidebar visible when toggled on */
-.app.converter-mode.sidebar-open .sidebar{display:flex}
-.app.converter-mode.sidebar-open{grid-template-columns:var(--sidebar-w) 1fr var(--preview-w)}
-@media(max-width:1100px){.app.converter-mode{grid-template-columns:1fr}.app.converter-mode .converter-preview{display:none}}
+.app.converter-mode{grid-template-columns:48px 1fr var(--preview-w)}
+.app.converter-mode.config-open{grid-template-columns:48px var(--sidebar-w) 1fr var(--preview-w)}
+@media(max-width:1100px){.app.converter-mode{grid-template-columns:48px 1fr}.app.converter-mode .converter-preview{display:none}}
 
 /* === PAGE MAKER (TEMPLATES) VIEW === */
 .templates-panel{display:none;overflow-y:auto;background:var(--bg-editor)}
@@ -388,11 +408,9 @@ textarea{resize:vertical;min-height:64px}
 .app.templates-mode .converter-preview{display:none!important}
 .app.templates-mode .templates-panel{display:block}
 .app.templates-mode .templates-preview{display:flex}
-.app.templates-mode .sidebar{display:none}
-.app.templates-mode{grid-template-columns:1fr var(--preview-w)}
-.app.templates-mode.sidebar-open .sidebar{display:flex}
-.app.templates-mode.sidebar-open{grid-template-columns:var(--sidebar-w) 1fr var(--preview-w)}
-@media(max-width:1100px){.app.templates-mode{grid-template-columns:1fr}.app.templates-mode .templates-preview{display:none}}
+.app.templates-mode{grid-template-columns:48px 1fr var(--preview-w)}
+.app.templates-mode.config-open{grid-template-columns:48px var(--sidebar-w) 1fr var(--preview-w)}
+@media(max-width:1100px){.app.templates-mode{grid-template-columns:48px 1fr}.app.templates-mode .templates-preview{display:none}}
 
 /* === THEME CSS BUILDER VIEW === */
 .themecss-panel{display:none;overflow-y:auto;background:var(--bg-editor)}
@@ -406,9 +424,9 @@ textarea{resize:vertical;min-height:64px}
 .app.themecss-mode .templates-preview{display:none!important}
 .app.themecss-mode .themecss-panel{display:block}
 .app.themecss-mode .themecss-preview{display:flex}
-.app.themecss-mode .sidebar{display:none}
-.app.themecss-mode{grid-template-columns:1fr var(--preview-w)}
-@media(max-width:1100px){.app.themecss-mode{grid-template-columns:1fr}.app.themecss-mode .themecss-preview{display:none}}
+.app.themecss-mode{grid-template-columns:48px 1fr var(--preview-w)}
+.app.themecss-mode.config-open{grid-template-columns:48px var(--sidebar-w) 1fr var(--preview-w)}
+@media(max-width:1100px){.app.themecss-mode{grid-template-columns:48px 1fr}.app.themecss-mode .themecss-preview{display:none}}
 
 .themecss-body{padding:28px 32px 80px;max-width:580px;margin:0 auto}
 .tc-group{margin-bottom:28px}
@@ -590,17 +608,39 @@ textarea{resize:vertical;min-height:64px}
 </head>
 <body>
 <div class="app">
-  <!-- SIDEBAR -->
+  <!-- ICON RAIL -->
+  <div class="icon-rail" id="iconRail">
+    <button class="rail-btn active" data-mode="builder" title="Builder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <span class="rail-tooltip">Builder</span>
+    </button>
+    <button class="rail-btn" data-mode="converter" title="Converter">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      <span class="rail-tooltip">Converter</span><span class="dev-badge"></span>
+    </button>
+    <button class="rail-btn" data-mode="templates" title="Page Maker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="rail-tooltip">Page Maker</span><span class="dev-badge"></span>
+    </button>
+    <button class="rail-btn" data-mode="themecss" title="Theme CSS">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17.08 9.08C19.2 6.96 19.86 3.6 18.12 1.86S13.04.8 10.92 2.92 5.14 9.96 5.14 9.96s5.04 5.04 5.04 5.04 5.04-3.86 6.9-5.92z"/><path d="M2 22l5.5-5.5"/><path d="M7.5 16.5L22 2"/></svg>
+      <span class="rail-tooltip">Theme CSS</span><span class="dev-badge"></span>
+    </button>
+    <div class="rail-divider"></div>
+    <button class="rail-btn" id="btnToggleConfig" title="Client Config">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span class="rail-tooltip">Client Config</span>
+    </button>
+  </div>
+
+  <!-- SIDEBAR (config panel, hidden by default) -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h1>GB Page Builder</h1>
-      <p>GenerateBlocks v2 Code Generator</p>
-      <div class="mode-toggle" id="modeToggle">
-        <button class="mode-btn active" data-mode="builder">Builder</button>
-        <button class="mode-btn" data-mode="converter">Converter</button>
-        <button class="mode-btn" data-mode="templates">Page Maker</button>
-        <button class="mode-btn" data-mode="themecss">Theme CSS</button>
+    <div class="sidebar-header" style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <h1>Client Config</h1>
+        <p id="sidebarClientName" style="font-size:12px;color:var(--text-muted);margin-top:2px"></p>
       </div>
+      <button id="btnCloseConfig" style="border:none;background:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:18px;padding:4px" title="Close">&times;</button>
     </div>
     <div class="sidebar-body">
       <div style="padding:14px 18px 10px">
@@ -767,6 +807,18 @@ textarea{resize:vertical;min-height:64px}
         <input type="text" class="picker-search" id="pickerSearch" placeholder="Search sections...">
       </div>
       <div class="picker-body" id="pickerBody"></div>
+    </div>
+  </div>
+
+  <!-- DEV WARNING MODAL -->
+  <div class="dev-warning-overlay" id="devWarningOverlay">
+    <div class="dev-warning">
+      <h3>In Development</h3>
+      <p>This feature is still being built and may not work as expected. Your work in Builder mode will be preserved.</p>
+      <div class="dev-warning-actions">
+        <button class="btn btn-secondary btn-sm" id="btnDevGoBack">Go Back</button>
+        <button class="btn btn-primary btn-sm" id="btnDevContinue">Continue Anyway</button>
+      </div>
     </div>
   </div>
 
@@ -7953,6 +8005,14 @@ class HeroConverterView {
   }
 
   setMode(mode) {
+    // Update icon rail active state
+    const rail = document.getElementById('iconRail');
+    if (rail) {
+      rail.querySelectorAll('.rail-btn[data-mode]').forEach(b => b.classList.remove('active'));
+      const active = rail.querySelector('[data-mode="' + mode + '"]');
+      if (active) active.classList.add('active');
+    }
+    // Legacy: update old mode toggle if still present
     const modeToggle = document.getElementById('modeToggle');
     if (modeToggle) {
       modeToggle.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -12000,6 +12060,52 @@ function initApp() {
 
   // Wire up global references
   window.app = { clientManager, sectionManager, previewManager, pageManager, heroConverterView, templateManager, themeCSSBuilder };
+
+  // --- Icon Rail: mode switching + dev warning ---
+  const devModes = ['converter', 'templates', 'themecss'];
+  let pendingMode = null;
+  const devOverlay = document.getElementById('devWarningOverlay');
+
+  document.getElementById('iconRail')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.rail-btn[data-mode]');
+    if (!btn) return;
+    const mode = btn.dataset.mode;
+    if (devModes.includes(mode)) {
+      pendingMode = mode;
+      if (devOverlay) devOverlay.classList.add('open');
+    } else {
+      previewManager.setMode(mode);
+    }
+  });
+
+  document.getElementById('btnDevGoBack')?.addEventListener('click', () => {
+    pendingMode = null;
+    if (devOverlay) devOverlay.classList.remove('open');
+  });
+
+  document.getElementById('btnDevContinue')?.addEventListener('click', () => {
+    if (devOverlay) devOverlay.classList.remove('open');
+    if (pendingMode) previewManager.setMode(pendingMode);
+    pendingMode = null;
+  });
+
+  // Close dev warning on overlay click
+  devOverlay?.addEventListener('click', (e) => {
+    if (e.target === devOverlay) { devOverlay.classList.remove('open'); pendingMode = null; }
+  });
+
+  // --- Config sidebar toggle ---
+  const app = document.querySelector('.app');
+  document.getElementById('btnToggleConfig')?.addEventListener('click', () => {
+    app.classList.toggle('config-open');
+  });
+  document.getElementById('btnCloseConfig')?.addEventListener('click', () => {
+    app.classList.remove('config-open');
+  });
+
+  // Update sidebar client name display
+  const sidebarName = document.getElementById('sidebarClientName');
+  if (sidebarName) sidebarName.textContent = clientManager.getActive()?.name || '';
 
   // --- Collapse All button ---
   const btnCollapseAll = document.getElementById('btnCollapseAll');
