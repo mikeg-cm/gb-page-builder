@@ -42,6 +42,7 @@
   --color-timeline:#f59e0b;
   --color-pricingSingle:#ec4899;
   --color-pricingMulti:#ec4899;
+  --color-comparisonTable:#a855f7;
   --color-faqAccordion:#6366f1;
   --color-faqCards:#6366f1;
   --color-serviceAreas:#14b8a6;
@@ -656,6 +657,12 @@ textarea{resize:vertical;min-height:64px}
         </div>
         <div class="sidebar-section-body" style="font-size:12px;line-height:1.6;color:rgba(255,255,255,0.65)">
 
+          <div class="ref-guide-section" style="background:rgba(0,122,255,0.08);border:1px solid rgba(0,122,255,0.2);border-radius:6px;padding:10px 12px">
+            <strong class="ref-guide-title" style="color:#7dafff">📘 Conversion Compendium</strong>
+            <p class="ref-guide-text" style="margin-top:4px">Full pattern reference for handing client HTML to your AI tool of choice (Claude, ChatGPT, Cursor) and getting paste-ready GB v2 markup back.</p>
+            <p class="ref-guide-text" style="margin-top:6px"><a href="https://github.com/mikeg-cm/gb-page-builder/blob/main/COMPENDIUM.md" target="_blank" rel="noopener" style="color:#7dafff;text-decoration:none;font-weight:600">Open compendium &rarr;</a></p>
+          </div>
+
           <div class="ref-guide-section">
             <strong class="ref-guide-title">GB v2 Block Format</strong>
             <p class="ref-guide-text">Every GenerateBlocks element has <b>3 attributes</b>:</p>
@@ -1255,6 +1262,7 @@ const SECTION_TYPES = [
   { id: 'timeline', label: 'Timeline / Process', desc: 'Numbered steps' },
   { id: 'pricingSingle', label: 'Pricing (Single)', desc: 'Single pricing card' },
   { id: 'pricingMulti', label: 'Pricing (Multi)', desc: 'Multiple pricing cards' },
+  { id: 'comparisonTable', label: 'Comparison Table', desc: 'Editable feature/pricing comparison with dark header + highlight rows' },
   { id: 'faqAccordion', label: 'FAQ (Accordion)', desc: 'Expandable questions' },
   { id: 'faqCards', label: 'FAQ (Cards)', desc: 'Q&A in card format' },
   { id: 'serviceAreas', label: 'Service Areas', desc: 'Centered area list' },
@@ -1276,7 +1284,7 @@ const SECTION_GROUPS = [
   { label: 'Layout & Hero', items: ['hero', 'heroCover', 'heroConverter', 'introText'] },
   { label: 'Content', items: ['cardGrid', 'textContent', 'sideBySideImage', 'sideBySideVideo', 'problemsChecklist', 'timeline'] },
   { label: 'Social Proof', items: ['reviews', 'reviewsCarousel', 'formReviews', 'logoCarousel'] },
-  { label: 'Pricing', items: ['pricingSingle', 'pricingMulti'] },
+  { label: 'Pricing', items: ['pricingSingle', 'pricingMulti', 'comparisonTable'] },
   { label: 'FAQ', items: ['faqAccordion', 'faqCards'] },
   { label: 'Other', items: ['serviceAreas', 'ctaBanner', 'transitionBlock'] }
 ];
@@ -1295,6 +1303,7 @@ const SECTION_ICONS = {
   timeline: '<svg viewBox="0 0 48 36"><circle cx="10" cy="10" r="4" fill="currentColor" opacity="0.4"/><circle cx="24" cy="10" r="4" fill="currentColor" opacity="0.4"/><circle cx="38" cy="10" r="4" fill="currentColor" opacity="0.4"/><line x1="14" y1="10" x2="20" y2="10" stroke="currentColor" stroke-width="1" opacity="0.3"/><line x1="28" y1="10" x2="34" y2="10" stroke="currentColor" stroke-width="1" opacity="0.3"/><rect x="4" y="18" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="18" y="18" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="32" y="18" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/></svg>',
   pricingSingle: '<svg viewBox="0 0 48 36"><rect x="12" y="2" width="24" height="32" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="16" y="7" width="16" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="18" y="12" width="12" height="4" rx="1" fill="currentColor" opacity="0.3"/><rect x="16" y="20" width="16" height="1" rx="0.5" fill="currentColor" opacity="0.2"/><rect x="16" y="23" width="16" height="1" rx="0.5" fill="currentColor" opacity="0.2"/><rect x="18" y="28" width="12" height="3" rx="1.5" fill="currentColor" opacity="0.4"/></svg>',
   pricingMulti: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="17.5" y="2" width="13" height="32" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="33" y="4" width="13" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="20" y="6" width="7" height="2" rx="1" fill="currentColor" opacity="0.4"/><rect x="20" y="11" width="7" height="3" rx="1" fill="currentColor" opacity="0.3"/></svg>',
+  comparisonTable: '<svg viewBox="0 0 48 36"><rect x="3" y="4" width="42" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="3" y="4" width="42" height="6" fill="currentColor" opacity="0.5"/><line x1="14" y1="4" x2="14" y2="32" stroke="currentColor" stroke-width="0.8" opacity="0.3"/><line x1="25" y1="4" x2="25" y2="32" stroke="currentColor" stroke-width="0.8" opacity="0.3"/><line x1="36" y1="4" x2="36" y2="32" stroke="currentColor" stroke-width="0.8" opacity="0.3"/><line x1="3" y1="16" x2="45" y2="16" stroke="currentColor" stroke-width="0.8" opacity="0.3"/><rect x="3" y="16" width="42" height="6" fill="currentColor" opacity="0.12"/><line x1="3" y1="22" x2="45" y2="22" stroke="currentColor" stroke-width="0.8" opacity="0.3"/></svg>',
   faqAccordion: '<svg viewBox="0 0 48 36"><rect x="4" y="4" width="40" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="4" y="14" width="40" height="7" rx="2" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1.2"/><rect x="4" y="24" width="40" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M38 7l2 2 2-2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg>',
   faqCards: '<svg viewBox="0 0 48 36"><rect x="2" y="4" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="26" y="4" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="22" width="20" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/><text x="9" y="12" font-size="8" fill="currentColor" opacity="0.4">?</text><text x="33" y="12" font-size="8" fill="currentColor" opacity="0.4">?</text></svg>',
   serviceAreas: '<svg viewBox="0 0 48 36"><rect x="8" y="6" width="32" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="6" y="12" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="19" y="12" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="32" y="12" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="6" y="16" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="19" y="16" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="32" y="16" width="10" height="1.5" rx="0.75" fill="currentColor" opacity="0.25"/><rect x="16" y="24" width="16" height="3" rx="1.5" fill="currentColor" opacity="0.4"/></svg>',
@@ -3119,34 +3128,41 @@ function buildPricingMultiSection(config, data, idEngine) {
       cardInner += buildGBElement(pIds.badge, 'div', badgeStyles, badgeCss, 'pricing-badge', 'BEST VALUE') + '\n';
     }
 
-    // Price header
+    // Price header — supports a "colored header" variant where the upper
+    // section gets a solid accent bg (e.g. brand red) with white text. See
+    // GB v2 Conversion Compendium §9.9 for the pattern.
+    var isColoredHeader = !!card.coloredHeader;
+    var headerBg = isColoredHeader ? primary : sectionLight;
     var headerStyles = {
-      backgroundColor: sectionLight,
-      borderBottom: '1px solid ' + cardBorder,
+      backgroundColor: headerBg,
       paddingTop: '28px',
       paddingBottom: '24px',
       paddingLeft: '32px',
       paddingRight: '32px',
       textAlign: 'center'
     };
+    if (!isColoredHeader) {
+      headerStyles.borderBottom = '1px solid ' + cardBorder;
+    }
     var headerCss = buildCSSString(pIds.header, headerStyles);
 
     var headerInner = '\n';
     headerInner += buildHeading(3, card.title, {
       align: 'center',
-      color: headingText,
+      color: isColoredHeader ? '#ffffff' : headingText,
       fontSize: '20px',
       fontWeight: '800',
       marginBottom: '8px'
     }) + '\n';
     headerInner += buildParagraph(card.subtitle || '', {
       align: 'center',
-      color: secondaryText,
+      color: isColoredHeader ? '#ffffff' : secondaryText,
       fontSize: '14px',
       marginBottom: '0px'
     });
 
-    cardInner += buildGBElement(pIds.header, 'div', headerStyles, headerCss, 'pricing-header', headerInner) + '\n';
+    var headerClassName = isColoredHeader ? 'pricing-header pkg-header-featured' : 'pricing-header';
+    cardInner += buildGBElement(pIds.header, 'div', headerStyles, headerCss, headerClassName, headerInner) + '\n';
 
     // Price body
     var bodyStyles = {
@@ -3221,6 +3237,149 @@ function buildPricingMultiSection(config, data, idEngine) {
     className: 'pricing-grid',
     responsiveCols: '1fr'
   });
+
+  return buildSectionWrapper(sectionId, containerId, bgColor, maxWidth, content);
+}
+
+
+// =============================================================================
+// Function 6.5: buildComparisonTableSection
+// =============================================================================
+
+/**
+ * Builds an editable comparison table wrapped in a styled gb-element.
+ *
+ * Pattern from the GB v2 Conversion Compendium § 9.6:
+ * - Outer gb-element wrapper carries all the styling via nested CSS in its `css` field
+ * - Inner core/table block stays editable per cell
+ * - Highlight rows targeted via tbody tr:nth-child(N) (since core/table strips per-tr classes)
+ * - Checkmarks: <strong>✓</strong> in cell text (preserved by core/table); colored red via
+ *   wrapper CSS targeting td:nth-child(N) strong
+ *
+ * @param {object} config   - Client config
+ * @param {object} data     - {
+ *     eyebrow, heading, subtitle,
+ *     headers: ['Package', 'Basic Pests', 'Rodents', ...],
+ *     rows: [{cells: ['Basic', '<strong>✓</strong>', '—', ...], highlighted: false}, ...],
+ *     checkColumns: [2, 3]  // 1-indexed column numbers whose <strong> contents render red
+ *   }
+ * @param {object} idEngine - UniqueIdEngine instance
+ * @returns {string} Complete comparison-table section markup
+ */
+function buildComparisonTableSection(config, data, idEngine) {
+  var colors = config.colors || {};
+  var typo = config.typography || {};
+  var primary = colors.primary || '#C4282D';
+  var headingText = colors.heading_text || '#151413';
+  var bodyText = colors.body_text || '#3A3937';
+  var secondaryText = colors.secondary_text || '#6B6966';
+  var cardBorder = colors.card_border || '#E5E2DD';
+  var headerBg = data.headerBg || colors.dark_bg || '#1a1a2e';
+  var highlightBg = data.highlightBg || '#FEF2F4';
+  var highlightHoverBg = data.highlightHoverBg || '#FEE5E8';
+  var rowHoverBg = data.rowHoverBg || colors.section_light || '#FAF8F5';
+  var maxWidth = config.section_max_width || '1140px';
+  var bgColor = data.bgColor || colors.section_white || '#ffffff';
+
+  var ids = idEngine.nextSection();
+  var sectionId = ids.section;
+  var containerId = ids.container;
+  var wrapId = idEngine.customId('CmpWrap');
+
+  var content = '';
+  if (data.eyebrow) {
+    content += buildEyebrow(data.eyebrow, colors.eyebrow_color || primary) + '\n';
+  }
+  if (data.heading) {
+    content += buildHeading(2, data.heading, {
+      align: 'center',
+      color: headingText,
+      fontSize: typo.h2_size || 'clamp(26px, 3.5vw, 36px)',
+      fontWeight: typo.h2_weight || '800',
+      lineHeight: typo.h2_line_height || '1.15',
+      letterSpacing: typo.h2_letter_spacing || '-0.02em',
+      marginBottom: data.subtitle ? '16px' : '40px'
+    }) + '\n';
+  }
+  if (data.subtitle) {
+    content += buildSubtitle(data.subtitle, secondaryText, '40px') + '\n';
+  }
+
+  // --- Build wrapper styles ---
+  var wrapStyles = {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: '1140px',
+    borderColor: cardBorder,
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    backgroundColor: '#ffffff'
+  };
+
+  // --- Compose nested CSS (full table styling lives here) ---
+  var cls = '.gb-element-' + wrapId;
+  // Accept either array [2,7] OR comma-separated string "2, 7" (form-field input)
+  var parseIdxList = function (input) {
+    if (Array.isArray(input)) return input.map(Number).filter(function (n) { return !isNaN(n) && n > 0; });
+    if (typeof input === 'string') {
+      return input.split(',').map(function (s) { return parseInt(s.trim(), 10); }).filter(function (n) { return !isNaN(n) && n > 0; });
+    }
+    return [];
+  };
+  var highlightRowsArr = parseIdxList(data.highlightRows);
+  var checkColumnsArr = parseIdxList(data.checkColumns);
+
+  var highlightSelectors = highlightRowsArr
+    .map(function (idx) { return cls + ' tbody tr:nth-child(' + idx + ')'; })
+    .join(',');
+  var highlightFirstColSelectors = highlightRowsArr
+    .map(function (idx) { return cls + ' tbody tr:nth-child(' + idx + ') td:first-child'; })
+    .join(',');
+  var highlightHoverSelectors = highlightRowsArr
+    .map(function (idx) { return cls + ' tbody tr:nth-child(' + idx + '):hover'; })
+    .join(',');
+  var checkColSelectors = checkColumnsArr
+    .map(function (n) { return cls + ' tbody td:nth-child(' + n + ') strong'; })
+    .join(',');
+
+  var nestedCss = [
+    cls + '{margin-left:auto;margin-right:auto;max-width:1140px;border:1px solid ' + cardBorder + ';border-radius:8px;overflow:hidden;background-color:#ffffff}',
+    cls + ' figure.wp-block-table{margin:0}',
+    cls + ' table{width:100%;border-collapse:collapse;background:#fff;border:0}',
+    cls + ' thead{background:' + headerBg + '}',
+    cls + ' thead th{color:#fff;padding:14px 16px;font-weight:700;text-align:left;font-size:14px;border:0}',
+    cls + ' tbody td{padding:14px 16px;border:0;border-bottom:1px solid ' + cardBorder + ';font-size:15px;color:' + bodyText + ';vertical-align:middle}',
+    cls + ' tbody tr:last-child td{border-bottom:0}',
+    cls + ' tbody tr{transition:background-color .15s ease}',
+    cls + ' tbody tr:hover{background:' + rowHoverBg + '}'
+  ];
+  if (highlightSelectors) {
+    nestedCss.push(highlightSelectors + '{background:' + highlightBg + '}');
+    nestedCss.push(highlightFirstColSelectors + '{font-weight:700;color:' + headingText + '}');
+    nestedCss.push(highlightHoverSelectors + '{background:' + highlightHoverBg + '}');
+  }
+  if (checkColSelectors) {
+    nestedCss.push(checkColSelectors + '{color:' + primary + ';font-weight:700}');
+  }
+  nestedCss.push(cls + ' tbody td:last-child strong{color:' + headingText + ';font-weight:700}');
+
+  var wrapCss = nestedCss.join('');
+
+  // --- Build the wp:table inner ---
+  var headers = data.headers || [];
+  var rows = data.rows || [];
+  var thead = '<thead><tr>' + headers.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr></thead>';
+  var tbody = '<tbody>' + rows.map(function (row) {
+    var cells = (row.cells || row).map(function (c) { return '<td>' + c + '</td>'; }).join('');
+    return '<tr>' + cells + '</tr>';
+  }).join('') + '</tbody>';
+  var tableMarkup = '<!-- wp:table -->\n<figure class="wp-block-table"><table>' + thead + tbody + '</table></figure>\n<!-- /wp:table -->';
+
+  var wrapBlock = buildGBElement(wrapId, 'div', wrapStyles, wrapCss, 'pp-cmp-wrap', '\n' + tableMarkup + '\n');
+
+  content += wrapBlock;
 
   return buildSectionWrapper(sectionId, containerId, bgColor, maxWidth, content);
 }
@@ -5982,8 +6141,19 @@ class SectionManager {
         cards: [{
           title: '', subtitle: '',
           features: [''],
-          ctaLabel: '', ctaUrl: '', featured: false
+          ctaLabel: '', ctaUrl: '', featured: false, coloredHeader: false
         }]
+      },
+      comparisonTable: {
+        eyebrow: '', heading: 'Quick Package Comparison', subtitle: 'See every package side-by-side to find the right fit.',
+        bgColor: '',
+        headers: ['Package', 'Feature A', 'Feature B', 'Visits/Year', 'Starting Price'],
+        rows: [
+          { cells: ['Basic', '<strong>✓</strong>', '—', '4 quarterly', '<strong>$43/mo</strong>'] },
+          { cells: ['Plus ⭐', '<strong>✓</strong>', '—', '6 bi-monthly', '<strong>$49/mo</strong>'] }
+        ],
+        highlightRows: [2],
+        checkColumns: [2, 3]
       },
       faqAccordion: {
         eyebrow: '', heading: '', bgColor: '',
@@ -6213,6 +6383,7 @@ class SectionManager {
       case 'timeline': return this._fieldsTimeline(id, d);
       case 'pricingSingle': return this._fieldsPricingSingle(id, d);
       case 'pricingMulti': return this._fieldsPricingMulti(id, d);
+      case 'comparisonTable': return this._fieldsComparisonTable(id, d);
       case 'faqAccordion': return this._fieldsFaq(id, d, 'faqAccordion');
       case 'faqCards': return this._fieldsFaq(id, d, 'faqCards');
       case 'serviceAreas': return this._fieldsServiceAreas(id, d);
@@ -6478,7 +6649,8 @@ class SectionManager {
           ${this._inp(id, `cards.${ci}.ctaLabel`, 'CTA Label', card.ctaLabel)}
           ${this._inp(id, `cards.${ci}.ctaUrl`, 'CTA URL', card.ctaUrl)}
         </div>
-        ${this._checkbox(id, `cards.${ci}.featured`, 'Featured / Highlighted', card.featured)}`;
+        ${this._checkbox(id, `cards.${ci}.featured`, 'Featured / Highlighted', card.featured)}
+        ${this._checkbox(id, `cards.${ci}.coloredHeader`, 'Colored Header (red/eco bg + white text on upper section)', card.coloredHeader)}`;
 
       // Inner features repeater
       h += `<div class="repeater-nested">`;
@@ -6497,6 +6669,60 @@ class SectionManager {
       h += '</div>'; // repeater-group
     });
     h += this._repeaterAddBtn(id, 'cards', 'Add Pricing Card');
+    return h;
+  }
+
+  // ---- Comparison Table ----
+  _fieldsComparisonTable(id, d) {
+    let h = '';
+    h += '<div class="form-row">';
+    h += this._inp(id, 'eyebrow', 'Eyebrow', d.eyebrow);
+    h += this._inp(id, 'heading', 'Heading', d.heading);
+    h += '</div>';
+    h += this._inp(id, 'subtitle', 'Subtitle', d.subtitle);
+    h += '<div class="form-row">';
+    h += this._inp(id, 'bgColor', 'BG Color', d.bgColor);
+    h += this._inp(id, 'headerBg', 'Header BG (default #1a1a2e)', d.headerBg);
+    h += '</div>';
+
+    // Headers list
+    h += this._repeaterHeader('Column Headers');
+    const headers = d.headers || [];
+    headers.forEach((hd, i) => {
+      h += `<div class="repeater-row">
+        <div class="form-group" style="flex:1">
+          <input type="text" class="form-control" placeholder="Column ${i + 1}" value="${escapeHTML(hd || '')}" data-section="${id}" data-field="headers.${i}">
+        </div>
+        ${this._repeaterRemoveBtn(id, 'headers', i)}
+      </div>`;
+    });
+    h += this._repeaterAddBtn(id, 'headers', 'Add Column');
+
+    // Rows repeater
+    h += this._repeaterHeader('Rows');
+    const rows = d.rows || [];
+    rows.forEach((row, ri) => {
+      h += `<div class="repeater-group">
+        <div class="repeater-group-header">Row ${ri + 1} ${this._repeaterRemoveBtn(id, 'rows', ri)}</div>`;
+      const cells = row.cells || [];
+      cells.forEach((c, ci) => {
+        h += `<div class="repeater-row">
+          <div class="form-group" style="flex:1">
+            <input type="text" class="form-control" placeholder="Cell ${ci + 1} (use <strong>✓</strong> for red checkmarks)" value="${escapeHTML(c || '')}" data-section="${id}" data-field="rows.${ri}.cells.${ci}">
+          </div>
+        </div>`;
+      });
+      h += '</div>';
+    });
+    h += this._repeaterAddBtn(id, 'rows', 'Add Row');
+
+    // Highlight rows + check columns
+    h += '<div class="form-row" style="margin-top:12px">';
+    h += this._inp(id, 'highlightRows', 'Highlight Row Indices (comma-separated, 1-based)', (d.highlightRows || []).join(', '));
+    h += this._inp(id, 'checkColumns', 'Checkmark Column Indices (comma-separated, 1-based)', (d.checkColumns || []).join(', '));
+    h += '</div>';
+    h += '<p style="font-size:11px;color:var(--text-muted);margin-top:4px">Wrap checkmarks in <code>&lt;strong&gt;✓&lt;/strong&gt;</code> in cell text. Columns listed in "Checkmark Column Indices" render those <code>&lt;strong&gt;</code>s in brand red. Highlighted rows get a pink background.</p>';
+
     return h;
   }
 
@@ -7326,6 +7552,8 @@ class PreviewManager {
         return typeof buildPricingSingleSection === 'function' ? buildPricingSingleSection(cfg, sectionData, ie) : '';
       case 'pricingMulti':
         return typeof buildPricingMultiSection === 'function' ? buildPricingMultiSection(cfg, sectionData, ie) : '';
+      case 'comparisonTable':
+        return typeof buildComparisonTableSection === 'function' ? buildComparisonTableSection(cfg, sectionData, ie) : '';
       case 'faqAccordion':
         return typeof buildFAQAccordionSection === 'function' ? buildFAQAccordionSection(cfg, sectionData, ie) : '';
       case 'faqCards':
@@ -7448,6 +7676,7 @@ class PreviewManager {
       case 'timeline': inner = this._vizTimeline(d, textColor, mutedColor, primary, cardBg); break;
       case 'pricingSingle': inner = this._vizPricingSingle(d, textColor, mutedColor, primary, cardBg); break;
       case 'pricingMulti': inner = this._vizPricingMulti(d, textColor, mutedColor, primary, cardBg); break;
+      case 'comparisonTable': inner = this._vizComparisonTable(d, textColor, mutedColor, primary, cardBg); break;
       case 'faqAccordion': case 'faqCards': inner = this._vizFaq(d, textColor, mutedColor, cardBg, section.type); break;
       case 'reviews': inner = this._vizReviews(d, textColor, mutedColor, cardBg); break;
       case 'reviewsCarousel': inner = this._vizReviewsCarousel(d, textColor, mutedColor, cardBg); break;
@@ -7640,6 +7869,44 @@ class PreviewManager {
           <div class="visual-card-title" style="color:${textColor}">${escapeHTML(c.title || 'Plan')}</div>
           <p class="visual-text" style="color:${mutedColor};font-size:9px">${escapeHTML(c.subtitle || '')}</p>
         </div>`).join('')}
+      </div>`;
+  }
+
+  _vizComparisonTable(d, textColor, mutedColor, primary, cardBg) {
+    const headers = d.headers || [];
+    const rows = d.rows || [];
+    const headerBg = d.headerBg || '#1a1a2e';
+    const highlightBg = d.highlightBg || '#FEF2F4';
+    // Parse highlight rows + check columns from string or array
+    const parseIdx = (x) => Array.isArray(x) ? x : (typeof x === 'string' ? x.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n) && n > 0) : []);
+    const highlightRows = parseIdx(d.highlightRows);
+    const checkCols = parseIdx(d.checkColumns);
+    const isHighlight = (i) => highlightRows.includes(i + 1);
+    const isCheckCol = (i) => checkCols.includes(i + 1);
+
+    const stripStrong = (s) => String(s || '').replace(/<\/?strong>/gi, '');
+    const renderCell = (cell, colIdx) => {
+      const txt = stripStrong(cell);
+      const isStrong = /<strong>/i.test(cell);
+      if (isCheckCol(colIdx) && isStrong) {
+        return `<td style="padding:5px 6px;color:${escapeHTML(primary)};font-weight:700;font-size:9px">${escapeHTML(txt)}</td>`;
+      }
+      if (colIdx === (headers.length - 1) && isStrong) {
+        return `<td style="padding:5px 6px;color:${textColor};font-weight:700;font-size:9px">${escapeHTML(txt)}</td>`;
+      }
+      return `<td style="padding:5px 6px;color:${textColor};font-size:9px">${escapeHTML(txt)}</td>`;
+    };
+
+    return `<h3 class="visual-heading visual-h2" style="color:${textColor};text-align:center">${escapeHTML(d.heading || 'Comparison')}</h3>
+      <div style="border:1px solid #E5E2DD;border-radius:6px;overflow:hidden;background:${cardBg};margin-top:6px">
+        <table style="width:100%;border-collapse:collapse;font-size:9px">
+          <thead><tr>${headers.map(h => `<th style="background:${escapeHTML(headerBg)};color:#fff;padding:5px 6px;text-align:left;font-size:9px">${escapeHTML(h || '')}</th>`).join('')}</tr></thead>
+          <tbody>${rows.map((row, ri) => {
+            const cells = row.cells || [];
+            const bgAttr = isHighlight(ri) ? `style="background:${escapeHTML(highlightBg)}"` : '';
+            return `<tr ${bgAttr}>${cells.map((c, ci) => renderCell(c, ci)).join('')}</tr>`;
+          }).join('')}</tbody>
+        </table>
       </div>`;
   }
 
